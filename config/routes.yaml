@@ -1,0 +1,5 @@
+admin:
+  resource: ../src/Controller/Admin/*.php
+  prefix: /admin
+  name_prefix: admin_
+  type: annotation

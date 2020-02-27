@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+<div class="main-content">
+    <h1>Bienvenue sur la home page!</h1>
+
+    <p><a href="{{ path('adverts') }}">Clique ici pour aller voir les annonces</a></p>
+    <p><a href="{{ path('estimate_your_car') }}">Estimer votre voiture</a></p>
+</div>
+{% endblock %}
