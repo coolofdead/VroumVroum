@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +32,16 @@ class CodeReduc
      * @ORM\Column(type="string", length=255)
      */
     private $Code;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Commande", mappedBy="CodeReduc")
+     */
+    private $no;
+
+    public function __construct()
+    {
+        $this->no = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -68,6 +80,37 @@ class CodeReduc
     public function setCode(string $Code): self
     {
         $this->Code = $Code;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Commande[]
+     */
+    public function getNo(): Collection
+    {
+        return $this->no;
+    }
+
+    public function addNo(Commande $no): self
+    {
+        if (!$this->no->contains($no)) {
+            $this->no[] = $no;
+            $no->setCodeReduc($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNo(Commande $no): self
+    {
+        if ($this->no->contains($no)) {
+            $this->no->removeElement($no);
+            // set the owning side to null (unless already changed)
+            if ($no->getCodeReduc() === $this) {
+                $no->setCodeReduc(null);
+            }
+        }
 
         return $this;
     }
