@@ -42,7 +42,7 @@ class AppFixtures extends Fixture
       ->setPassword($this->passwordEncoder->encodePassword(
         $admin,
         'b'
-      ));
+    ));
 
     $user = new User();
     $user->setEmail('a@a.a')
@@ -50,7 +50,7 @@ class AppFixtures extends Fixture
       ->setPassword($this->passwordEncoder->encodePassword(
         $user,
         'a'
-      ));
+    ));
 
     $manager->persist($user);
     $manager->persist($admin);

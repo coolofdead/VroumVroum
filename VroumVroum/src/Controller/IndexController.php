@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Advert;
-use App\Form\CarType;
 use App\Repository\AdvertRepository;
-use App\Utils\IPriceEstimation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,6 +52,15 @@ class IndexController extends AbstractController
     return $this->render('estimate/estimate.html.twig', [
       'estimateYourCar' => 'IndexController',
       'form' => $form->createView()
+    ]);
+  }
+
+  /**
+   * @Route("/test", name="test")
+   */
+  public function test() {
+    return $this->render('index/login.html.twig', [
+      'test' => 'IndexController',
     ]);
   }
 }
