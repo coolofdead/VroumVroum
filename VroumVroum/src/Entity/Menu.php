@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,6 +23,16 @@ class Menu
      */
     private $Nom;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Plat", inversedBy="menus")
+     */
+    private $Plats;
+
+    public function __construct()
+    {
+        $this->Plats = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -34,6 +46,32 @@ class Menu
     public function setNom(string $Nom): self
     {
         $this->Nom = $Nom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Plat[]
+     */
+    public function getPlats(): Collection
+    {
+        return $this->Plats;
+    }
+
+    public function addPlat(Plat $plat): self
+    {
+        if (!$this->Plats->contains($plat)) {
+            $this->Plats[] = $plat;
+        }
+
+        return $this;
+    }
+
+    public function removePlat(Plat $plat): self
+    {
+        if ($this->Plats->contains($plat)) {
+            $this->Plats->removeElement($plat);
+        }
 
         return $this;
     }

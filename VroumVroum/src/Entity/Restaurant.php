@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,6 +27,27 @@ class Restaurant
      * @ORM\Column(type="float", nullable=true)
      */
     private $Latitude;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\CategorieRestaurant", inversedBy="restaurants")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $Categorie;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Plat", mappedBy="Restaurant")
+     */
+    private $plats;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="Restaurants")
+     */
+    private $Restaurateur;
+
+    public function __construct()
+    {
+        $this->plats = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -51,6 +74,61 @@ class Restaurant
     public function setLatitude(?float $Latitude): self
     {
         $this->Latitude = $Latitude;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?CategorieRestaurant
+    {
+        return $this->Categorie;
+    }
+
+    public function setCategorie(?CategorieRestaurant $Categorie): self
+    {
+        $this->Categorie = $Categorie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Plat[]
+     */
+    public function getPlats(): Collection
+    {
+        return $this->plats;
+    }
+
+    public function addPlat(Plat $plat): self
+    {
+        if (!$this->plats->contains($plat)) {
+            $this->plats[] = $plat;
+            $plat->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlat(Plat $plat): self
+    {
+        if ($this->plats->contains($plat)) {
+            $this->plats->removeElement($plat);
+            // set the owning side to null (unless already changed)
+            if ($plat->getRestaurant() === $this) {
+                $plat->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRestaurateur(): ?User
+    {
+        return $this->Restaurateur;
+    }
+
+    public function setRestaurateur(?User $Restaurateur): self
+    {
+        $this->Restaurateur = $Restaurateur;
 
         return $this;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -22,6 +24,7 @@ class User implements UserInterface
      */
     private $email;
 
+
     /**
      * @ORM\Column(type="json")
      */
@@ -32,6 +35,27 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $Solde;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Restaurant", mappedBy="Restaurateur")
+     */
+    private $Restaurants;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Commande", mappedBy="Membre")
+     */
+    private $commandes;
+
+    public function __construct()
+    {
+        $this->Restaurants = new ArrayCollection();
+        $this->commandes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -50,6 +74,7 @@ class User implements UserInterface
         return $this;
     }
 
+
     /**
      * A visual identifier that represents this user.
      *
@@ -67,8 +92,7 @@ class User implements UserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
+        $roles[] = 'ROLE_MEMBRE';
         return array_unique($roles);
     }
 
@@ -109,5 +133,79 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getSolde(): ?float
+    {
+        return $this->Solde;
+    }
+
+    public function setSolde(float $Solde): self
+    {
+        $this->Solde = $Solde;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Restaurant[]
+     */
+    public function getRestaurants(): Collection
+    {
+        return $this->Restaurants;
+    }
+
+    public function addRestaurant(Restaurant $restaurant): self
+    {
+        if (!$this->Restaurants->contains($restaurant)) {
+            $this->Restaurants[] = $restaurant;
+            $restaurant->setRestaurateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRestaurant(Restaurant $restaurant): self
+    {
+        if ($this->Restaurants->contains($restaurant)) {
+            $this->Restaurants->removeElement($restaurant);
+            // set the owning side to null (unless already changed)
+            if ($restaurant->getRestaurateur() === $this) {
+                $restaurant->setRestaurateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Commande[]
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): self
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes[] = $commande;
+            $commande->setMembre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): self
+    {
+        if ($this->commandes->contains($commande)) {
+            $this->commandes->removeElement($commande);
+            // set the owning side to null (unless already changed)
+            if ($commande->getMembre() === $this) {
+                $commande->setMembre(null);
+            }
+        }
+
+        return $this;
     }
 }
