@@ -43,6 +43,11 @@ class Plat
      */
     private $menus;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $Nom;
+
     public function __construct()
     {
         $this->menus = new ArrayCollection();
@@ -125,6 +130,18 @@ class Plat
             $this->menus->removeElement($menu);
             $menu->removePlat($this);
         }
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->Nom;
+    }
+
+    public function setNom(string $Nom): self
+    {
+        $this->Nom = $Nom;
 
         return $this;
     }
