@@ -1,7 +1,17 @@
 {# liste des 10 restau + barre recherche adresse proche #}
 
+
+{% extends 'base.html.twig' %}
+
+
+{% block content %}
+
+{% include 'ui-element/search-input.html.twig' %}
+
 <ul>
     {% for restaurant in restaurants %}
         <li>{{ restaurant|trans }}</li>
     {% endfor %}
 </ul>
+
+{% endblock %}

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Restaurant;
-use App\Repository\AdvertRepository;
+use App\Repository\RestaurantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,13 +24,13 @@ class IndexController extends AbstractController
   /**
    * @Route("/adverts", name="adverts")
    */
-  public function adverts(AdvertRepository $advertRepository)
-  {
-    return $this->render('advert/adverts.html.twig', [
-      'adverts' => 'IndexController',
-       'cars' => $advertRepository->findAll()
-    ]);
-  }
+  // public function adverts(AdvertRepository $advertRepository)
+  // {
+  //   return $this->render('advert/adverts.html.twig', [
+  //     'adverts' => 'IndexController',
+  //      'cars' => $advertRepository->findAll()
+  //   ]);
+  // }
 
   /**
    * @Route("/estimate-your-car", name="estimate_your_car")
@@ -58,10 +58,10 @@ class IndexController extends AbstractController
   /**
    * @Route("/test", name="test")
    */
-  public function test() {
+  public function test(RestaurantRepository $restaurantRepository) {
     return $this->render('membre/accueil.html.twig', [
       'test' => 'IndexController',
-      'restaurants' => [],
+      'restaurants' => $restaurantRepository->findAll(),
     ]);
   }
 }

@@ -29,7 +29,7 @@ class Commande
     private $Menu;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\COdereduc", inversedBy="no")
+     * @ORM\ManyToOne(targetEntity="App\Entity\CodeReduc", inversedBy="no")
      */
     private $CodeReduc;
 
