@@ -26,6 +26,7 @@ class Restaurant
     /**
      * @ORM\Column(type="float", nullable=true)
      */
+
     private $Latitude;
 
     /**
@@ -43,6 +44,21 @@ class Restaurant
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="Restaurants")
      */
     private $Restaurateur;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $nom;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $Adresse;
+
+    /**
+     * @ORM\Column(type="string", length=1000)
+     */
+    private $url;
 
     public function __construct()
     {
@@ -129,6 +145,42 @@ class Restaurant
     public function setRestaurateur(?User $Restaurateur): self
     {
         $this->Restaurateur = $Restaurateur;
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->Adresse;
+    }
+
+    public function setAdresse(string $Adresse): self
+    {
+        $this->Adresse = $Adresse;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(string $url): self
+    {
+        $this->url = $url;
 
         return $this;
     }
