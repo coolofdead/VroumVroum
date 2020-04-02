@@ -28,6 +28,8 @@ class CategoriePlat
      */
     private $plats;
 
+
+
     public function __construct()
     {
         $this->plats = new ArrayCollection();

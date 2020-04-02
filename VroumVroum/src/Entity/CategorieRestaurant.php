@@ -23,6 +23,11 @@ class CategorieRestaurant
      */
     private $restaurants;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $Categorie;
+
     public function __construct()
     {
         $this->restaurants = new ArrayCollection();
@@ -62,6 +67,18 @@ class CategorieRestaurant
                 $restaurant->setCategorie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategorie(): ?string
+    {
+        return $this->Categorie;
+    }
+
+    public function setCategorie(string $Categorie): self
+    {
+        $this->Categorie = $Categorie;
 
         return $this;
     }
