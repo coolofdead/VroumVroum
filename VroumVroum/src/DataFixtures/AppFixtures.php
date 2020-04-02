@@ -48,7 +48,10 @@ class AppFixtures extends Fixture
       $restaurant->setCategorie($categorieRestaurant)
         ->setLatitude($faker->randomFloat(2, 5, 30000))
         ->setLongitude($faker->randomFloat(2, 5, 30000))
-        ->setRestaurateur($restaurateur);
+        ->setRestaurateur($restaurateur)
+        ->setNom($faker->realText(20,1))
+        ->setAdresse($faker->realText(30,3))
+        ->setUrl($faker->imageUrl(640,480));
 
       $manager->persist($restaurant);
 
