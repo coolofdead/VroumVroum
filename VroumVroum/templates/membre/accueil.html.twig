@@ -1,0 +1,7 @@
+{# liste des 10 restau + barre recherche adresse proche #}
+
+<ul>
+    {% for restaurant in restaurants %}
+        <li>{{ restaurant|trans }}</li>
+    {% endfor %}
+</ul>

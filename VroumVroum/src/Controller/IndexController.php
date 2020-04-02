@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Advert;
-use App\Form\CarType;
+use App\Entity\Restaurant;
 use App\Repository\AdvertRepository;
-use App\Utils\IPriceEstimation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
   /**
-   * @Route("/", name="homepage")
+   * @Route("/", name="home")
    */
   public function index()
   {
-    return $this->render('index/index.html.twig', [
+    return $this->render('membre/accueil.html.twig', [
       'index' => 'IndexController',
     ]);
   }
@@ -37,23 +35,33 @@ class IndexController extends AbstractController
   /**
    * @Route("/estimate-your-car", name="estimate_your_car")
    */
-  public function estimateYourCar(Request $request, EntityManagerInterface $em, IPriceEstimation $priceEstimater)
-  {
-    $advert = new Advert();
+  // public function estimateYourCar(Request $request, EntityManagerInterface $em, IPriceEstimation $priceEstimater)
+  // {
+  //   $advert = new Advert();
 
-    $form = $this->createForm(CarType::class, $advert);
+  //   $form = $this->createForm(CarType::class, $advert);
 
-    $form->handleRequest($request);
-    if ($form->isSubmitted() && $form->isValid()) {
-      $advert->setPrice($priceEstimater->EstimateCar($advert));
-      $em->persist($advert);
-      $em->flush();
-      return $this->redirectToRoute('homepage');
-    }
+  //   $form->handleRequest($request);
+  //   if ($form->isSubmitted() && $form->isValid()) {
+  //     $advert->setPrice($priceEstimater->EstimateCar($advert));
+  //     $em->persist($advert);
+  //     $em->flush();
+  //     return $this->redirectToRoute('homepage');
+  //   }
 
-    return $this->render('estimate/estimate.html.twig', [
-      'estimateYourCar' => 'IndexController',
-      'form' => $form->createView()
+  //   return $this->render('estimate/estimate.html.twig', [
+  //     'estimateYourCar' => 'IndexController',
+  //     'form' => $form->createView()
+  //   ]);
+  // }
+
+  /**
+   * @Route("/test", name="test")
+   */
+  public function test() {
+    return $this->render('membre/accueil.html.twig', [
+      'test' => 'IndexController',
+      'restaurants' => [],
     ]);
   }
 }
