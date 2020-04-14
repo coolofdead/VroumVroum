@@ -21,26 +21,26 @@ class Commande
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\CommandeDetail", inversedBy="commande", cascade={"persist", "remove"})
      */
-    private $Detail;
+    private $detail;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Menu")
+     * @ORM\ManyToMany(targetEntity="App\Entity\menu")
      */
-    private $Menu;
+    private $menu;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\CodeReduc", inversedBy="no")
      */
-    private $CodeReduc;
+    private $codeReduc;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="commandes")
      */
-    private $Membre;
+    private $membre;
 
     public function __construct()
     {
-        $this->Menu = new ArrayCollection();
+        $this->menu = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -48,64 +48,64 @@ class Commande
         return $this->id;
     }
 
-    public function getDetail(): ?CommandeDetail
+    public function getDetail(): ?Commandedetail
     {
-        return $this->Detail;
+        return $this->detail;
     }
 
-    public function setDetail(?CommandeDetail $Detail): self
+    public function setDetail(?Commandedetail $detail): self
     {
-        $this->Detail = $Detail;
+        $this->detail = $detail;
 
         return $this;
     }
 
     /**
-     * @return Collection|Menu[]
+     * @return Collection|menu[]
      */
     public function getMenu(): Collection
     {
-        return $this->Menu;
+        return $this->menu;
     }
 
-    public function addMenu(Menu $menu): self
+    public function addMenu(menu $menu): self
     {
-        if (!$this->Menu->contains($menu)) {
-            $this->Menu[] = $menu;
+        if (!$this->menu->contains($menu)) {
+            $this->menu[] = $menu;
         }
 
         return $this;
     }
 
-    public function removeMenu(Menu $menu): self
+    public function removeMenu(menu $menu): self
     {
-        if ($this->Menu->contains($menu)) {
-            $this->Menu->removeElement($menu);
+        if ($this->menu->contains($menu)) {
+            $this->menu->removeElement($menu);
         }
 
         return $this;
     }
 
-    public function getCodeReduc(): ?COdereduc
+    public function getCodeReduc(): ?Codereduc
     {
-        return $this->CodeReduc;
+        return $this->codeReduc;
     }
 
-    public function setCodeReduc(?COdereduc $CodeReduc): self
+    public function setCodeReduc(?Codereduc $codeReduc): self
     {
-        $this->CodeReduc = $CodeReduc;
+        $this->codeReduc = $codeReduc;
 
         return $this;
     }
 
     public function getMembre(): ?User
     {
-        return $this->Membre;
+        return $this->membre;
     }
 
-    public function setMembre(?User $Membre): self
+    public function setMembre(?User $membre): self
     {
-        $this->Membre = $Membre;
+        $this->membre = $membre;
 
         return $this;
     }

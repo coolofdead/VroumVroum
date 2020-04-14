@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\TypePlatRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\typePlatRepository")
  */
 class TypePlat
 {
@@ -21,10 +21,10 @@ class TypePlat
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Type;
+    private $type;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Plat", mappedBy="Type")
+     * @ORM\OneToMany(targetEntity="App\Entity\Plat", mappedBy="type")
      */
     private $plats;
 
@@ -38,14 +38,14 @@ class TypePlat
         return $this->id;
     }
 
-    public function getType(): ?string
+    public function gettype(): ?string
     {
-        return $this->Type;
+        return $this->type;
     }
 
-    public function setType(string $Type): self
+    public function settype(string $type): self
     {
-        $this->Type = $Type;
+        $this->type = $type;
 
         return $this;
     }

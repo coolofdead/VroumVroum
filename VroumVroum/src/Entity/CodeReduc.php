@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +14,7 @@ class CodeReduc
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Generatedvalue()
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -21,17 +22,17 @@ class CodeReduc
     /**
      * @ORM\Column(type="float")
      */
-    private $Value;
+    private $value;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $Date_Exp;
+    private $date_Exp;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Code;
+    private $code;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Commande", mappedBy="CodeReduc")
@@ -50,36 +51,36 @@ class CodeReduc
 
     public function getValue(): ?float
     {
-        return $this->Value;
+        return $this->value;
     }
 
-    public function setValue(float $Value): self
+    public function setValue(float $value): self
     {
-        $this->Value = $Value;
+        $this->value = $value;
 
         return $this;
     }
 
-    public function getDateExp(): ?\DateTimeInterface
+    public function getDateExp(): ?DateTimeInterface
     {
-        return $this->Date_Exp;
+        return $this->date_Exp;
     }
 
-    public function setDateExp(\DateTimeInterface $Date_Exp): self
+    public function setDateExp(DateTimeInterface $date_Exp): self
     {
-        $this->Date_Exp = $Date_Exp;
+        $this->date_Exp = $date_Exp;
 
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getcode(): ?string
     {
-        return $this->Code;
+        return $this->code;
     }
 
-    public function setCode(string $Code): self
+    public function setcode(string $code): self
     {
-        $this->Code = $Code;
+        $this->code = $code;
 
         return $this;
     }

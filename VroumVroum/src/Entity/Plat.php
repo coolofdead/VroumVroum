@@ -21,22 +21,22 @@ class Plat
     /**
      * @ORM\Column(type="float")
      */
-    private $Prix;
+    private $prix;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Restaurant", inversedBy="plats")
      */
-    private $Restaurant;
+    private $restaurant;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\CategoriePlat", inversedBy="plats")
      */
-    private $Categorie;
+    private $categorie;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\TypePlat", inversedBy="plats")
      */
-    private $Type;
+    private $type;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Menu", mappedBy="Plats")
@@ -46,7 +46,7 @@ class Plat
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Nom;
+    private $nom;
 
     public function __construct()
     {
@@ -60,48 +60,48 @@ class Plat
 
     public function getPrix(): ?float
     {
-        return $this->Prix;
+        return $this->prix;
     }
 
-    public function setPrix(float $Prix): self
+    public function setPrix(float $prix): self
     {
-        $this->Prix = $Prix;
+        $this->prix = $prix;
 
         return $this;
     }
 
     public function getRestaurant(): ?Restaurant
     {
-        return $this->Restaurant;
+        return $this->restaurant;
     }
 
-    public function setRestaurant(?Restaurant $Restaurant): self
+    public function setRestaurant(?Restaurant $restaurant): self
     {
-        $this->Restaurant = $Restaurant;
+        $this->restaurant = $restaurant;
 
         return $this;
     }
 
     public function getCategorie(): ?CategoriePlat
     {
-        return $this->Categorie;
+        return $this->categorie;
     }
 
-    public function setCategorie(?CategoriePlat $Categorie): self
+    public function setCategorie(?CategoriePlat $categorie): self
     {
-        $this->Categorie = $Categorie;
+        $this->categorie = $categorie;
 
         return $this;
     }
 
     public function getType(): ?TypePlat
     {
-        return $this->Type;
+        return $this->type;
     }
 
-    public function setType(?TypePlat $Type): self
+    public function setType(?TypePlat $type): self
     {
-        $this->Type = $Type;
+        $this->type = $type;
 
         return $this;
     }
@@ -136,12 +136,12 @@ class Plat
 
     public function getNom(): ?string
     {
-        return $this->Nom;
+        return $this->nom;
     }
 
-    public function setNom(string $Nom): self
+    public function setNom(string $nom): self
     {
-        $this->Nom = $Nom;
+        $this->nom = $nom;
 
         return $this;
     }

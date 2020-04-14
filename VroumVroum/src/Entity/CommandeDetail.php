@@ -21,7 +21,7 @@ class CommandeDetail
     /**
      * @ORM\Column(type="float")
      */
-    private $Prix;
+    private $prix;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Commande", mappedBy="Detail", cascade={"persist", "remove"})
@@ -31,17 +31,17 @@ class CommandeDetail
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Menu")
      */
-    private $Menus;
+    private $menus;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Plat")
      */
-    private $Plats;
+    private $plats;
 
     public function __construct()
     {
-        $this->Menus = new ArrayCollection();
-        $this->Plats = new ArrayCollection();
+        $this->menus = new ArrayCollection();
+        $this->plats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -51,12 +51,12 @@ class CommandeDetail
 
     public function getPrix(): ?float
     {
-        return $this->Prix;
+        return $this->prix;
     }
 
-    public function setPrix(float $Prix): self
+    public function setPrix(float $prix): self
     {
-        $this->Prix = $Prix;
+        $this->prix = $prix;
 
         return $this;
     }
@@ -84,13 +84,13 @@ class CommandeDetail
      */
     public function getMenus(): Collection
     {
-        return $this->Menus;
+        return $this->menus;
     }
 
     public function addMenu(Menu $menu): self
     {
-        if (!$this->Menus->contains($menu)) {
-            $this->Menus[] = $menu;
+        if (!$this->menus->contains($menu)) {
+            $this->menus[] = $menu;
         }
 
         return $this;
@@ -98,8 +98,8 @@ class CommandeDetail
 
     public function removeMenu(Menu $menu): self
     {
-        if ($this->Menus->contains($menu)) {
-            $this->Menus->removeElement($menu);
+        if ($this->menus->contains($menu)) {
+            $this->menus->removeElement($menu);
         }
 
         return $this;
@@ -110,13 +110,13 @@ class CommandeDetail
      */
     public function getPlats(): Collection
     {
-        return $this->Plats;
+        return $this->plats;
     }
 
     public function addPlat(Plat $plat): self
     {
-        if (!$this->Plats->contains($plat)) {
-            $this->Plats[] = $plat;
+        if (!$this->plats->contains($plat)) {
+            $this->plats[] = $plat;
         }
 
         return $this;
@@ -124,8 +124,8 @@ class CommandeDetail
 
     public function removePlat(Plat $plat): self
     {
-        if ($this->Plats->contains($plat)) {
-            $this->Plats->removeElement($plat);
+        if ($this->plats->contains($plat)) {
+            $this->plats->removeElement($plat);
         }
 
         return $this;

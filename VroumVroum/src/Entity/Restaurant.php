@@ -21,19 +21,19 @@ class Restaurant
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $Longitude;
+    private $longitude;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
 
-    private $Latitude;
+    private $latitude;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\CategorieRestaurant", inversedBy="restaurants")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $Categorie;
+    private $categorie;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Plat", mappedBy="Restaurant")
@@ -43,7 +43,7 @@ class Restaurant
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="Restaurants")
      */
-    private $Restaurateur;
+    private $restaurateur;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -53,7 +53,7 @@ class Restaurant
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Adresse;
+    private $adresse;
 
     /**
      * @ORM\Column(type="string", length=1000)
@@ -72,36 +72,36 @@ class Restaurant
 
     public function getLongitude(): ?float
     {
-        return $this->Longitude;
+        return $this->longitude;
     }
 
-    public function setLongitude(?float $Longitude): self
+    public function setLongitude(?float $longitude): self
     {
-        $this->Longitude = $Longitude;
+        $this->longitude = $longitude;
 
         return $this;
     }
 
     public function getLatitude(): ?float
     {
-        return $this->Latitude;
+        return $this->latitude;
     }
 
-    public function setLatitude(?float $Latitude): self
+    public function setLatitude(?float $latitude): self
     {
-        $this->Latitude = $Latitude;
+        $this->latitude = $latitude;
 
         return $this;
     }
 
     public function getCategorie(): ?CategorieRestaurant
     {
-        return $this->Categorie;
+        return $this->categorie;
     }
 
-    public function setCategorie(?CategorieRestaurant $Categorie): self
+    public function setCategorie(?CategorieRestaurant $categorie): self
     {
-        $this->Categorie = $Categorie;
+        $this->categorie = $categorie;
 
         return $this;
     }
@@ -139,12 +139,12 @@ class Restaurant
 
     public function getRestaurateur(): ?User
     {
-        return $this->Restaurateur;
+        return $this->restaurateur;
     }
 
-    public function setRestaurateur(?User $Restaurateur): self
+    public function setRestaurateur(?User $restaurateur): self
     {
-        $this->Restaurateur = $Restaurateur;
+        $this->restaurateur = $restaurateur;
 
         return $this;
     }
@@ -163,12 +163,12 @@ class Restaurant
 
     public function getAdresse(): ?string
     {
-        return $this->Adresse;
+        return $this->adresse;
     }
 
-    public function setAdresse(string $Adresse): self
+    public function setAdresse(string $adresse): self
     {
-        $this->Adresse = $Adresse;
+        $this->adresse = $adresse;
 
         return $this;
     }
