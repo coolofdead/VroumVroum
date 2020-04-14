@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Restaurant;
 use App\Repository\AdvertRepository;
+use App\Repository\RestaurantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,14 +13,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
   /**
-   * @Route("/", name="home")
+   * @Route("/", name="AccueilMembre")
    */
-  public function index()
+  public function index(RestaurantRepository $restaurantRepository)
   {
     return $this->render('membre/accueil.html.twig', [
       'index' => 'IndexController',
+        'restaurants' => $restaurantRepository
     ]);
   }
+
+
 
   /**
    * @Route("/adverts", name="adverts")

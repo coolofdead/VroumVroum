@@ -24,7 +24,7 @@ class Commande
     private $detail;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\menu")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Menu")
      */
     private $menu;
 
