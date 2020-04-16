@@ -1,16 +1,22 @@
 {# liste des 10 restau + barre recherche adresse proche #}
 
-
 {% extends 'base.html.twig' %}
+{% block title %}Accueil{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/accueil.css') }}">
+{% endblock %}
 
 
 {% block content %}
 
-{% include 'ui-element/search-input.html.twig' %}
+{% include "component/navbar.html.twig" %}
 
-<ul>
+<ul id="restaurants">
     {% for restaurant in restaurants %}
-        <li>{{ restaurant|trans }}</li>
+        <li>
+            {% include 'component/restaurant-card.html.twig' %}
+        </li>
     {% endfor %}
 </ul>
 

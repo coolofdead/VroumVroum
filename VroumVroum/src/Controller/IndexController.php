@@ -12,16 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
   /**
-   * @Route("/", name="home")
-   */
-  public function index()
-  {
-    return $this->render('membre/accueil.html.twig', [
-      'index' => 'IndexController',
-    ]);
-  }
-
-  /**
    * @Route("/adverts", name="adverts")
    */
   // public function adverts(AdvertRepository $advertRepository)
@@ -56,11 +46,11 @@ class IndexController extends AbstractController
   // }
 
   /**
-   * @Route("/test", name="test")
+   * @Route("/", name="accueil")
    */
-  public function test(RestaurantRepository $restaurantRepository) {
+  public function accueil(RestaurantRepository $restaurantRepository) {
     return $this->render('membre/accueil.html.twig', [
-      'test' => 'IndexController',
+      'accueil' => 'IndexController',
       'restaurants' => $restaurantRepository->findAll(),
     ]);
   }

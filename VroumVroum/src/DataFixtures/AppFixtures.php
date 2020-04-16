@@ -42,19 +42,16 @@ class AppFixtures extends Fixture
     $manager->persist($restaurateur);
 
 
-
     $restaurant = new Restaurant();
-
-      $restaurant->setCategorie($categorieRestaurant)
-        ->setLatitude($faker->randomFloat(2, 5, 30000))
-        ->setLongitude($faker->randomFloat(2, 5, 30000))
-        ->setRestaurateur($restaurateur)
-        ->setNom($faker->realText(20,1))
-        ->setAdresse($faker->realText(30,3))
-        ->setUrl($faker->imageUrl(640,480));
+    $restaurant->setCategorie($categorieRestaurant)
+      ->setLatitude($faker->randomFloat(2, 5, 30000))
+      ->setLongitude($faker->randomFloat(2, 5, 30000))
+      ->setRestaurateur($restaurateur)
+      ->setNom($faker->realText(20, 1))
+      ->setAdresse($faker->streetAddress)
+      ->setUrl($faker->imageUrl(640, 480));
 
     $manager->persist($restaurant);
-
 
 
     $categoriePlat = new CategoriePlat();
@@ -66,10 +63,7 @@ class AppFixtures extends Fixture
     $manager->persist($typePlat);
 
 
-
-
     $plats = new Plat();
-
     $plats->setNom($faker->realText(150, 3))
       ->setPrix($faker->randomNumber(1))
       ->setCategorie($categoriePlat)
@@ -78,19 +72,11 @@ class AppFixtures extends Fixture
     $manager->persist($plats);
 
 
-
-
-
-
-
-
     $admin = new User();
     $admin->setEmail('admin@admin.com')
       ->setRoles(['ROLE_ADMIN'])
       ->setSolde(0)
       ->setPassword($this->passwordEncoder->encodePassword($admin, 'm'));
-
-
 
     $manager->persist($admin);
     $manager->flush();
