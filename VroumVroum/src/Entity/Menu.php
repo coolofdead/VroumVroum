@@ -21,16 +21,16 @@ class Menu
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Nom;
+    private $nom;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Plat", inversedBy="menus")
      */
-    private $Plats;
+    private $plats;
 
     public function __construct()
     {
-        $this->Plats = new ArrayCollection();
+        $this->plats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -40,12 +40,12 @@ class Menu
 
     public function getNom(): ?string
     {
-        return $this->Nom;
+        return $this->nom;
     }
 
-    public function setNom(string $Nom): self
+    public function setNom(string $nom): self
     {
-        $this->Nom = $Nom;
+        $this->nom = $nom;
 
         return $this;
     }
@@ -55,13 +55,13 @@ class Menu
      */
     public function getPlats(): Collection
     {
-        return $this->Plats;
+        return $this->plats;
     }
 
     public function addPlat(Plat $plat): self
     {
-        if (!$this->Plats->contains($plat)) {
-            $this->Plats[] = $plat;
+        if (!$this->plats->contains($plat)) {
+            $this->plats[] = $plat;
         }
 
         return $this;
@@ -69,8 +69,8 @@ class Menu
 
     public function removePlat(Plat $plat): self
     {
-        if ($this->Plats->contains($plat)) {
-            $this->Plats->removeElement($plat);
+        if ($this->plats->contains($plat)) {
+            $this->plats->removeElement($plat);
         }
 
         return $this;

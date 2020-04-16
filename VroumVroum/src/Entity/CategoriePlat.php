@@ -21,7 +21,7 @@ class CategoriePlat
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Categorie;
+    private $categorie;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Plat", mappedBy="Categorie")
@@ -42,12 +42,12 @@ class CategoriePlat
 
     public function getCategorie(): ?string
     {
-        return $this->Categorie;
+        return $this->categorie;
     }
 
-    public function setCategorie(string $Categorie): self
+    public function setCategorie(string $categorie): self
     {
-        $this->Categorie = $Categorie;
+        $this->categorie = $categorie;
 
         return $this;
     }

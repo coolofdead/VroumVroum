@@ -39,12 +39,12 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="float",nullable=true)
      */
-    private $Solde;
+    private $solde;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Restaurant", mappedBy="Restaurateur")
      */
-    private $Restaurants;
+    private $restaurants;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Commande", mappedBy="Membre")
@@ -53,7 +53,7 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->Restaurants = new ArrayCollection();
+        $this->restaurants = new ArrayCollection();
         $this->commandes = new ArrayCollection();
     }
 
@@ -93,6 +93,8 @@ class User implements UserInterface
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_MEMBRE';
+        $roles[] = 'ROLE_ADMIN';
+        $roles[] = 'ROLE_RESTAURATEUR';
         return array_unique($roles);
     }
 
@@ -137,12 +139,12 @@ class User implements UserInterface
 
     public function getSolde(): ?float
     {
-        return $this->Solde;
+        return $this->solde;
     }
 
-    public function setSolde(float $Solde): self
+    public function setSolde(float $solde): self
     {
-        $this->Solde = $Solde;
+        $this->solde = $solde;
 
         return $this;
     }
@@ -150,15 +152,15 @@ class User implements UserInterface
     /**
      * @return Collection|Restaurant[]
      */
-    public function getRestaurants(): Collection
+    public function getrestaurants(): Collection
     {
-        return $this->Restaurants;
+        return $this->restaurants;
     }
 
     public function addRestaurant(Restaurant $restaurant): self
     {
-        if (!$this->Restaurants->contains($restaurant)) {
-            $this->Restaurants[] = $restaurant;
+        if (!$this->restaurants->contains($restaurant)) {
+            $this->restaurants[] = $restaurant;
             $restaurant->setRestaurateur($this);
         }
 
@@ -167,8 +169,8 @@ class User implements UserInterface
 
     public function removeRestaurant(Restaurant $restaurant): self
     {
-        if ($this->Restaurants->contains($restaurant)) {
-            $this->Restaurants->removeElement($restaurant);
+        if ($this->restaurants->contains($restaurant)) {
+            $this->restaurants->removeElement($restaurant);
             // set the owning side to null (unless already changed)
             if ($restaurant->getRestaurateur() === $this) {
                 $restaurant->setRestaurateur(null);
