@@ -1,0 +1,13 @@
+<ul>
+
+        <li>nom restaurant => {{ restaurant.nom }}</li>
+        <li>Email restaurant => {{ restaurateur.email }}</li>
+
+</ul>
+
+<ul>
+        {% for plat in plats %}
+                <li>Nom du plat =>  {{ plat.nom }}</li>
+                <li>Prix du plat =>  {{ plat.prix }}</li>
+        {% endfor %}
+</ul>

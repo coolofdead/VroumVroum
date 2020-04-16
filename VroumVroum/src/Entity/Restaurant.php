@@ -36,12 +36,12 @@ class Restaurant
     private $categorie;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Plat", mappedBy="Restaurant")
+     * @ORM\OneToMany(targetEntity="App\Entity\Plat", mappedBy="restaurant")
      */
     private $plats;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="Restaurants")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="restaurants")
      */
     private $restaurateur;
 

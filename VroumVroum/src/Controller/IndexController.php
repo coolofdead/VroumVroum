@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Plat;
 use App\Entity\Restaurant;
 use App\Repository\AdvertRepository;
 use App\Repository\RestaurantRepository;
@@ -13,30 +14,37 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
   /**
-   * @Route("/", name="AccueilMembre")
+   * @Route("/", name="liste_restaurant")
    */
   public function index(RestaurantRepository $restaurantRepository)
   {
     return $this->render('membre/accueil.html.twig', [
       'index' => 'IndexController',
-        'restaurants' => $restaurantRepository
+        'restaurants' => $restaurantRepository->findAll()
     ]);
   }
 
 
 
   /**
-   * @Route("/adverts", name="adverts")
+   * @Route("/restaurant/{id}", name="unique_restaurant")
    */
-  public function adverts(AdvertRepository $advertRepository)
-  {
-    return $this->render('advert/adverts.html.twig', [
-      'adverts' => 'IndexController',
-       'cars' => $advertRepository->findAll()
-    ]);
-  }
+    public function restaurant(Restaurant $restaurant)
+    {
+        return $this->render('membre/restaurant.html.twig', [
+            'restaurant' => $restaurant,
+            'restaurateur' => $restaurant->getRestaurateur(),
+            'plats' => $restaurant->getPlats(),
+            ]);
+    }
 
-  /**
+
+
+
+
+
+
+    /**
    * @Route("/estimate-your-car", name="estimate_your_car")
    */
   // public function estimateYourCar(Request $request, EntityManagerInterface $em, IPriceEstimation $priceEstimater)
