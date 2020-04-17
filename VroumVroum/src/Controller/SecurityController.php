@@ -38,9 +38,9 @@ class SecurityController extends AbstractController
 
 
     /**
-     * Redirige le user en fonction de son role
-     * @Route("/login_redirect", name="_login_redirect")
-     */
+ * Redirige le user en fonction de son role
+ * @Route("/login_redirect", name="_login_redirect")
+ */
     public function loginRedirectAction(Request $request)
     {
         if($this->isGranted('ROLE_ADMIN'))
