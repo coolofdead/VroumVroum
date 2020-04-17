@@ -46,15 +46,9 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $passwordUnencode = $form->get('password')->getData();
             $user->setPassword($this->passwordEncoder->encodePassword($user, $passwordUnencode));
-
             $role=$form->get('roles')->getData();
-
             $user->setRoles($role);
-
-
-
-            $entityManager = $this->getDoctrine()->getManager();
-
+             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -108,6 +102,6 @@ class UserController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('user_index');
+        return $this->redirectToRoute('admin_user_index');
     }
 }
