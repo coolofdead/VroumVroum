@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Restaurateur;
 
 use App\Entity\Restaurant;
 use App\Form\RestaurantType;
@@ -35,11 +35,15 @@ class RestaurantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            //ajout le restaurateur connecté directement au restaurant ajouté
+//            $curentRestaurateur = $this->getUser();
+//            $restaurant->setRestaurateur($curentRestaurateur);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($restaurant);
             $entityManager->flush();
 
-            return $this->redirectToRoute('restaurant_index');
+            return $this->redirectToRoute('restaurateur_restaurant_index');
         }
 
         return $this->render('restaurant/new.html.twig', [
@@ -69,7 +73,7 @@ class RestaurantController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('restaurant_index');
+            return $this->redirectToRoute('restaurateur_restaurant_index');
         }
 
         return $this->render('restaurant/edit.html.twig', [
@@ -89,6 +93,6 @@ class RestaurantController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('restaurant_index');
+        return $this->redirectToRoute('restaurateur_restaurant_index');
     }
 }
