@@ -1,10 +1,17 @@
-<div class="card" style="width: 18rem;">
+<div class="card" style="width: 20rem;">
   <img src="{{ restaurant.url }}" class="card-img-top" alt="...">
   <div class="card-body">
     <h5 class="card-title">{{ restaurant.nom }}</h5>
-    <p class="card-text">{{ restaurant.Adresse }}</p>
-    <p class="card-text">{{ restaurant.Categorie.Categorie }}</p>
-    <p class="card-text">{{ delivery_price }} de livraison</p>
-    <a href="#" class="btn btn-primary">Acheter</a>
+    <div style="display:flex;justify-content:space-between;">
+      <p class="card-text" style="color: gray;">{{ restaurant.Adresse }}</p>
+      {% set iconsCategory = [
+        '🧀','🍖','🍗','🥩','🥓','🍔','🍟','🍕','🌭','🥪','🌮','🌯','🥙','🧆','🍳','🥘','🍲','🥣','🥗','🍿','🧈','🧂','🥫','🍱','🍘','🍙','🍚','🍛','🍜','🍝','🍠','🍢','🍣','🍤','🍥','🥮','🍡','🥟','🥠','🥡','🦪','🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫','🍬','🍭','🍮','🍯','🍼','🥛','☕','🍵','🍶','🍾','🍷'
+      ] %}
+      <p class="card-text">{{ restaurant.Categorie.Categorie }} {{ random(iconsCategory) }}</p>
+    </div>
+    <div style="display:flex;justify-content:space-between;">
+      <p class="card-text">{{ delivery_price }}€ de livraison</p>
+      <a href="restaurant-detail/{{ restaurant.id }}" class="btn btn-outline-primary">Visiter</a>
+    </div>
   </div>
 </div>

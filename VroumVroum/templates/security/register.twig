@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Register{% endblock %}
 
 {% block content %}
     <style>
@@ -35,13 +35,8 @@
                             <div class="form-group">
                                 <input name="password" id="inputPassword" class="form-control" placeholder="Password" type="password" value="" required>
                             </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input name="remember" type="checkbox" value="Remember Me">Se souvenir de moi
-                                </label>
-                            </div>
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Connexion">
+                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Inscription">
                         </fieldset>
                         </div>
                     </div>

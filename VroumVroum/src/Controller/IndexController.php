@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Plat;
 use App\Entity\Restaurant;
+use App\Repository\PlatRepository;
 use App\Repository\RestaurantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,46 +14,51 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
   /**
-   * @Route("/adverts", name="adverts")
-   */
-  // public function adverts(AdvertRepository $advertRepository)
-  // {
-  //   return $this->render('advert/adverts.html.twig', [
-  //     'adverts' => 'IndexController',
-  //      'cars' => $advertRepository->findAll()
-  //   ]);
-  // }
-
-    /**
-   * @Route("/estimate-your-car", name="estimate_your_car")
-   */
-  // public function estimateYourCar(Request $request, EntityManagerInterface $em, IPriceEstimation $priceEstimater)
-  // {
-  //   $advert = new Advert();
-
-  //   $form = $this->createForm(CarType::class, $advert);
-
-  //   $form->handleRequest($request);
-  //   if ($form->isSubmitted() && $form->isValid()) {
-  //     $advert->setPrice($priceEstimater->EstimateCar($advert));
-  //     $em->persist($advert);
-  //     $em->flush();
-  //     return $this->redirectToRoute('homepage');
-  //   }
-
-  //   return $this->render('estimate/estimate.html.twig', [
-  //     'estimateYourCar' => 'IndexController',
-  //     'form' => $form->createView()
-  //   ]);
-  // }
-
-  /**
    * @Route("/", name="accueil")
    */
   public function accueil(RestaurantRepository $restaurantRepository) {
     return $this->render('membre/accueil.html.twig', [
       'accueil' => 'IndexController',
       'restaurants' => $restaurantRepository->findAll(),
+    ]);
+  }
+
+  /**
+   * @Route("/restaurant-detail", name="restaurant-detail")
+   */
+  public function restaurantDetail(RestaurantRepository $restaurantRepository) {
+    // TODO : modifier la route pour accepter l'id d'un restau et retourner uniquement ce restau afin afficher dans la page
+
+    return $this->render('membre/restaurant-detail.html.twig', [
+      'accueil' => 'IndexController',
+      'restaurant' => $restaurantRepository->find(2),
+    ]);
+  }
+
+  /**
+   * @Route("/payement", name="", methods={"POST"})
+   */
+  public function payement(Request $request, /* A REMOVE => */ PlatRepository $pr)
+  {
+    /* TODO Prendre le json dans la request avec la structure suivante :
+       [
+          {
+           id_resto : value,
+           id_plat : value
+          },
+          ...
+       ]
+
+      - faire ta tambouille pour calculer le total
+      - check si l'utilisateur à la somme
+      - rediriger vers soit :
+        -> page payement
+        -> page restaurant_detail (la d'ou tu viens normalement) avec un params en plus dans le render : 'error' => 'text d'erreur', que je print sur la page 
+    */
+
+    return $this->render('membre/payement.html.twig', [
+      'accueil' => 'IndexController',
+      'items' =>  $pr->findAll() // Array avec les plats
     ]);
   }
 }

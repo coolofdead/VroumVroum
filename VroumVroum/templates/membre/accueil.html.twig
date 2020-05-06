@@ -9,15 +9,20 @@
 
 
 {% block content %}
+    {{ parent() }}
 
-{% include "component/navbar.html.twig" %}
+    {# TODO : à implémenter #}
+    {# {% include "component/category-sidebar.html.twig" %} #}
 
-<ul id="restaurants">
-    {% for restaurant in restaurants %}
-        <li>
-            {% include 'component/restaurant-card.html.twig' %}
-        </li>
-    {% endfor %}
-</ul>
-
+    <div id="restaurants">
+        <div>
+            <div class="row" style="margin-left: 5%;">
+                {% for restaurant in restaurants %}
+                    <div class="col" style="flex-grow: unset; display: flex;justify-content: center;align-items: center; margin-bottom: 2vh; min-width: 22vw;">
+                        {% include 'component/restaurant-card.html.twig' %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
