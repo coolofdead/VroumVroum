@@ -36,7 +36,7 @@ class IndexController extends AbstractController
   }
 
   /**
-   * @Route("/payement", name="", methods={"POST"})
+   * @Route("/payement", name="", methods={"POST, GET"})
    */
   public function payement(Request $request, /* A REMOVE => */ PlatRepository $pr)
   {
@@ -52,13 +52,26 @@ class IndexController extends AbstractController
       - faire ta tambouille pour calculer le total
       - check si l'utilisateur à la somme
       - rediriger vers soit :
-        -> page payement
+        -> page payement pour ajouter le solde => ajouter un params dans le render avec la somme manquante ainsi que la liste des plats dans la commande
         -> page restaurant_detail (la d'ou tu viens normalement) avec un params en plus dans le render : 'error' => 'text d'erreur', que je print sur la page 
     */
 
     return $this->render('membre/payement.html.twig', [
       'accueil' => 'IndexController',
-      'items' =>  $pr->findAll() // Array avec les plats
+      // 'items' =>  $pr->findAll(), // Array avec les plats
+      // 'delivery_fee' => getenv('DELIVERY_PRICE'),
+      // 'solde' => 30,
+    ]);
+  }
+
+  /**
+   * @Route("/compte", name="compte")
+   */
+  public function compte(Request $request)
+  {
+    return $this->render('membre/compte.html.twig', [
+      'accueil' => 'IndexController',
+      'solde' => 30,
     ]);
   }
 }

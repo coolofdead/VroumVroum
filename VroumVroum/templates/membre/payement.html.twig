@@ -12,13 +12,12 @@
     
     {{ parent() }}
 
-    {# <div>{{ dump(items) }}</div> #}
+    <div class="container list-group list-group-horizontal" style="max-width: 1200px;">
 
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-md-4">
+        {# CB #}
+        <div class="row list-group-item">
+            <div class="col-xs-12 col-md-4" style="max-width:100% !important;width:unset;">
             
-                <!-- CREDIT CARD FORM STARTS HERE -->
                 <div class="panel panel-default credit-card-box">
                     <div class="panel-heading display-table" >
                         <div class="row display-tr" >
@@ -78,25 +77,27 @@
                                     </div>
                                 </div>
                             </div>
+                            {% if items is defined %}
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="couponCode">COUPON CODE</label>
+                                            <input type="text" class="form-control" name="couponCode" />
+                                        </div>
+                                    </div>                        
+                                </div>
+                            {% endif %}
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="form-group">
-                                        <label for="couponCode">COUPON CODE</label>
-                                        <input type="text" class="form-control" name="couponCode" />
+                                        <label for="couponCode">SOMME</label>
+                                        <input type="number" class="form-control" name="couponCode" min="0"/>
                                     </div>
                                 </div>                        
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <label for="couponCode">COUPON CODE</label>
-                                        <input type="text" class="form-control" name="couponCode" />
-                                    </div>
-                                </div>                        
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <button class="subscribe btn btn-success btn-lg btn-block" type="button">Start Subscription</button>
+                                    <button class="subscribe btn btn-success btn-lg btn-block" type="submit">Payer</button>
                                 </div>
                             </div>
                             <div class="row" style="display:none;">
@@ -109,9 +110,104 @@
 
                     </div>
                 </div>            
-                <!-- CREDIT CARD FORM ENDS HERE -->
             </div>            
         </div>
+
+        {# Optionnal command details #}
+        {% if items is defined %}
+            <div class="row list-group-item">
+                {# liste des plats #}
+                <div class="col-sm-12 col-md-10 col-md-offset-1">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Nom</th>
+                                <th>Quantité</th>
+                                
+                                <th class="text-center">Prix</th>
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set itemsByCat = {} %}
+                            {% set sub_total = 0 %}
+
+                            {% for item in items %}
+                                {% set sum = 0 %}
+
+                                {% for itemCat in items %}
+                                    {% if item.id == itemCat.id %}
+                                        {% set sum = sum + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if item.id not in itemsByCat %}
+                                    {% set itemsByCat = itemsByCat|merge({(item.id) : [sum, sum * item.prix, item.nom]}) %}
+                                    {% set sub_total = sub_total + sum * item.prix %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {# {{dump(itemsByCat)}} #}
+
+                            {% for item in itemsByCat %}
+                                <tr>
+                                    <td class="col-sm-8 col-md-1">
+                                        <div class="media">
+                                            <span class="thumbnail pull-left" href="#" style="min-width: 90px;"> 
+                                                <img class="media-object" src="http://icons.iconarchive.com/icons/custom-icon-design/flatastic-2/72/product-icon.png" alt="..." style="width: 72px; height: 72px;"> 
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="col-sm-1 col-md-1">
+                                        <div class="media-body">
+                                            <h4 class="media-heading">{{item[2]}}</h4>
+                                        </div>
+                                    </td>
+
+                                    <td class="col-sm-1 col-md-1" style="text-align: center">
+                                        <input type="email" class="form-control" id="exampleInputEmail1" value="{{item[0]}}" disabled>
+                                    </td>
+
+                                    <td class="col-sm-1 col-md-1 text-center"><strong>{{item[1] / item[0]}}€</strong></td>
+                                    <td class="col-sm-1 col-md-1 text-center"><strong>{{item[1]}}€</strong></td>
+                                </tr>
+                            {% endfor %}
+
+                            <tr>
+                                <td>   </td>
+                                <td>   </td>
+                                <td>   </td>
+                                <td><h5>Solde actuel</h5></td>
+                                <td class="text-right" id="solde"><h5><strong>{{ solde }}€</strong></h5></td>
+                            </tr>
+                            <tr>
+                                <td>   </td>
+                                <td>   </td>
+                                <td>   </td>
+                                <td><h5>Sous total</h5></td>
+                                <td class="text-right"><h5><strong id="total-without-shipping">{{ sub_total }}€</strong></h5></td>
+                            </tr>
+                            <tr>
+                                <td>   </td>
+                                <td>   </td>
+                                <td>   </td>
+                                <td><h5>Frais de livraison</h5></td>
+                                <td class="text-right" id="shipping-fee"><h5><strong>{{ delivery_fee }}€</strong></h5></td>
+                            </tr>
+                            <tr>
+                                <td>   </td>
+                                <td>   </td>
+                                <td>   </td>
+                                <td><h3>Total</h3></td>
+                                <td class="text-right"><h3><strong id="total">{{solde - (sub_total + delivery_fee )}}€</strong></h3></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+
     </div>
 
 {% endblock %}
