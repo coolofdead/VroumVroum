@@ -42,35 +42,51 @@ class AppFixtures extends Fixture
     $manager->persist($restaurateur);
 
 
-    $restaurant = new Restaurant();
-    $restaurant->setCategorie($categorieRestaurant)
-      ->setLatitude($faker->randomFloat(2, 5, 30000))
-      ->setLongitude($faker->randomFloat(2, 5, 30000))
-      ->setRestaurateur($restaurateur)
-      ->setNom($faker->realText(20, 1))
-      ->setAdresse($faker->streetAddress)
-      ->setUrl($faker->imageUrl(640, 480));
+    $restaurants = [];
+      for ($i = 1; $i <= 3; $i++) {
 
-    $manager->persist($restaurant);
+          $restaurant = new Restaurant();
+          $restaurant->setCategorie($categorieRestaurant)
+              ->setLatitude($faker->randomFloat(2, 5, 30000))
+              ->setLongitude($faker->randomFloat(2, 5, 30000))
+              ->setRestaurateur($restaurateur)
+              ->setNom($faker->realText(20, 1))
+              ->setAdresse($faker->streetAddress)
+              ->setUrl($faker->imageUrl(640, 480));
+          $manager->persist($restaurant);
+          $restaurants[] = $restaurant;
+      }
+
+      $categoriesPlat = [];
+      for ($i = 1; $i <= 3; $i++) {
+
+        $categoriePlat = new CategoriePlat();
+        $categoriePlat->setCategorie($faker->realText(20, 2));
+        $manager->persist($categoriePlat);
+        $categoriesPlat[]=$categoriePlat;
+      }
 
 
-    $categoriePlat = new CategoriePlat();
-    $categoriePlat->setCategorie($faker->realText(20, 2));
-    $manager->persist($categoriePlat);
 
-    $typePlat = new TypePlat();
-    $typePlat->setType($faker->realText(20, 2));
-    $manager->persist($typePlat);
+      $typesPlat = [];
+      for ($i = 1; $i <= 3; $i++) {
+          $typePlat = new TypePlat();
+          $typePlat->setType($faker->realText(20, 2));
+          $manager->persist($typePlat);
+          $typesPlat[]=$typePlat;
+      }
 
 
-    $plats = new Plat();
-    $plats->setNom($faker->realText(150, 3))
-      ->setPrix($faker->randomNumber(1))
-      ->setCategorie($categoriePlat)
-      ->setRestaurant($restaurant)
-      ->setType($typePlat);
-    $manager->persist($plats);
+      for ($i = 1; $i <= 12; $i++) {
 
+          $plats = new Plat();
+          $plats->setNom($faker->realText(150, 3))
+              ->setPrix($faker->randomNumber(1))
+              ->setCategorie($categoriesPlat[$faker->numberBetween(0, count($categoriesPlat) - 1)])
+              ->setRestaurant($restaurants[$faker->numberBetween(0, count($restaurants) - 1)])
+              ->setType($typesPlat[$faker->numberBetween(0, count($typesPlat) - 1)]);
+          $manager->persist($plats);
+      }
 
     $admin = new User();
     $admin->setEmail('admin@admi1.com')
