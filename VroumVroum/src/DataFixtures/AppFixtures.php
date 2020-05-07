@@ -84,7 +84,8 @@ class AppFixtures extends Fixture
               ->setPrix($faker->randomNumber(1))
               ->setCategorie($categoriesPlat[$faker->numberBetween(0, count($categoriesPlat) - 1)])
               ->setRestaurant($restaurants[$faker->numberBetween(0, count($restaurants) - 1)])
-              ->setType($typesPlat[$faker->numberBetween(0, count($typesPlat) - 1)]);
+              ->setType($typesPlat[$faker->numberBetween(0, count($typesPlat) - 1)])
+              ->setUrlImg("https://picsum.photos/200");
           $manager->persist($plats);
       }
 
