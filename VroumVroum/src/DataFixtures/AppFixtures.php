@@ -103,6 +103,24 @@ class AppFixtures extends Fixture
           ->setPassword($this->passwordEncoder->encodePassword($admin, 'admin'));
       $manager->persist($admin);
 
+
+
+      $user = new User();
+      $user->setEmail('user@user.com')
+          ->setRoles(['ROLE_MEMBRE'])
+          ->setSolde(150)
+          ->setPassword($this->passwordEncoder->encodePassword($user, 'user'))
+          ->setAdresse("752 rue de la fausse adresse")
+          ->setNom("alain")
+          ->setPrenom("terrieur")
+          ->setPays("Gabon")
+          ->setCodePostal(69690)
+          ->setVille("Ville-sur-villaine");
+      $manager->persist($user);
+
+
+
+
     $manager->flush();
   }
 }
