@@ -48,6 +48,11 @@ class Plat
      */
     private $nom;
 
+    /**
+     * @ORM\Column(type="string", length=500, nullable=true)
+     */
+    private $urlImg;
+
     public function __construct()
     {
         $this->menus = new ArrayCollection();
@@ -142,6 +147,18 @@ class Plat
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getUrlImg(): ?string
+    {
+        return $this->urlImg;
+    }
+
+    public function setUrlImg(?string $urlImg): self
+    {
+        $this->urlImg = $urlImg;
 
         return $this;
     }

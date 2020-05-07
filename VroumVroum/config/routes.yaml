@@ -3,3 +3,9 @@ admin:
   prefix: /admin
   name_prefix: admin_
   type: annotation
+
+restaurateur:
+  resource: ../src/Controller/Restaurateur/*.php
+  prefix: /restaurateur
+  name_prefix: restaurateur_
+  type: annotation

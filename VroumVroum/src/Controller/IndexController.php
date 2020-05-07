@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\CategorieRestaurant;
 use App\Entity\Plat;
 use App\Entity\Restaurant;
 use App\Repository\PlatRepository;
+use App\Repository\CategorieRestaurantRepository;
 use App\Repository\RestaurantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,10 +18,13 @@ class IndexController extends AbstractController
   /**
    * @Route("/", name="accueil")
    */
-  public function accueil(RestaurantRepository $restaurantRepository) {
+  public function accueil(RestaurantRepository $restaurantRepository, CategorieRestaurantRepository $categorieRestaurantRepository) {
+
     return $this->render('membre/accueil.html.twig', [
       'accueil' => 'IndexController',
       'restaurants' => $restaurantRepository->findAll(),
+      'categorieRestaurant' => $categorieRestaurantRepository->findAll()
+
     ]);
   }
 
