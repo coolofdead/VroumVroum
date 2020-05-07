@@ -35,33 +35,37 @@
                 <div class="navbar-nav">
                         {% for category in categories %}
                                 <a class="nav-item nav-link active" href="#{{ category }}" style="text-transform: uppercase">{{ category }}</a>
+                                <pre>  </pre>
                         {% endfor %}
                 </div>
                 </div>
         </nav>
 
         <div class="container">
+
                 {% for c in categories %}
                         <h2 id="{{ c }}" style="margin-bottom: 1em; margin-top: 4em;">{{ c }} {{ '💲💲💲💲'[0:random(1, 3)]}}</h2>
 
                         <div class="row row-cols-2">
                         {% for plat in restaurant.plats %}
-                                <div class="col" item-data='{"id_resto":"{{restaurant.id}}", "id_plat":"{{plat.id}}", "name":"{{plat.nom}}", "https":"{{random(iconsCategory)}}", "price":"{{plat.prix}}"}'>
-                                        <div class="card mb-3" style="max-width: 540px;">
-                                                <div class="row no-gutters">
-                                                        <div class="col-md-4">
-                                                                <img src="https://i.picsum.photos/id/645/200/200.jpg" class="card-img" alt="...">
-                                                                </div>
-                                                                <div class="col-md-8">
-                                                                <div class="card-body">
-                                                                        <h4 class="card-title">{{ plat.nom }}</h4>
-                                                                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional.</p>
-                                                                        <p class="card-text" style="color: grey;">{{ plat.prix }}€</p>
+                                {% if plat.categorie.categorie == c %}
+                                        <div class="col" item-data='{"id_resto":"{{restaurant.id}}", "id_plat":"{{plat.id}}", "name":"{{plat.nom}}", "https":"{{random(iconsCategory)}}", "price":"{{plat.prix}}"}'>
+                                                <div class="card mb-3" style="max-width: 540px;">
+                                                        <div class="row no-gutters">
+                                                                <div class="col-md-4">
+                                                                        <img src="https://i.picsum.photos/id/645/200/200.jpg" class="card-img" alt="...">
+                                                                        </div>
+                                                                        <div class="col-md-8">
+                                                                        <div class="card-body">
+                                                                                <h4 class="card-title">{{ plat.nom }}</h4>
+                                                                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional.</p>
+                                                                                <p class="card-text" style="color: grey;">{{ plat.prix }}€</p>
+                                                                        </div>
                                                                 </div>
                                                         </div>
                                                 </div>
                                         </div>
-                                </div>
+                                {% endif %}
                         {% endfor %}
 
                         </div>

@@ -30,6 +30,15 @@ class AppFixtures extends Fixture
     $categorieRestaurant->setCategorie("cat1");
     $manager->persist($categorieRestaurant);
 
+    $membre = new User();
+    $membre->setEmail('toto@gmail.com')
+      ->setRoles(['ROLE_MEMBRE'])
+      ->setSolde(50)
+      ->setPassword($this->passwordEncoder->encodePassword(
+        $membre,
+        'mdp'
+      ));
+    $manager->persist($membre);
 
     $restaurateur = new User();
     $restaurateur->setEmail('restaurateur@restaurateur.com')

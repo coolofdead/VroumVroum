@@ -36,7 +36,7 @@ class IndexController extends AbstractController
 
     return $this->render('membre/restaurant-detail.html.twig', [
       'accueil' => 'IndexController',
-      'restaurant' => $restaurantRepository->find(2),
+      'restaurant' => $restaurantRepository->find(5),
     ]);
   }
 
@@ -74,9 +74,18 @@ class IndexController extends AbstractController
    */
   public function compte(Request $request)
   {
-    return $this->render('membre/compte.html.twig', [
+    return $this->render('membre/profil.html.twig', [
       'accueil' => 'IndexController',
-      'solde' => 30,
+    ]);
+  }
+
+  /**
+   * @Route("/historique", name="historique")
+   */
+  public function historique(Request $request)
+  {
+    return $this->render('membre/historique-commandes.html.twig', [
+      'accueil' => 'IndexController',
     ]);
   }
 }

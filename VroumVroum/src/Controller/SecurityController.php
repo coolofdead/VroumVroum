@@ -15,9 +15,9 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        if ($this->getUser()) {
+            return $this->redirectToRoute('accueil');
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -38,9 +38,9 @@ class SecurityController extends AbstractController
 
 
     /**
- * Redirige le user en fonction de son role
- * @Route("/login_redirect", name="_login_redirect")
- */
+     * Redirige le user en fonction de son role
+     * @Route("/login_redirect", name="_login_redirect")
+     */
     public function loginRedirectAction(Request $request)
     {
         if($this->isGranted('ROLE_ADMIN'))
@@ -56,7 +56,5 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('accueil');
         }
     }
-
-
 
 }
