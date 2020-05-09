@@ -27,7 +27,7 @@ class Commande
      * @ORM\ManyToMany(targetEntity="App\Entity\Menu")
      */
     private $menu;
-
+//    deja dans le commande detail a remove si non utilisé
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\CodeReduc", inversedBy="no")
      */
@@ -37,6 +37,11 @@ class Commande
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="commandes")
      */
     private $membre;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Restaurant", inversedBy="commandes")
+     */
+    private $restaurant;
 
     public function __construct()
     {
@@ -106,6 +111,18 @@ class Commande
     public function setMembre(?User $membre): self
     {
         $this->membre = $membre;
+
+        return $this;
+    }
+
+    public function getRestaurant(): ?Restaurant
+    {
+        return $this->restaurant;
+    }
+
+    public function setRestaurant(?Restaurant $restaurant): self
+    {
+        $this->restaurant = $restaurant;
 
         return $this;
     }
