@@ -43,6 +43,11 @@ class Commande
      */
     private $restaurant;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Status", cascade={"persist", "remove"})
+     */
+    private $status;
+
     public function __construct()
     {
         $this->menu = new ArrayCollection();
@@ -123,6 +128,18 @@ class Commande
     public function setRestaurant(?Restaurant $restaurant): self
     {
         $this->restaurant = $restaurant;
+
+        return $this;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
