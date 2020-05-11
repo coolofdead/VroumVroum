@@ -88,7 +88,6 @@ class AppFixtures extends Fixture
               ->setUrlImg("https://picsum.photos/200");
           $manager->persist($plats);
       }
-
     $admin = new User();
     $admin->setEmail('admin@admi1.com')
       ->setRoles(['ROLE_ADMIN'])

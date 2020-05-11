@@ -27,7 +27,7 @@ class Commande
      * @ORM\ManyToMany(targetEntity="App\Entity\Menu")
      */
     private $menu;
-
+//    deja dans le commande detail a remove si non utilisé
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\CodeReduc", inversedBy="no")
      */
@@ -37,6 +37,21 @@ class Commande
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="commandes")
      */
     private $membre;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Restaurant", inversedBy="commandes")
+     */
+    private $restaurant;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Status", cascade={"persist", "remove"})
+     */
+    private $status;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date;
 
     public function __construct()
     {
@@ -106,6 +121,42 @@ class Commande
     public function setMembre(?User $membre): self
     {
         $this->membre = $membre;
+
+        return $this;
+    }
+
+    public function getRestaurant(): ?Restaurant
+    {
+        return $this->restaurant;
+    }
+
+    public function setRestaurant(?Restaurant $restaurant): self
+    {
+        $this->restaurant = $restaurant;
+
+        return $this;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(?\DateTimeInterface $date): self
+    {
+        $this->date = $date;
 
         return $this;
     }
