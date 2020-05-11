@@ -8,6 +8,7 @@ use App\Entity\Commande;
 use App\Entity\CommandeDetail;
 use App\Entity\Plat;
 use App\Entity\Restaurant;
+use App\Entity\Status;
 use App\Entity\TypePlat;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -154,7 +155,24 @@ class AppFixtures extends Fixture
       ->setVille("Ville-sur-villaine");
     $manager->persist($user);
 
+    $status = [
+      (new Status())
+      ->setIcon("🔴")
+      ->setState("En attente"),
+      (new Status())
+      ->setIcon("🟠")
+      ->setState("En préparation"),
+      (new Status())
+      ->setIcon("🟡")
+      ->setState("En livraison"),
+      (new Status())
+      ->setIcon("🟢")
+      ->setState("Livré"),
+    ];
 
+    foreach ($status as $s) {
+      $manager->persist($s);
+    }
 
 
     $manager->flush();

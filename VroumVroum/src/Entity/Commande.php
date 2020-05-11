@@ -44,7 +44,7 @@ class Commande
     private $restaurant;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Status", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Status")
      */
     private $status;
 

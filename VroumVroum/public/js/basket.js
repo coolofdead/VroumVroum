@@ -83,6 +83,13 @@ function addToBasket(item) {
 
         saveBasketInStorage(items);
     }
+    else {
+        var alert = document.querySelector("#alert-add-basket");
+        alert.removeAttribute("hidden");
+        setTimeout(()=>{
+            alert.setAttribute("hidden", "");
+        }, 10000)
+    }
 }
 
 function readBasket() {
