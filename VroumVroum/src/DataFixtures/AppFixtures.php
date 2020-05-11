@@ -102,15 +102,26 @@ class AppFixtures extends Fixture
       $platList[] = $plats;
     }
 
+    for ($i = 1; $i <= 12; $i++) {
+
+      $plats = new Plat();
+      $plats->setNom($faker->realText(150, 3))
+        ->setPrix($faker->randomNumber(1))
+        ->setCategorie($categoriesPlat[$faker->numberBetween(0, count($categoriesPlat) - 1)])
+        ->setRestaurant($restaurants[$faker->numberBetween(0, count($restaurants) - 1)])
+        ->setType($typesPlat[$faker->numberBetween(0, count($typesPlat) - 1)])
+        ->setUrlImg("https://picsum.photos/200");
+      $manager->persist($plats);
+    }
+
     $command = new Commande();
     $command->setMembre($membre);
     $commandDetail = new CommandeDetail();
     $commandDetail->setPrix(11)
       ->setCommande($command)
-      ->addPlat($platList[rand(0, count($platList)-1)])
-      ->addPlat($platList[rand(0, count($platList)-1)])
-      ->addPlat($platList[rand(0, count($platList)-1)])
-    ;
+      ->addPlat($platList[rand(0, count($platList) - 1)])
+      ->addPlat($platList[rand(0, count($platList) - 1)])
+      ->addPlat($platList[rand(0, count($platList) - 1)]);
     $manager->persist($command);
     $manager->persist($commandDetail);
 
