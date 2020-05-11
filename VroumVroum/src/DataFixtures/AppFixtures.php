@@ -4,6 +4,8 @@ namespace App\DataFixtures;
 
 use App\Entity\CategoriePlat;
 use App\Entity\CategorieRestaurant;
+use App\Entity\Commande;
+use App\Entity\CommandeDetail;
 use App\Entity\Plat;
 use App\Entity\Restaurant;
 use App\Entity\TypePlat;
@@ -52,51 +54,65 @@ class AppFixtures extends Fixture
 
 
     $restaurants = [];
-      for ($i = 1; $i <= 3; $i++) {
+    for ($i = 1; $i <= 3; $i++) {
 
-          $restaurant = new Restaurant();
-          $restaurant->setCategorie($categorieRestaurant)
-              ->setLatitude($faker->randomFloat(2, 5, 30000))
-              ->setLongitude($faker->randomFloat(2, 5, 30000))
-              ->setRestaurateur($restaurateur)
-              ->setNom($faker->realText(20, 1))
-              ->setAdresse($faker->streetAddress)
-              ->setUrl($faker->imageUrl(640, 480));
-          $manager->persist($restaurant);
-          $restaurants[] = $restaurant;
-      }
+      $restaurant = new Restaurant();
+      $restaurant->setCategorie($categorieRestaurant)
+        ->setLatitude($faker->randomFloat(2, 5, 30000))
+        ->setLongitude($faker->randomFloat(2, 5, 30000))
+        ->setRestaurateur($restaurateur)
+        ->setNom($faker->realText(20, 1))
+        ->setAdresse($faker->streetAddress)
+        ->setUrl($faker->imageUrl(640, 480));
+      $manager->persist($restaurant);
+      $restaurants[] = $restaurant;
+    }
 
-      $categoriesPlat = [];
-      for ($i = 1; $i <= 3; $i++) {
+    $categoriesPlat = [];
+    for ($i = 1; $i <= 3; $i++) {
 
-        $categoriePlat = new CategoriePlat();
-        $categoriePlat->setCategorie($faker->realText(20, 2));
-        $manager->persist($categoriePlat);
-        $categoriesPlat[]=$categoriePlat;
-      }
-
-
-
-      $typesPlat = [];
-      for ($i = 1; $i <= 3; $i++) {
-          $typePlat = new TypePlat();
-          $typePlat->setType($faker->realText(20, 2));
-          $manager->persist($typePlat);
-          $typesPlat[]=$typePlat;
-      }
+      $categoriePlat = new CategoriePlat();
+      $categoriePlat->setCategorie($faker->realText(20, 2));
+      $manager->persist($categoriePlat);
+      $categoriesPlat[] = $categoriePlat;
+    }
 
 
-      for ($i = 1; $i <= 12; $i++) {
 
-          $plats = new Plat();
-          $plats->setNom($faker->realText(150, 3))
-              ->setPrix($faker->randomNumber(1))
-              ->setCategorie($categoriesPlat[$faker->numberBetween(0, count($categoriesPlat) - 1)])
-              ->setRestaurant($restaurants[$faker->numberBetween(0, count($restaurants) - 1)])
-              ->setType($typesPlat[$faker->numberBetween(0, count($typesPlat) - 1)])
-              ->setUrlImg("https://picsum.photos/200");
-          $manager->persist($plats);
-      }
+    $typesPlat = [];
+    for ($i = 1; $i <= 3; $i++) {
+      $typePlat = new TypePlat();
+      $typePlat->setType($faker->realText(20, 2));
+      $manager->persist($typePlat);
+      $typesPlat[] = $typePlat;
+    }
+
+
+    $platList = [];
+    for ($i = 1; $i <= 12; $i++) {
+
+      $plats = new Plat();
+      $plats->setNom($faker->realText(20, 3))
+        ->setPrix($faker->randomNumber(1))
+        ->setCategorie($categoriesPlat[$faker->numberBetween(0, count($categoriesPlat) - 1)])
+        ->setRestaurant($restaurants[$faker->numberBetween(0, count($restaurants) - 1)])
+        ->setType($typesPlat[$faker->numberBetween(0, count($typesPlat) - 1)])
+        ->setUrlImg("https://picsum.photos/200");
+      $manager->persist($plats);
+      $platList[] = $plats;
+    }
+
+    $command = new Commande();
+    $command->setMembre($membre);
+    $commandDetail = new CommandeDetail();
+    $commandDetail->setPrix(11)
+      ->setCommande($command)
+      ->addPlat($platList[rand(0, count($platList)-1)])
+      ->addPlat($platList[rand(0, count($platList)-1)])
+      ->addPlat($platList[rand(0, count($platList)-1)])
+    ;
+    $manager->persist($command);
+    $manager->persist($commandDetail);
 
     $admin = new User();
     $admin->setEmail('admin@admi1.com')
@@ -105,27 +121,27 @@ class AppFixtures extends Fixture
       ->setPassword($this->passwordEncoder->encodePassword($admin, 'm'));
     $manager->persist($admin);
 
-      $admin = new User();
-      $admin->setEmail('admin@admin.com')
-          ->setRoles(['ROLE_ADMIN'])
-          ->setSolde(0)
-          ->setPassword($this->passwordEncoder->encodePassword($admin, 'admin'));
-      $manager->persist($admin);
+    $admin = new User();
+    $admin->setEmail('admin@admin.com')
+      ->setRoles(['ROLE_ADMIN'])
+      ->setSolde(0)
+      ->setPassword($this->passwordEncoder->encodePassword($admin, 'admin'));
+    $manager->persist($admin);
 
 
 
-      $user = new User();
-      $user->setEmail('user@user.com')
-          ->setRoles(['ROLE_MEMBRE'])
-          ->setSolde(150)
-          ->setPassword($this->passwordEncoder->encodePassword($user, 'user'))
-          ->setAdresse("752 rue de la fausse adresse")
-          ->setNom("alain")
-          ->setPrenom("terrieur")
-          ->setPays("Gabon")
-          ->setCodePostal(69690)
-          ->setVille("Ville-sur-villaine");
-      $manager->persist($user);
+    $user = new User();
+    $user->setEmail('user@user.com')
+      ->setRoles(['ROLE_MEMBRE'])
+      ->setSolde(150)
+      ->setPassword($this->passwordEncoder->encodePassword($user, 'user'))
+      ->setAdresse("752 rue de la fausse adresse")
+      ->setNom("alain")
+      ->setPrenom("terrieur")
+      ->setPays("Gabon")
+      ->setCodePostal(69690)
+      ->setVille("Ville-sur-villaine");
+    $manager->persist($user);
 
 
 

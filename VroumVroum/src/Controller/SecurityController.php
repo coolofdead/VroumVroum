@@ -45,11 +45,12 @@ class SecurityController extends AbstractController
     {
         if($this->isGranted('ROLE_ADMIN'))
         {
-            return $this->redirectToRoute('admin_accueil_admin');
+            // TODO changer la route par défaut pour les admin
+            return $this->redirectToRoute('accueil');
         }
         else if($this->isGranted('ROLE_RESTAURATEUR'))
         {
-            return $this->redirectToRoute('restaurateur');
+            return $this->redirectToRoute('accueil');
         }
         else
         {

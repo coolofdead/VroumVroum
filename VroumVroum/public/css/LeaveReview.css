@@ -1,0 +1,14 @@
+.rating-block {
+    border: 1px solid #EFEFEF;
+    padding: 15px 15px 20px;
+    border-radius: 3px;
+}
+.btn.btn-grey {
+    background: #d9d7d7;
+    transition: 0.2s;
+}
+.btn.btn-grey:hover {
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #eea236;
+}

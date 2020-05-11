@@ -1,0 +1,50 @@
+{# TODO : ajouter du js pour recharger la page toute les 10 sec afin de mettre à jour le status de la commande #}
+
+{% extends 'base.html.twig' %}
+{% block title %}Suivre votre commande{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/CommandTracker.css') }}">
+{% endblock %}
+
+{% block content %}
+
+    {{ parent() }}
+
+    <script>
+    var reviewPageUrl = "{{path('leaveReview')}}"
+    window.addEventListener("DOMContentLoaded", (e)=>{
+        var commandStatus = document.querySelector("#command-status");
+        if (commandStatus.attributes["current-status"].value != commandStatus.attributes["delivered-status"].value) {
+            setInterval(reloadPage, 10000);
+        }
+        else {
+            setTimeout(redirectToReview, 5000)
+        }
+    });
+
+    function reloadPage() {
+        location.reload(true);
+    }
+
+    function redirectToReview() {
+        window.location.href = reviewPageUrl;
+    }
+    </script>
+
+    {# fill these fields using twig #}
+    <div id="command-status" current-status="🔴" delivered-status="🔴" hidden></div>
+
+    <div class="container d-flex flex-column" style="height:30vh;justify-content:space-evenly;">
+        <h2>Suivi de votre commande chez {# {{commande_en_cours.detail.restaurant.nom}} #}</h2>
+        <h3><strong>#{{commande_en_cours.id}}</strong></h3>
+        <div class="progress" style="border-radius: 1.25rem;height:1.25rem;">
+            <div class="progress-bar active" role="progressbar" style="width: 20%" aria-valuenow="20">En attente</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50">En préparation</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20">En livraison</div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="00">Livré</div>
+        </div>
+        <span>Heure de livraison estimé <strong>{{heure_de_commande}}-{{heure_de_livraison_estimation}}</strong></span>
+    </div>
+
+{% endblock %}

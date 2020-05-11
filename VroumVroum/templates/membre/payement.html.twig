@@ -1,213 +1,248 @@
-{# Permet d'ajouter un solde sur son comtpe #}
-
 {% extends 'base.html.twig' %}
-{% block title %}Payement{% endblock %}
+{% block title %}Payement
+{% endblock %}
 {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/BankCard.css') }}">
-    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/BankCard.css') }}">
+	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 {% endblock %}
 
 {% block content %}
-    
-    {{ parent() }}
 
-    <div class="container list-group list-group-horizontal" style="max-width: 1200px;">
+	{{ parent() }}
 
-        {# CB #}
-        <div class="row list-group-item">
-            <div class="col-xs-12 col-md-4" style="max-width:100% !important;width:unset;">
-            
-                <div class="panel panel-default credit-card-box">
-                    <div class="panel-heading display-table" >
-                        <div class="row display-tr" >
-                            <h3 class="panel-title display-td" >Payment Details</h3>
-                            <div class="display-td" >                            
-                                <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
-                            </div>
-                        </div>                    
-                    </div>
-                    <div class="panel-body">
+	{% set sub_total = 0 %}
+	{% set itemsByCat = {} %}
 
-                        <form role="form" id="payment-form" method="POST" action="#">
+	{% for item in items %}
+		{% set sum = 0 %}
 
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <label for="cardNumber">CARD NUMBER</label>
-                                        <div class="input-group">
-                                            <input 
-                                                type="tel"
-                                                class="form-control"
-                                                name="cardNumber"
-                                                placeholder="Valid Card Number"
-                                                autocomplete="cc-number"
-                                                required autofocus 
-                                            />
-                                            <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
-                                        </div>
-                                    </div>                            
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-7 col-md-7">
-                                    <div class="form-group">
-                                        <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
-                                        <input 
-                                            type="tel" 
-                                            class="form-control" 
-                                            name="cardExpiry"
-                                            placeholder="MM / YY"
-                                            autocomplete="cc-exp"
-                                            required 
-                                        />
-                                    </div>
-                                </div>
-                                <div class="col-xs-5 col-md-5 pull-right">
-                                    <div class="form-group">
-                                        <label for="cardCVC">CV CODE</label>
-                                        <input 
-                                            type="tel" 
-                                            class="form-control"
-                                            name="cardCVC"
-                                            placeholder="CVC"
-                                            autocomplete="cc-csc"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            {% if items is defined %}
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="form-group">
-                                            <label for="couponCode">COUPON CODE</label>
-                                            <input type="text" class="form-control" name="couponCode" />
-                                        </div>
-                                    </div>                        
-                                </div>
-                            {% endif %}
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <label for="couponCode">SOMME</label>
-                                        <input type="number" class="form-control" name="couponCode" min="0"/>
-                                    </div>
-                                </div>                        
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <button class="subscribe btn btn-success btn-lg btn-block" type="submit">Payer</button>
-                                </div>
-                            </div>
-                            <div class="row" style="display:none;">
-                                <div class="col-xs-12">
-                                    <p class="payment-errors"></p>
-                                </div>
-                            </div>
+		{% for itemCat in items %}
+			{% if item.id == itemCat.id %}
+				{% set sum = sum + 1 %}
+			{% endif %}
+		{% endfor %}
 
-                        </form>
+		{% if item.id not in itemsByCat %}
+			{% set itemsByCat = itemsByCat|merge({(item.id) : [sum, sum * item.prix, item.nom]}) %}
+			{% set sub_total = sub_total + sum * item.prix %}
+		{% endif %}
+	{% endfor %}
 
-                    </div>
-                </div>            
-            </div>            
-        </div>
+	<div
+		class="container list-group list-group-horizontal" style="display: flex;justify-content: center;max-width: 1200px;">
 
-        {# Optionnal command details #}
-        {% if items is defined %}
-            <div class="row list-group-item">
-                {# liste des plats #}
-                <div class="col-sm-12 col-md-10 col-md-offset-1">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Produit</th>
-                                <th>Nom</th>
-                                <th>Quantité</th>
-                                
-                                <th class="text-center">Prix</th>
-                                <th class="text-center">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% set itemsByCat = {} %}
-                            {% set sub_total = 0 %}
+		{# CB #}
+		{% if (app.user.solde > (sub_total + delivery_fee )) == false %}
+			<div class="row list-group-item">
+				<div class="col-xs-12 col-md-4" style="max-width:100% !important;width:unset;">
 
-                            {% for item in items %}
-                                {% set sum = 0 %}
+					<div class="panel panel-default credit-card-box">
+						<div class="panel-heading display-table">
+							<div class="row display-tr">
+								<h3 class="panel-title display-td">Payment Details</h3>
+								<div class="display-td">
+									<img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
+								</div>
+							</div>
+						</div>
+						<div class="panel-body">
 
-                                {% for itemCat in items %}
-                                    {% if item.id == itemCat.id %}
-                                        {% set sum = sum + 1 %}
-                                    {% endif %}
-                                {% endfor %}
+							<form role="form" id="payment-form" method="POST" action="payement">
 
-                                {% if item.id not in itemsByCat %}
-                                    {% set itemsByCat = itemsByCat|merge({(item.id) : [sum, sum * item.prix, item.nom]}) %}
-                                    {% set sub_total = sub_total + sum * item.prix %}
-                                {% endif %}
-                            {% endfor %}
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="form-group">
+											<label for="cardNumber">CARD NUMBER</label>
+											<div class="input-group">
+												<input type="tel" class="form-control" name="cardNumber" placeholder="Valid Card Number" autocomplete="cc-number" required autofocus/>
+												<span class="input-group-addon">
+													<i class="fa fa-credit-card"></i>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-7 col-md-7">
+										<div class="form-group">
+											<label for="cardExpiry">
+												<span class="hidden-xs">EXPIRATION</span>
+												<span class="visible-xs-inline">EXP</span>
+												DATE</label>
+											<input type="tel" class="form-control" name="cardExpiry" placeholder="MM / YY" autocomplete="cc-exp" required/>
+										</div>
+									</div>
+									<div class="col-xs-5 col-md-5 pull-right">
+										<div class="form-group">
+											<label for="cardCVC">CV CODE</label>
+											<input type="tel" class="form-control" name="cardCVC" placeholder="CVC" autocomplete="cc-csc" required/>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="form-group">
+											<label for="couponCode">SOMME</label>
+											<input type="number" class="form-control" name="couponCode" min="0"/>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12">
+										<button class="subscribe btn btn-success btn-lg btn-block" type="submit">Payer</button>
+									</div>
+								</div>
+								<div class="row" style="display:none;">
+									<div class="col-xs-12">
+										<p class="payment-errors"></p>
+									</div>
+								</div>
 
-                            {# {{dump(itemsByCat)}} #}
+							</form>
 
-                            {% for item in itemsByCat %}
-                                <tr>
-                                    <td class="col-sm-8 col-md-1">
-                                        <div class="media">
-                                            <span class="thumbnail pull-left" href="#" style="min-width: 90px;"> 
-                                                <img class="media-object" src="http://icons.iconarchive.com/icons/custom-icon-design/flatastic-2/72/product-icon.png" alt="..." style="width: 72px; height: 72px;"> 
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="col-sm-1 col-md-1">
-                                        <div class="media-body">
-                                            <h4 class="media-heading">{{item[2]}}</h4>
-                                        </div>
-                                    </td>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
 
-                                    <td class="col-sm-1 col-md-1" style="text-align: center">
-                                        <input type="email" class="form-control" id="exampleInputEmail1" value="{{item[0]}}" disabled>
-                                    </td>
+		{# Optionnal command details #}
+		<div
+			class="row list-group-item" style="flex:1;">
+			{# liste des plats #}
+			<div class="col-sm-12 col-md-10 col-md-offset-1">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Produit</th>
+							<th>Nom</th>
+							<th>Quantité</th>
 
-                                    <td class="col-sm-1 col-md-1 text-center"><strong>{{item[1] / item[0]}}€</strong></td>
-                                    <td class="col-sm-1 col-md-1 text-center"><strong>{{item[1]}}€</strong></td>
-                                </tr>
-                            {% endfor %}
+							<th class="text-center">Prix</th>
+							<th class="text-center">Total</th>
+						</tr>
+					</thead>
+					<tbody>
 
-                            <tr>
-                                <td>   </td>
-                                <td>   </td>
-                                <td>   </td>
-                                <td><h5>Solde actuel</h5></td>
-                                <td class="text-right" id="solde"><h5><strong>{{ solde }}€</strong></h5></td>
-                            </tr>
-                            <tr>
-                                <td>   </td>
-                                <td>   </td>
-                                <td>   </td>
-                                <td><h5>Sous total</h5></td>
-                                <td class="text-right"><h5><strong id="total-without-shipping">{{ sub_total }}€</strong></h5></td>
-                            </tr>
-                            <tr>
-                                <td>   </td>
-                                <td>   </td>
-                                <td>   </td>
-                                <td><h5>Frais de livraison</h5></td>
-                                <td class="text-right" id="shipping-fee"><h5><strong>{{ delivery_fee }}€</strong></h5></td>
-                            </tr>
-                            <tr>
-                                <td>   </td>
-                                <td>   </td>
-                                <td>   </td>
-                                <td><h3>Total</h3></td>
-                                <td class="text-right"><h3><strong id="total">{{solde - (sub_total + delivery_fee )}}€</strong></h3></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        {% endif %}
+						{% for item in itemsByCat %}
+							<tr>
+								<td class="col-sm-8 col-md-1">
+									<div class="media">
+										<span class="thumbnail pull-left" href="#" style="min-width: 90px;">
+											<img class="media-object" src="http://icons.iconarchive.com/icons/custom-icon-design/flatastic-2/72/product-icon.png" alt="..." style="width: 72px; height: 72px;">
+										</span>
+									</div>
+								</td>
+								<td class="col-sm-1 col-md-1">
+									<div class="media-body">
+										<h4 class="media-heading">{{item[2]}}</h4>
+									</div>
+								</td>
 
-    </div>
+								<td class="col-sm-1 col-md-1" style="text-align: center">
+									<input type="email" class="form-control" id="exampleInputEmail1" value="{{item[0]}}" disabled>
+								</td>
+
+								<td class="col-sm-1 col-md-1 text-center">
+									<strong>{{item[1] / item[0]}}€</strong>
+								</td>
+								<td class="col-sm-1 col-md-1 text-center">
+									<strong>{{item[1]}}€</strong>
+								</td>
+							</tr>
+						{% endfor %}
+
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>
+								<h5>Solde actuel</h5>
+							</td>
+							<td class="text-right" id="solde">
+								<h5>
+									<strong>{{ app.user.solde }}€</strong>
+								</h5>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>
+								<h5>Sous total</h5>
+							</td>
+							<td class="text-right">
+								<h5>
+									<strong id="total-without-shipping">{{ sub_total }}€</strong>
+								</h5>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>
+								<h5>Frais de livraison</h5>
+							</td>
+							<td class="text-right" id="shipping-fee">
+								<h5>
+									<strong>{{ delivery_fee }}€</strong>
+								</h5>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>
+								<h3>Total</h3>
+							</td>
+							<td class="text-right">
+								<h3>
+									<strong id="total">{{app.user.solde - (sub_total + delivery_fee )}}€</strong>
+								</h3>
+							</td>
+						</tr>
+
+						{% if (app.user.solde > (sub_total + delivery_fee )) %}
+
+							<form action="followOrder" method="POST">
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>
+										<label for="couponCode">COUPON CODE</label>
+									</td>
+									<td class="text-right">
+										<div class="form-group">
+											<input type="text" class="form-control" name="couponCode"/>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td
+										class="text-right">
+										{# TODO : voir comment faire pour gérer le post du payement ici et le post pour ajouter du solde (au dessus) #}
+
+										<button type="submit" class="btn btn-success btn-lg">Continuer</button>
+									</td>
+								</tr>
+							</form>
+
+						{% endif %}
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
 
 {% endblock %}
