@@ -1,4 +1,4 @@
-const STORAGE_NAME = "vroumvroum.basket";
+const STORAGE_NAME = "vroumvroum.basket." + userId;
 const ITEM_SEPARATOR = ';';
 
 window.addEventListener("DOMContentLoaded", (e)=>{
@@ -17,8 +17,6 @@ window.addEventListener("DOMContentLoaded", (e)=>{
     var btnSendBasket = document.querySelector("#basket-form");
 
     btnSendBasket.addEventListener("submit", (e) => {
-        console.log("cc");
-
         var inputBasket = document.querySelector("#basket-items-json");
 
         var items = getFormatedItems();
@@ -78,7 +76,7 @@ function addToBasket(item) {
     var items = getFormatedItems();
     var item = JSON.parse(itemData);
 
-    if(items.every((i)=>{return i.id_plat == item.id_plat}) || items.length == 0) {
+    if(items.every((i)=>{return i.id_resto == item.id_resto}) || items.length == 0) {
         items.push(item);
 
         saveBasketInStorage(items);

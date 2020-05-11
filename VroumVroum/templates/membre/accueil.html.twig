@@ -9,7 +9,12 @@
 
 
 {% block content %}
+
     {{ parent() }}
+
+    <div style="min-height: 10vh;background-color: #6fd76f;font-weight:bold;font-size:2rem;display:flex;align-items:center;padding-left:2vw;">
+		Liste des restaurants
+	</div>
 
     {# TODO : à implémenter #}
     {# {% include "component/category-sidebar.html.twig" %} #}

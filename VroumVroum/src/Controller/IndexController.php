@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\CategorieRestaurant;
+use App\Entity\Commande;
 use App\Entity\Plat;
 use App\Entity\Restaurant;
 use App\Repository\PlatRepository;
 use App\Repository\CategorieRestaurantRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\RestaurantRepository;
+use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,16 +18,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
    /**
-    * @Route("/", name="accueil")
+    * @Route("/accueil", name="accueil")
     */
    public function accueil(RestaurantRepository $restaurantRepository, CategorieRestaurantRepository $categorieRestaurantRepository)
    {
-
       return $this->render('membre/accueil.html.twig', [
          'accueil' => 'IndexController',
          'restaurants' => $restaurantRepository->findAll(),
          'categorieRestaurant' => $categorieRestaurantRepository->findAll()
-
       ]);
    }
 
@@ -129,30 +128,38 @@ class IndexController extends AbstractController
    }
 
    /**
-    * @Route("/leaveReview", name="leaveReview")
+    * @Route("/leaveReview/{id}", name="leaveReview")
     */
-   public function leaveReview(CommandeRepository $cr)
+   public function leaveReview(Commande $commande)
    {
-      // TODO
-
       return $this->render('membre/leave-review.html.twig', [
          'accueil' => 'IndexController',
-         'commande' => $cr->findOneBy(["id" => 1])
+         'commande' => $commande
       ]);
    }
 
    /**
-    * @Route("/followOrder", name="followOrder")
+    * @Route("/followOrder", name="createOrder")
     */
-   public function followOrder(CommandeRepository $cr)
+   public function createOrder(Request $r, EntityManagerInterface $em, CommandeRepository $cr)
+   {
+      // Crée la commande et la persist puis redirige vers la page followOrder avec la commande en param ?
+
+      return $this->followOrder($cr->findAll()[0]);
+   }
+
+   /**
+    * @Route("/followOrder/{id}", name="followOrder")
+    */
+   public function followOrder(Commande $commande)
    {
       // TODO : passer un id dans l'url pour voir la commande
 
       return $this->render('membre/command-tracker.html.twig', [
          'accueil' => 'IndexController',
-         'commande_en_cours' => $cr->findOneBy(["id" => 1]),
-         'heure_de_commande' => '11:05', // si tu peux m'envoyer une heure sous le format heure:minute
-         'heure_de_livraison_estimation' => '12:05', // ajouter 1 heure à l'heure de la commande
+         'commande_en_cours' => $commande,
+         'heure_de_commande' => $commande->getDate()->format('H:i'), // si tu peux m'envoyer une heure sous le format heure:minute
+         'heure_de_livraison_estimation' => $commande->getDate()->add(new DateInterval('PT1H'))->format('H:i'), // ajouter 1 heure à l'heure de la commande
       ]);
    }
 

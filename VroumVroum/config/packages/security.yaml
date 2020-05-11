@@ -14,12 +14,13 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        
         main:
             anonymous: lazy
             form_login:
                 default_target_path: _login_redirect
                 always_use_default_target_path: true
-
 
             logout:
                 path: app_logout
@@ -39,9 +40,12 @@ security:
     # Note: Only the *first* access control that matches will be used
     # Ordre des contrôles d'accès : du plus spécifique au plus générique
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-#        - { path: ^/, roles: ROLE_MEMBRE }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: /$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: /login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: /restaurant-detail, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_MEMBRE }
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+
     role_hierarchy:
         ROLE_ADMIN:         [ROLE_ADMIN]
         ROLE_MEMBRE:        [ROLE_MEMBRE]

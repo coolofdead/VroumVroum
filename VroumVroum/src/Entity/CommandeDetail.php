@@ -24,7 +24,7 @@ class CommandeDetail
     private $prix;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Commande", mappedBy="Detail", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Commande", mappedBy="detail", cascade={"persist", "remove"})
      */
     private $commande;
 

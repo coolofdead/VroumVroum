@@ -10,41 +10,49 @@
     {{ parent() }}
 
     <script>
-    var reviewPageUrl = "{{path('leaveReview')}}"
-    window.addEventListener("DOMContentLoaded", (e)=>{
-        var commandStatus = document.querySelector("#command-status");
-        if (commandStatus.attributes["current-status"].value != commandStatus.attributes["delivered-status"].value) {
-            setInterval(reloadPage, 10000);
-        }
-        else {
-            setTimeout(redirectToReview, 5000)
-        }
-    });
+        var reviewPageUrl = "{{path('leaveReview', { 'id': commande_en_cours.id })}}"
+        window.addEventListener("DOMContentLoaded", (e)=>{
+            var commandStatus = document.querySelector("#command-status");
 
-    function reloadPage() {
-        location.reload(true);
-    }
+            if (commandStatus.attributes["current-status"].value != commandStatus.attributes["delivered-status"].value) {
+                setInterval(reloadPage, 30000);
+            }
+            else {
+                setTimeout(redirectToReview, 14000)
+            }
+        });
 
-    function redirectToReview() {
-        window.location.href = reviewPageUrl;
-    }
+        function reloadPage() {
+            location.reload(true);
+        }
+
+        function redirectToReview() {
+            window.location.href = reviewPageUrl;
+        }
     </script>
 
-    {{dump(commande)}}
+    {% set delivered_ico = '🟢' %}
 
     {# fill these fields using twig #}
-    <div id="command-status" current-status="🟢" delivered-status="🔴" hidden></div>
+    <div id="command-status" current-status="{{commande_en_cours.status.icon}}" delivered-status="{{delivered_ico}}" hidden></div>
 
-    <div class="container d-flex flex-column" style="height:30vh;justify-content:space-evenly;">
-        <h2>Suivi de votre commande chez {{commande_en_cours.detail.restaurant.nom}}</h2>
+    <div class="container d-flex flex-column" style="height:30vh;justify-content:space-evenly;margin-top:3vh;">
+        <h2>Suivi de votre commande chez {{commande_en_cours.restaurant.nom}}</h2>
         <h3><strong>#{{commande_en_cours.id}}</strong></h3>
         <div class="progress" style="border-radius: 1.25rem;height:1.25rem;">
-            <div class="progress-bar active" role="progressbar" style="width: 20%" aria-valuenow="20">En attente</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50">En préparation</div>
-            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20">En livraison</div>
-            <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="00">Livré</div>
+            <div class="progress-bar {{commande_en_cours.status.icon == '🔴' ? 'active' : ''}}" style="width: 20%">En attente</div>
+            <div class="progress-bar {{commande_en_cours.status.icon == '🟠' ? 'active' : ''}} bg-success" style="width: 50%" {{commande_en_cours.status.icon not in ['🟠', '🟡', '🟢'] ? 'hidden' : ''}}>En préparation</div>
+            <div class="progress-bar {{commande_en_cours.status.icon == '🟡' ? 'active' : ''}} bg-info" style="width: 20%" {{commande_en_cours.status.icon not in ['🟡', '🟢'] ? 'hidden' : ''}}>En livraison</div>
+            <div class="progress-bar {{commande_en_cours.status.icon == '🟢' ? 'active' : ''}} bg-danger" style="width: 10%" {{commande_en_cours.status.icon not in ['🟢'] ? 'hidden' : ''}}>Livré</div>
         </div>
-        <span>Heure de livraison estimé <strong>{{heure_de_commande}}-{{heure_de_livraison_estimation}}</strong></span>
+        <span>Heure de livraison estimé <strong>{{heure_de_commande}} - {{heure_de_livraison_estimation}}</strong></span>
+
+        {% if commande_en_cours.status.icon == delivered_ico %}
+            <div class="alert alert-success" role="alert">
+                Votre repas vous attend en bas!
+            </div>
+        {% endif %}
+        
     </div>
 
 {% endblock %}
