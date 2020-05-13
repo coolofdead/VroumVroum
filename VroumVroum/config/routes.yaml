@@ -9,3 +9,10 @@ restaurateur:
   prefix: /restaurateur
   name_prefix: restaurateur_
   type: annotation
+
+home:
+  path: /
+  controller: App\Controller\IndexController::accueil
+  defaults:
+      path: /accueil
+      permanent: true

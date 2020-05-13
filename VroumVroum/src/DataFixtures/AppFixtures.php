@@ -11,6 +11,7 @@ use App\Entity\Restaurant;
 use App\Entity\Status;
 use App\Entity\TypePlat;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
@@ -116,7 +117,11 @@ class AppFixtures extends Fixture
     }
 
     $command = new Commande();
-    $command->setMembre($membre);
+    $command
+    ->setMembre($membre)
+    ->setDate(new DateTime())
+    ->setRestaurant($restaurants[0]);
+    ;
     $commandDetail = new CommandeDetail();
     $commandDetail->setPrix(11)
       ->setCommande($command)
@@ -157,17 +162,17 @@ class AppFixtures extends Fixture
 
     $status = [
       (new Status())
-      ->setIcon("🔴")
-      ->setState("En attente"),
+        ->setIcon("🔴")
+        ->setState("En attente"),
       (new Status())
-      ->setIcon("🟠")
-      ->setState("En préparation"),
+        ->setIcon("🟠")
+        ->setState("En préparation"),
       (new Status())
-      ->setIcon("🟡")
-      ->setState("En livraison"),
+        ->setIcon("🟡")
+        ->setState("En livraison"),
       (new Status())
-      ->setIcon("🟢")
-      ->setState("Livré"),
+        ->setIcon("🟢")
+        ->setState("Livré"),
     ];
 
     foreach ($status as $s) {

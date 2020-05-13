@@ -12,6 +12,9 @@
     {% endblock %}
 
     <body>
+        <script>
+            var userId = {{app.user ? app.user.id : -1}};
+        </script>
 
         {% block content %}
             {% include "component/navbar.html.twig" %}

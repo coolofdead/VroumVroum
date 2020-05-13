@@ -12,8 +12,6 @@
 
 	{{ parent() }}
 
-    {{dump(commande)}}
-
 	<script src="{{ asset('js/leaveReview.js') }}"></script>
 
 	<div class="container" style="display: flex; flex-direction: column; height: 50vh; justify-content: center; align-items: center;">
@@ -41,6 +39,7 @@
                         </div>
 
                         <input id="input-star" name="stars" value="" hidden>
+                        <input name="restaurant-id" value="{{commande.id}}" hidden>
                         <button type="submit" class="btn btn-success">Envoyer</button>
 
                     </form>
