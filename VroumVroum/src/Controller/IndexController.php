@@ -184,7 +184,6 @@ class IndexController extends AbstractController
            $em->flush();
            return $this->redirectToRoute('accueil');
 
-
        }
        elseif ($request->isMethod('GET')){
            return $this->render('membre/add-balance.html.twig', [
