@@ -26,6 +26,9 @@
 				</div>
 				<div class="panel-body">
 
+
+
+
 					<form role="form" id="payment-form" method="POST" action="/addBalance">
 
 						<div class="row">
@@ -71,14 +74,17 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<div class="form-group">
-									<label for="couponCode">SOMME</label>
-									<input type="number" class="form-control" name="couponCode" min="0"/>
+{#									<label for="couponCode">SOMME</label>#}
+{#									<input type="number" class="form-control" name="couponCode" min="0"/>#}
+									{{ form_row(form.somme) }}
 								</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
-								<button class="subscribe btn btn-success btn-lg btn-block" type="submit">Payer</button>
+{#								<button class="subscribe btn btn-success btn-lg btn-block" type="submit">Payer</button>									#}
+								{{ form_row(form.save) }}
+
 							</div>
 						</div>
 						<div class="row" style="display:none;">
@@ -87,10 +93,17 @@
 							</div>
 						</div>
 
+
 					</form>
+
+
+
+
 
 				</div>
 			</div>
 		</div>
 	</div>
+
+
 {% endblock %}

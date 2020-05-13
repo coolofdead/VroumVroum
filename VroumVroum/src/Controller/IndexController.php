@@ -5,14 +5,23 @@ namespace App\Controller;
 use App\Entity\CategorieRestaurant;
 use App\Entity\Plat;
 use App\Entity\Restaurant;
+use App\Entity\User;
+use App\Form\BalanceType;
+use App\Form\UserType;
 use App\Repository\PlatRepository;
 use App\Repository\CategorieRestaurantRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\RestaurantRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+
 
 class IndexController extends AbstractController
 {
@@ -159,12 +168,29 @@ class IndexController extends AbstractController
    /**
     * @Route("/addBalance", name="addBalance")
     */
-   public function addBalance()
+   public function addBalance(Request $request, EntityManagerInterface $em)
    {
-      // TODO
+       $user = $this->getUser();
+       $form = $this->createForm(BalanceType::class);
+       $form->handleRequest($request);
 
-      return $this->render('membre/add-balance.html.twig', [
-         'accueil' => 'IndexController',
-      ]);
+       if ($request->isMethod('POST') && $form->isSubmitted()) {
+           $data = $form->getData();
+           $preUpdated = $user->getSolde();
+           $money2Add = $data["somme"];
+           $newBalance = $money2Add + $preUpdated;
+           $user->setSolde($newBalance);
+           $em->persist($user);
+           $em->flush();
+           return $this->redirectToRoute('accueil');
+
+
+       }
+       elseif ($request->isMethod('GET')){
+           return $this->render('membre/add-balance.html.twig', [
+               'accueil' => 'IndexController',
+               'form' => $form->createView()
+           ]);
+       }
    }
 }
