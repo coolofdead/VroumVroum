@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Entity\CommandeDetail;
 use App\Entity\Plat;
 use App\Entity\Restaurant;
 use App\Entity\User;
@@ -12,6 +13,7 @@ use App\Repository\PlatRepository;
 use App\Repository\CategorieRestaurantRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\RestaurantRepository;
+use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
+use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 
 class IndexController extends AbstractController
@@ -52,7 +54,7 @@ class IndexController extends AbstractController
    /**
     * @Route("/payement", name="")
     */
-   public function payement(Request $request, /* A REMOVE => */ PlatRepository $pr)
+   public function payement(Request $request, PlatRepository $pr,EntityManagerInterface $em,StatusRepository $statusRepository, UserRepository $ur)
    {
       /* TODO Prendre le json dans la request avec la structure suivante :
        [
@@ -70,9 +72,48 @@ class IndexController extends AbstractController
         sinon -> render la page payement 
     */
 
+
+
+
+        $data = json_decode($request->get("items"));
+
+      $plats = [];
+      $commandeDeatil = new CommandeDetail();
+      $commande = new Commande();
+      $totalCommande = 0;
+
+      //boucle sur le json de session qui contient les plats
+      foreach ($data->items as $item) {
+          $plat = $pr->findOneBy(["id"=>$item->id_plat]);
+          $plats[] = $plat;
+          $commandeDeatil->addPlat($plat);
+          $totalCommande += $plat->getPrix();
+      }
+      //creation de la commande si le solde est assez suffisant
+//        $status = $statusRepository->findOneByState("En attente");
+//        $commande->setStatus($status);
+//        $commande->setDate(new \DateTime());
+        $commande->setRestaurant($plat->getRestaurant());
+        $userSecu = $this->getUser();
+        $userEmail= $userSecu->getUsername();
+        $user =  $ur->findOneByEmail($userEmail);
+//        $commande->setMembre($ur->findOneByEmail($userEmail));
+//        $commandeDeatil->setPrix($totalCommande);
+//        $commande->setDetail($commandeDeatil);
+//
+//        //persist en base
+//        $em->persist($commandeDeatil);
+//        $em->persist($commande);
+//        $em->flush();
+
+
+//   $commandeDetail->setCommande($commande);
+
+
+
       return $this->render('membre/payement.html.twig', [
          'accueil' => 'IndexController',
-         'items' =>  $pr->findAll(), // Array avec les plats
+         'items' => $plats,  // Array avec les plats
          'delivery_fee' => getenv('DELIVERY_PRICE'),
          'message_pas_les_sous' => 'tas pas les sous gros', // TODO : à intégrer sur la page payement en facultatif
       ]);

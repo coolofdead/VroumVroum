@@ -29,6 +29,7 @@
 		{% endif %}
 	{% endfor %}
 
+
 	<div
 		class="container list-group list-group-horizontal" style="display: flex;justify-content: center;max-width: 1200px;">
 
@@ -208,7 +209,7 @@
 
 						{% if (app.user.solde > (sub_total + delivery_fee )) %}
 
-							<form action="/followOrder" method="POST">
+							<form action="/createOrder" method="POST">
 								<tr>
 									<td></td>
 									<td></td>
@@ -244,5 +245,4 @@
 		</div>
 
 	</div>
-
 {% endblock %}
