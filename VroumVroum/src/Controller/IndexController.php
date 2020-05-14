@@ -20,6 +20,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -28,6 +31,15 @@ use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 class IndexController extends AbstractController
 {
+
+    private $session;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+    }
+
+
    /**
     * @Route("/accueil", name="accueil")
     */
@@ -73,41 +85,23 @@ class IndexController extends AbstractController
     */
 
 
-
-
-        $data = json_decode($request->get("items"));
-
+      $data = json_decode($request->get("items"));
       $plats = [];
       $commandeDeatil = new CommandeDetail();
       $commande = new Commande();
       $totalCommande = 0;
-
+      $idPlatList = [];
       //boucle sur le json de session qui contient les plats
       foreach ($data->items as $item) {
-          $plat = $pr->findOneBy(["id"=>$item->id_plat]);
-          $plats[] = $plat;
-          $commandeDeatil->addPlat($plat);
-          $totalCommande += $plat->getPrix();
-      }
-      //creation de la commande si le solde est assez suffisant
-//        $status = $statusRepository->findOneByState("En attente");
-//        $commande->setStatus($status);
-//        $commande->setDate(new \DateTime());
-        $commande->setRestaurant($plat->getRestaurant());
+       $plat = $pr->findOneBy(["id"=>$item->id_plat]);
+       $plats[] = $plat;
+       $idPlatList[] = ["id"=>$item->id_plat];
+   }
         $userSecu = $this->getUser();
         $userEmail= $userSecu->getUsername();
         $user =  $ur->findOneByEmail($userEmail);
-//        $commande->setMembre($ur->findOneByEmail($userEmail));
-//        $commandeDeatil->setPrix($totalCommande);
-//        $commande->setDetail($commandeDeatil);
-//
-//        //persist en base
-//        $em->persist($commandeDeatil);
-//        $em->persist($commande);
-//        $em->flush();
+        $this->session->set('plats-'.$user->getId(), $idPlatList);
 
-
-//   $commandeDetail->setCommande($commande);
 
 
 
@@ -115,7 +109,7 @@ class IndexController extends AbstractController
          'accueil' => 'IndexController',
          'items' => $plats,  // Array avec les plats
          'delivery_fee' => getenv('DELIVERY_PRICE'),
-         'message_pas_les_sous' => 'tas pas les sous gros', // TODO : à intégrer sur la page payement en facultatif
+         'hasMoney' => [], // TODO : à intégrer sur la page payement en facultatif
       ]);
    }
 
@@ -189,13 +183,66 @@ class IndexController extends AbstractController
    }
 
    /**
-    * @Route("/followOrder", name="createOrder")
+    * @Route("/createOrder", name="createOrder")
     */
-   public function createOrder(Request $r, EntityManagerInterface $em, CommandeRepository $cr)
+   public function createOrder(EntityManagerInterface $em,UserRepository $ur, PlatRepository $pr, StatusRepository $statusRepository,MailerInterface $mailer)
    {
-      // Crée la commande et la persist puis redirige vers la page followOrder avec la commande en param ?
+       $commandeDetail = new CommandeDetail();
+       $commande = new Commande();
+       $plats = [];
+       $totalCommande = 0;
 
-      return $this->followOrder($cr->findAll()[0]);
+       //recuperation l'entity user grace au systeme de login
+       $userSecu = $this->getUser();
+       $userEmail= $userSecu->getUsername();
+       $user =  $ur->findOneByEmail($userEmail);
+
+
+        //recuperation de la liste des id des plats commandés et validé
+       $listIdPlat  = $this->session->get("plats-".$user->getId());
+
+       foreach ($listIdPlat as $id){
+            $plat = $pr->findOneBy($id);
+            $plats[] = $plat;
+            $commandeDetail->addPlat($plat);
+            $totalCommande += $plat->getPrix();
+            $restaurant = $plat->getRestaurant();
+            $commande->setRestaurant($restaurant);
+       }
+
+        //creation en base des nouveau element relatif a la comande
+       $status = $statusRepository->findOneByState("En attente");
+       $commande->setStatus($status);
+       $commande->setMembre($user);
+       $commande->setDetail($commandeDetail);
+
+        $commande->setDate(new \DateTime());
+        $commandeDetail->setCommande($commande);
+        $commandeDetail->setPrix($totalCommande + getenv('DELIVERY_PRICE'));
+
+        $em->persist($commandeDetail);
+        $em->persist($commande);
+        $em->flush();
+        $idcommande = $commande->getId();
+//        return $this->render('debug.html.twig',['debug' => $idcommande]);
+        $restaurateur = $restaurant->getRestaurateur();
+       $restaurateurEmail =  $restaurateur->getEmail();
+
+       $email = (new Email())
+           ->from('delivroomvroom@gmail.com')
+           ->to($restaurateurEmail)
+           ->cc('guillaume.faugeron@ynov.com')
+           //->bcc('bcc@example.com')
+           //->replyTo('fabien@example.com')
+           ->priority(Email::PRIORITY_HIGH)
+           ->subject('Votre restaurant'.$restaurant->getNom().'à recu une commande')
+           ->text('Les plats commande sont : \n Pour un montant total hors livraison de '.$commandeDetail->getPrix());
+//           ->html('<h1>coucou cest de lhtml mais je faut que je test</h1>');
+       $mailer->send($email);
+
+
+
+        return $this->redirectToRoute('followOrder',["id" => $idcommande]);
    }
 
    /**
