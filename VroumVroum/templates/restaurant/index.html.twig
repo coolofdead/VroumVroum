@@ -1,43 +1,132 @@
-{#{% extends 'base.html.twig' %}#}
+{% extends 'base.html.twig' %}
 
-{% block title %}Restaurant index{% endblock %}
+{% block title %}Restaurants
+{% endblock %}
+{% block stylesheets %}
+	{{parent()}}
+	<link href="{{asset('css/InputRadio.css')}}" rel="stylesheet">
+{% endblock %}
+{% block javascripts %}{% endblock %}
 
-{% block body %}
-    <h1>Restaurant index</h1>
+{% block content %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Longitude</th>
-                <th>Latitude</th>
-                <th>Nom</th>
-                <th>Adresse</th>
-                <th>Url</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for restaurant in restaurants %}
-            <tr>
-                <td>{{ restaurant.id }}</td>
-                <td>{{ restaurant.longitude }}</td>
-                <td>{{ restaurant.latitude }}</td>
-                <td>{{ restaurant.nom }}</td>
-                <td>{{ restaurant.adresse }}</td>
-                <td>{{ restaurant.url }}</td>
-                <td>
-                    <a href="{{ path('restaurateur_restaurant_show', {'id': restaurant.id}) }}">show</a>
-                    <a href="{{ path('restaurateur_restaurant_edit', {'id': restaurant.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+	{{parent()}}
 
-    <a href="{{ path('restaurateur_restaurant_new') }}">Create new</a>
+	<script src="{{asset('js/restaurantsIndex.js')}}"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('[class^="detail-"]').hide(800);
+			$('.toggle').click(function () {
+				$input = $(this);
+				$target = $('.' + $input.attr('data-toggle'))
+				$target.slideToggle();
+			});
+		});
+	</script>
+
+	<form id="update-restaurant" action="{{path('restaurateur_restaurant_edit')}}" method="POST">
+		<input id="r-id" name="id" value="" hidden>
+		<input name="nom" value="" hidden>
+		<input name="adresse" value="" hidden>
+		<input name="url" value="" hidden>
+		<input name="latitude" value="" hidden>
+		<input name="longitude" value="" hidden>
+		<input name="category" value="" hidden>
+	</form>
+
+	<div class="container" style="margin-top: 3vh;">
+		<h1>Vos restaurants</h1>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Nom</th>
+					<th>Adresse</th>
+					<th>Commandes</th>
+					<th>Historique</th>
+					<th>Modifier</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for restaurant in restaurants %}
+					<tr>
+						<td>{{ restaurant.nom }}</td>
+						<td>{{ restaurant.adresse }}</td>
+						<td>
+							<a href="{{path('restaurateur_commandes', {id:restaurant.id})}}">Vos commandes en cours 🕑</a>
+						</td>
+						<td>
+							<a href="{{path('restaurateur_historique', {id:restaurant.id})}}">Votre historique 📄</a>
+						</td>
+						<td>
+							<a id="dropdown-detail-{{restaurant.id}}" data-toggle="detail-{{restaurant.id}}" class="btn btn-outline-success toggle">✏️</a>
+						</td>
+						<td>
+							<form method="POST" action="{{ path('restaurateur_restaurant_delete', {'id': restaurant.id}) }}" onsubmit="return confirm('Voulez vous vraiment supprimer ce restaurant?');">
+								<input type="hidden" name="_method" value="DELETE">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ restaurant.id) }}">
+								<button class="btn btn-outline-danger">🗑️</button>
+							</form>
+						</td>
+					</tr>
+
+					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
+						<td><input name="nom" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="text" value="{{restaurant.nom}}" placeholder="Nom" style="width:min-content;"></td>
+						<td><input name="adresse" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="text" value="{{restaurant.adresse}}" placeholder="Adresse" style="width:min-content;"></td>
+						<td><input name="url" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="text" value="{{restaurant.url}}" placeholder="Url logo" style="width:min-content;"></td>
+						<td><button class="detail-{{restaurant.id}} btn btn-success w-100 btn-update-restaurant" data-id="{{restaurant.id}}" type="submit" form="update-restaurant">Save</button></td>
+						<td><a class="detail-{{restaurant.id}} btn btn-outline-success" href="{{path('restaurateur_restaurant_plats', {'id':restaurant.id})}}">🥡</a></td>
+					</tr>
+
+					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
+						<td><input name="latitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.latitude}}" placeholder="Latitude" style="width:min-content;"></td>
+						<td><input name="longitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.longitude}}" placeholder="Longitude" style="width:min-content;"></td>
+					</tr>
+
+					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
+						{% for category in categories %}
+							<td>
+								<div class="radio">
+									<input class="detail-{{restaurant.id}}" id="restaurant-{{restaurant.id}}-category-{{category.categorie}}" value="{{category.id}}" name="category-{{restaurant.id}}" type="radio">
+									<label for="restaurant-{{restaurant.id}}-category-{{category.categorie}}" class="detail-{{restaurant.id}} radio-label">{{category.categorie}}</label>
+								</div>
+							</td>
+						{% endfor %}
+					</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<form action="{{path('restaurateur_create')}}" method="POST" id="create-restaurant">
+			<table class="table">
+				<tbody>
+					<tr class="form-group">
+						<td><input type="text" class="form-control" placeholder="Nom" required></td>
+						<td><input type="text" class="form-control" placeholder="Adresse" required></td>
+						<td><input type="text" class="form-control" placeholder="Url du logo" required></td>
+						<td><input type="text" class="form-control" placeholder="Longitude"></td>
+						<td><input type="text" class="form-control" placeholder="Latitude"></td>
+					</tr>
+					<tr class="form-group">
+						{% for category in categories %}
+							<td>
+								<div class="radio">
+									<input id="category-{{category.categorie}}" name="category" type="radio">
+									<label for="category-{{category.categorie}}" class="radio-label">{{category.categorie}}</label>
+								</div>
+							</td>
+						{% endfor %}
+					</tr>
+					<tr class="form-group">
+						<td>
+							<button type="submit" class="btn btn-success">Créer un restaurant</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
 {% endblock %}

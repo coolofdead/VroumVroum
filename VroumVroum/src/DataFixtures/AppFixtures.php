@@ -34,6 +34,10 @@ class AppFixtures extends Fixture
     $categorieRestaurant->setCategorie("cat1");
     $manager->persist($categorieRestaurant);
 
+    $categorieRestaurant  = new CategorieRestaurant();
+    $categorieRestaurant->setCategorie("cat2");
+    $manager->persist($categorieRestaurant);
+
     $membre = new User();
     $membre->setEmail('toto@gmail.com')
       ->setRoles(['ROLE_MEMBRE'])
@@ -54,6 +58,24 @@ class AppFixtures extends Fixture
       ));
     $manager->persist($restaurateur);
 
+    $status = [
+      (new Status())
+        ->setIcon("🔴")
+        ->setState("En attente"),
+      (new Status())
+        ->setIcon("🟠")
+        ->setState("En préparation"),
+      (new Status())
+        ->setIcon("🟡")
+        ->setState("En livraison"),
+      (new Status())
+        ->setIcon("🟢")
+        ->setState("Livré"),
+    ];
+
+    foreach ($status as $s) {
+      $manager->persist($s);
+    }
 
     $restaurants = [];
     for ($i = 1; $i <= 3; $i++) {
@@ -78,7 +100,6 @@ class AppFixtures extends Fixture
       $manager->persist($categoriePlat);
       $categoriesPlat[] = $categoriePlat;
     }
-
 
 
     $typesPlat = [];
@@ -120,7 +141,24 @@ class AppFixtures extends Fixture
     $command
     ->setMembre($membre)
     ->setDate(new DateTime())
+    ->setStatus($status[0])
     ->setRestaurant($restaurants[0]);
+    ;
+    $commandDetail = new CommandeDetail();
+    $commandDetail->setPrix(11)
+      ->setCommande($command)
+      ->addPlat($platList[rand(0, count($platList) - 1)])
+      ->addPlat($platList[rand(0, count($platList) - 1)])
+      ->addPlat($platList[rand(0, count($platList) - 1)]);
+    $manager->persist($command);
+    $manager->persist($commandDetail);
+
+    $command = new Commande();
+    $command
+    ->setMembre($membre)
+    ->setDate(new DateTime())
+    ->setStatus($status[2])
+    ->setRestaurant($restaurants[1]);
     ;
     $commandDetail = new CommandeDetail();
     $commandDetail->setPrix(11)
@@ -159,26 +197,6 @@ class AppFixtures extends Fixture
       ->setCodePostal(69690)
       ->setVille("Ville-sur-villaine");
     $manager->persist($user);
-
-    $status = [
-      (new Status())
-        ->setIcon("🔴")
-        ->setState("En attente"),
-      (new Status())
-        ->setIcon("🟠")
-        ->setState("En préparation"),
-      (new Status())
-        ->setIcon("🟡")
-        ->setState("En livraison"),
-      (new Status())
-        ->setIcon("🟢")
-        ->setState("Livré"),
-    ];
-
-    foreach ($status as $s) {
-      $manager->persist($s);
-    }
-
 
     $manager->flush();
   }

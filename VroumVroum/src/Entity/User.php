@@ -42,12 +42,12 @@ class User implements UserInterface
     private $solde;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Restaurant", mappedBy="Restaurateur")
+     * @ORM\OneToMany(targetEntity="App\Entity\Restaurant", mappedBy="restaurateur")
      */
     private $restaurants;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Commande", mappedBy="Membre")
+     * @ORM\OneToMany(targetEntity="App\Entity\Commande", mappedBy="membre")
      */
     private $commandes;
 

@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Plats
+{% endblock %}
+{% block stylesheets %}
+	{{parent()}}
+	<link href="{{asset('css/InputRadio.css')}}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+	{{parent()}}
+
+    <script src="{{asset('js/platsList.js')}}" type="text/javascript"></script>
+
+	<div class="container" style="margin-top:3vh;">
+		<h2>Plats dans votre restaurant
+			<strong>{{restaurant.nom}}</strong>
+		</h2>
+
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Modifier un plat</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form action="{{path('restaurateur_update_plat', {'id':0})}}" method="POST" id="update-plat-form">
+						<div class="modal-body">
+                            <div class="form-row">
+                                <div class="form-group col-md-8">
+                                    <input type="text" class="form-control" name="nom" value="" placeholder="Nom" required>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input type="number" step="any" class="form-control" name="prix"  value="" placeholder="Prix" required>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <input type="text" class="form-control" name="urlImg"  value="" placeholder="Url du plat" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputState">Catégorie</label>
+                                    <select id="inputState" class="form-control select-input" name="categorie" required>
+                                        {% for category in categories %}
+                                            <option value="{{category.categorie}}">{{category.categorie}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputType">Type</label>
+                                    <select id="inputType" class="form-control select-input" name="type" required>
+                                        {% for type in types %}
+                                            <option value="{{type.type}}">{{type.type}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">Sauvegarder</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Nom</th>
+					<th>Prix</th>
+					<th>Url</th>
+					<th>Catégorie</th>
+					<th>Type</th>
+					<th>Modifier</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for plat in plats %}
+					<tr>
+						<td name="nom" class="data-{{plat.id}}">{{plat.nom}}</td>
+						<td name="prix" class="data-{{plat.id}}">{{plat.prix}}</td>
+						<td name="urlImg" class="data-{{plat.id}}">{{plat.urlImg}}</td>
+						<td name="categorie" class="data-{{plat.id}}">{{plat.categorie.categorie}}</td>
+						<td name="type" class="data-{{plat.id}}">{{plat.type.type}}</td>
+						<td>
+							<a data-id="{{plat.id}}" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-success toggle">✏️</a>
+						</td>
+						<td>
+							<form method="POST" action="{{ path('restaurateur_delete_plat', {'id': plat.id}) }}" onsubmit="return confirm('Voulez vous vraiment supprimer ce plat?');">
+								<input type="hidden" name="_method" value="DELETE">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ plat.id) }}">
+								<button class="btn btn-outline-danger">🗑️</button>
+							</form>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<form action="{{path('restaurateur_create_plat', {'id':restaurant.id})}}" method="POST" id="create-restaurant">
+			<input type="text" class="form-control" name="id" value="{{restaurant.id}}" hidden>
+			<table class="table">
+				<tbody>
+					<tr class="form-group">
+						<td><input type="text" class="form-control" placeholder="Nom" required></td>
+						<td><input type="number" step="any" class="form-control" placeholder="Prix" required></td>
+						<td><input type="text" class="form-control" placeholder="Url du plat" required></td>
+					</tr>
+					<tr class="form-group">
+						<td>Catégorie</td>
+						{% for category in categories %}
+							<td>
+								<div class="radio">
+									<input id="category-{{category.categorie}}" value="{{category.categorie}}" name="category" type="radio" required>
+									<label for="category-{{category.categorie}}" class="radio-label">{{category.categorie}}</label>
+								</div>
+							</td>
+						{% endfor %}
+					</tr>
+					<tr class="form-group">
+						<td>Type</td>
+						{% for type in types %}
+							<td>
+								<div class="radio">
+									<input id="type-{{type.type}}" name="type" value="{{type.type}}" type="radio" required>
+									<label for="type-{{type.type}}" class="radio-label">{{type.type}}</label>
+								</div>
+							</td>
+						{% endfor %}
+					</tr>
+					<tr class="form-group">
+						<td>
+							<button type="submit" class="btn btn-success">Créer un plat</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+
+{% endblock %}

@@ -12,28 +12,28 @@
 			<ul class="navbar-nav mr-auto">
 				{% if app.user != null %}
 					<li class="nav-item">
-						<a class="nav-link active" href="/compte">🧙🏼‍♂️ Compte</a>
+						<a class="nav-link active" href="{{path('compte')}}">🧙🏼‍♂️ Compte</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link active" href="/historique">🧾 Historique des commandes</a>
+						<a class="nav-link active" href="{{path('historique')}}">🧾 Historique des commandes</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link active" href="/addBalance">💳 Ajouter du solde</a>
+						<a class="nav-link active" href="{{path('addBalance')}}">💳 Ajouter du solde</a>
 					</li>
 
 					{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RESTAURATEUR') %}
 						<li class="nav-item">
-							<a class="nav-link active" href="#">🍴 Restaurants</a>
+							<a class="nav-link active" href="{{path('restaurateur_restaurants')}}">🍴 Restaurants</a>
 						</li>
 					{% endif %}
 
 					<li class="nav-item">
-						<a class="nav-link active" href="/logout">🔴 Déconnexion</a>
+						<a class="nav-link active" href="{{path('app_logout')}}">🔴 Déconnexion</a>
 					</li>
 
 				{% else %}
 					<li class="nav-item">
-						<a class="nav-link active" href="/login">🟢 Connexion</a>
+						<a class="nav-link active" href="{{path('app_login')}}">🟢 Connexion</a>
 					</li>
 				{% endif %}
 			</ul>

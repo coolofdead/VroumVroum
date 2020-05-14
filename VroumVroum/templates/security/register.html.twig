@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register
+{% endblock %}
+
+{% block content %}
+
+	<script type="text/javascript">
+		$(function () {
+			$('#colorselector').change(function () {
+			$('.colors').hide();
+			$('#' + $(this).val()).show();
+			});
+		});
+	</script>
+
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link href="{{asset('css/register.css')}}" rel="stylesheet">
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+	<form method="POST" action="{{path('app_register')}}">
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 col-md-offset-4">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Compte</h3>
+						</div>
+						<div class="panel-body">
+							<fieldset>
+								{% if error is defined %}
+									<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+								{% endif %}
+								<div class="form-group">
+									<input value="" name="name" class="form-control" placeholder="Joseph" type="text" required>
+								</div>
+								<div class="form-group">
+									<input value="" name="email" class="form-control" placeholder="yourmail@example.com" type="email" required>
+								</div>
+								<div class="form-group">
+									<input name="password" class="form-control" placeholder="Mot de passe" type="password" value="" minlength="4" required>
+								</div>
+								<div class="form-group">
+									<input name="password-repeat" class="form-control" placeholder="Mot de passe" type="password" value="" minlength="4" required>
+								</div>
+
+								<div class="button dropdown" style="margin-bottom: 2vh;">
+									<select id="colorselector">
+										{% for role in roles %}
+											<option value="{{role}}">{{role}}</option>
+										{% endfor %}
+									</select>
+								</div>
+
+								{# <select class="form-group" name="roles" requried>
+
+								</select> #}
+
+								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+								<button class="btn btn-lg btn-success btn-block" type="submit">Inscription</button>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gérer vos commandes
+{% endblock %}
+{% block stylesheets %}
+	{{parent()}}
+	<link href="{{asset('css/InputRadio.css')}}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+	{{parent()}}
+
+	<script src="{{asset('js/ordersTracker.js')}}" type="text/javascript"></script>
+
+	<div class="container">
+		<h4 style="margin-top: 3vh;">Vos commandes en cours dans votre restaurant :
+			<strong>{{restaurant.nom}}</strong>
+		</h4>
+		<div class="table-responsive">
+
+			<form id="update-command-status" action="{{path('restaurateur_commandes_update_status', {id:0})}}" method="POST">
+				<input id="input-command-status" name="status" value="" required="required" hidden>
+			</form>
+
+			<table id="mytable" class="table table-bordred table-striped">
+
+				<thead>
+					<th>Status</th>
+					<th>Total</th>
+					<th>Date</th>
+					{% for status in status %}
+						<th></th>
+					{% endfor %}
+					<th></th>
+				</thead>
+
+				<tbody>
+					{% for command in commandes %}
+						<tr>
+							<td>{{command.status.icon}}
+								{{command.status.state}}</td>
+							<td>{{command.detail.prix}}€</td>
+							<td>{{command.date|format_datetime('short', 'none', locale='fr')}}</td>
+							{% for status in status %}
+								<td>
+									<div class="radio">
+										<input id="status-{{command.id}}-{{status.state}}" class="command-{{command.id}}" value="{{status.id}}" name="status-{{command.id}}" type="radio" required>
+										<label for="status-{{command.id}}-{{status.state}}" class="radio-label">{{status.icon}}
+											{{status.state}}</label>
+									</div>
+								</td>
+							{% endfor %}
+							<td>
+								<button type="submit" class="btn btn-primary btn-update-command-status" data-id="{{command.id}}" form="update-command-status">Mettre à jour</button>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+			{# TODO : A implémenter avec un <a href="url...?offset=X"> #}
+			<nav aria-label="Page navigation example">
+				<ul class="pagination">
+					<li class="page-item">
+						<a class="page-link" href="#">Previous</a>
+					</li>
+					<li class="page-item active">
+						<a class="page-link" href="#">1</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">2</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">3</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">Next</a>
+					</li>
+				</ul>
+			</nav>
+
+		</div>
+
+	</div>
+
+{% endblock %}

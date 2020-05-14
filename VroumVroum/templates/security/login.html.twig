@@ -43,6 +43,8 @@
                             </div>
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                             <input class="btn btn-lg btn-success btn-block" type="submit" value="Connexion">
+                            <div class="form-group" style="margin-top: 15px;display: flex;justify-content: center;font-weight: bold;">OU</div>
+                            <a href="{{path('app_register')}}" class="btn btn-lg btn-success btn-block">Inscrivez-vous</a>
                         </fieldset>
                         </div>
                     </div>
