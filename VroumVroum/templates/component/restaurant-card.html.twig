@@ -1,7 +1,7 @@
 <div class="card" style="width: 20rem; height: 100%;">
   <img src="{{ restaurant.url }}" class="card-img-top" alt="..." style="height:25vh;">
   <div class="card-body">
-    <h5 class="card-title">{{ restaurant.nom }}</h5>
+    <h5 class="card-title">{{note}} {{ restaurant.nom }}</h5>
     <div style="display:flex;justify-content:space-between;">
       <p class="card-text" style="color: gray;">{{ restaurant.Adresse }}</p>
       {% set iconsCategory = [

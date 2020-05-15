@@ -23,6 +23,23 @@
         <div class="container" style="max-width:1400px;">
             <div class="row">
                 {% for restaurant in restaurants %}
+                    {% set total = 0 %}
+                    {% set nbNote = 0 %}
+
+                    {% for note in notes %}
+                        {% if note.restaurant == restaurant %}
+                            {% set nbNote = nbNote + 1 %}
+                            {% set total = total + note.note %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if nbNote != 0 %}
+                        {% set note = (total / nbNote)|number_format(1) ~ "⭐" %}
+                    {% else %}
+                        {% set note = "" %}
+                    {% endif %}
+
+
                     <div class="col" style="flex-grow: unset; display: flex;justify-content: center;align-items: center; margin-bottom: 2vh; min-width: 18vw; max-height:45vh;">
                         {% include 'component/restaurant-card.html.twig' %}
                     </div>

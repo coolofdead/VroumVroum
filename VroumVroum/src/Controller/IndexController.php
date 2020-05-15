@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
-use App\Entity\Plat;
+use App\Entity\Note;
 use App\Entity\Restaurant;
 use App\Repository\PlatRepository;
 use App\Repository\CategorieRestaurantRepository;
 use App\Repository\CommandeRepository;
+use App\Repository\NoteRepository;
 use App\Repository\RestaurantRepository;
+use App\Repository\UserRepository;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,12 +22,13 @@ class IndexController extends AbstractController
    /**
     * @Route("/accueil", name="accueil")
     */
-   public function accueil(RestaurantRepository $restaurantRepository, CategorieRestaurantRepository $categorieRestaurantRepository)
+   public function accueil(RestaurantRepository $restaurantRepository, CategorieRestaurantRepository $categorieRestaurantRepository, NoteRepository $nr)
    {
       return $this->render('membre/accueil.html.twig', [
          'accueil' => 'IndexController',
          'restaurants' => $restaurantRepository->findAll(),
-         'categorieRestaurant' => $categorieRestaurantRepository->findAll()
+         'categorieRestaurant' => $categorieRestaurantRepository->findAll(),
+         'notes' => $nr->findAll()
       ]);
    }
 
@@ -45,21 +48,22 @@ class IndexController extends AbstractController
     */
    public function payement(Request $request, /* A REMOVE => */ PlatRepository $pr)
    {
-      /* TODO Prendre le json dans la request avec la structure suivante :
-       [
-          {
-           id_resto : value,
-           id_plat : value
-          },
-          ...
-       ]
+      /* 
+         TODO Prendre le json dans la request avec la structure suivante :
+         [
+            {
+            id_resto : value,
+            id_plat : value
+            },
+            ...
+         ]
 
-      - faire ta tambouille pour calculer le total
-      - check si l'utilisateur à la somme
-      - rediriger vers soit :
-        si il peut pas payer -> page addBalance 
-        sinon -> render la page payement 
-    */
+         - faire ta tambouille pour calculer le total
+         - check si l'utilisateur à la somme
+         - rediriger vers soit :
+         si il peut pas payer -> page addBalance 
+         sinon -> render la page payement 
+      */
 
       return $this->render('membre/payement.html.twig', [
          'accueil' => 'IndexController',
@@ -82,11 +86,15 @@ class IndexController extends AbstractController
    /**
     * @Route("/historique", name="historique")
     */
-   public function historique(CommandeRepository $cr)
+   public function historique(CommandeRepository $cr, UserRepository $ur)
    {
+      $userSecu = $this->getUser();
+      $userEmail = $userSecu->getUsername();
+      $user =  $ur->findOneByEmail($userEmail);
+
       return $this->render('membre/historique-commandes.html.twig', [
          'accueil' => 'IndexController',
-         'commandes' => $cr->findAll(),
+         'commandes' => $cr->findBy(["membre" => $user]),
       ]);
    }
 
@@ -130,11 +138,23 @@ class IndexController extends AbstractController
    /**
     * @Route("/leaveReview/{id}", name="leaveReview")
     */
-   public function leaveReview(Commande $commande)
+   public function leaveReview(Commande $commande, Request $request, EntityManagerInterface $em)
    {
+      if ($request->request->get('stars')) {
+         $note = new Note();
+         $note->setRestaurant($commande->getRestaurant())
+               ->setNote($request->request->get('stars'))
+         ;
+
+         $em->persist($note);
+         $em->flush();
+
+         return $this->redirectToRoute('accueil');
+      }
+
       return $this->render('membre/leave-review.html.twig', [
          'accueil' => 'IndexController',
-         'commande' => $commande
+         'commande' => $commande,
       ]);
    }
 

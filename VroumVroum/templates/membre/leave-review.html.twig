@@ -25,7 +25,7 @@
             <div class="row" style="margin-top: 3vh;">
                 <div class="col-sm-6">
 
-                    <form action="" method="POST">
+                    <form action="{{path('leaveReview', {'id':commande.id})}}" method="POST">
 
                         <div id="rating-block" style="margin-bottom: 2vh;">
                             <h4>Laisser une note ?</h4>
@@ -39,7 +39,6 @@
                         </div>
 
                         <input id="input-star" name="stars" value="" hidden>
-                        <input name="restaurant-id" value="{{commande.id}}" hidden>
                         <button type="submit" class="btn btn-success">Envoyer</button>
 
                     </form>
