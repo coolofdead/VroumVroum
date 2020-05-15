@@ -191,48 +191,63 @@ class IndexController extends AbstractController
        //compte le nombre de meme plat.id ==> quatity, permet de gerer les quantité multiple de plats
        $listIdPlat = array_count_values($tempList);
 
-
+        //mapping des quantite sur les detail commande
        foreach ($listIdPlat as $id => $quatity){
 
-           $quantite = new Quantite();
-           $plat = $pr->findOneBy(["id" => $id]);
-           $quantite->setPlat($plat);
-           $quantite->setNombre($quatity);
-           $quantite->setCommandeDetail($commandeDetail);
+            $quantite = new Quantite();
+            $plat = $pr->findOneBy(["id" => $id]);
+
+            $quantite->setPlat($plat);
+            $quantite->setNombre($quatity);
+            $quantite->setCommandeDetail($commandeDetail);
 
             $plats[] = $plat;
             $quantites[] = $quantite;
+
+            //calcul du prix de la commande
             $totalCommande += $plat->getPrix() * $quatity;
             $restaurant = $plat->getRestaurant();
             $commande->setRestaurant($restaurant);
+
+            //persit en base chaque quantite
             $em->persist($quantite);
 
        }
 
-
-
-        //creation en base des nouveau element relatif a la comande
-       $status = $statusRepository->findOneByState("En attente");
-       $commande->setStatus($status);
-       $commande->setMembre($user);
+        $totalCommande= $totalCommande + getenv('DELIVERY_PRICE');
+        //creation en base des nouveaux element relatif a la comande
+        $status = $statusRepository->findOneByState("En attente");
+        $commande->setStatus($status);
+        $commande->setMembre($user);
 
         $commande->setDate(new \DateTime());
         $commandeDetail->setCommande($commande);
-        $commandeDetail->setPrix($totalCommande + getenv('DELIVERY_PRICE'));
+        $commandeDetail->setPrix($totalCommande);
+
+        $restaurateur = $restaurant->getRestaurateur();
+        $restaurateurEmail =  $restaurateur->getEmail();
+
+        $soldeMembre = $user->getSolde();
+        $restaurateurSolde = $restaurateur->getSolde();
+        $user->setSolde($soldeMembre-$totalCommande);
+        $restaurateur->setSolde($restaurateurSolde+$totalCommande - getenv('DELIVERY_PRICE'));
+
         //persit en base
         $em->persist($commandeDetail);
         $em->persist($commande);
         $em->flush();
 
-
         $idcommande = $commande->getId();
 
-        $restaurateur = $restaurant->getRestaurateur();
-       $restaurateurEmail =  $restaurateur->getEmail();
+
+
+
+
+
 
        $email = (new TemplatedEmail())
            ->from('delivroomvroom@gmail.com')
-           ->to("guillaume.faugeron@ynov.com")
+           ->to($restaurateurEmail)
            ->priority(Email::PRIORITY_HIGH)
            ->subject('Votre restaurant'.$restaurant->getNom().'à recu une commande')
            ->htmlTemplate('email/restaurateur-email.html.twig')
