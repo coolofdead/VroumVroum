@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Commande;
 use App\Entity\CommandeDetail;
 use App\Entity\Plat;
+use App\Entity\Quantite;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use App\Form\BalanceType;
@@ -69,44 +70,26 @@ class IndexController extends AbstractController
     */
    public function payement(Request $request, PlatRepository $pr,EntityManagerInterface $em,StatusRepository $statusRepository, UserRepository $ur)
    {
-      /* TODO Prendre le json dans la request avec la structure suivante :
-       [
-          {
-           id_resto : value,
-           id_plat : value
-          },
-          ...
-       ]
-
-      - faire ta tambouille pour calculer le total
-      - check si l'utilisateur à la somme
-      - rediriger vers soit :
-        si il peut pas payer -> page addBalance 
-        sinon -> render la page payement 
-    */
-
-
       $data = json_decode($request->get("items"));
       $plats = [];
-      $commandeDeatil = new CommandeDetail();
-      $commande = new Commande();
-      $totalCommande = 0;
       $idPlatList = [];
+
       //boucle sur le json de session qui contient les plats
       foreach ($data->items as $item) {
-       $plat = $pr->findOneBy(["id"=>$item->id_plat]);
-       $plats[] = $plat;
-       $idPlatList[] = ["id"=>$item->id_plat];
-   }
+           $plat = $pr->findOneBy(["id"=>$item->id_plat]);
+           $plats[] = $plat;
+           $idPlatList[] = ["id"=>$item->id_plat];
+      }
+
+
         $userSecu = $this->getUser();
         $userEmail= $userSecu->getUsername();
         $user =  $ur->findOneByEmail($userEmail);
+
+        //ajout de la liste des plats de la commande en session
         $this->session->set('plats-'.$user->getId(), $idPlatList);
 
-
-
-
-      return $this->render('membre/payement.html.twig', [
+        return $this->render('membre/payement.html.twig', [
          'accueil' => 'IndexController',
          'items' => $plats,  // Array avec les plats
          'delivery_fee' => getenv('DELIVERY_PRICE'),
@@ -191,6 +174,7 @@ class IndexController extends AbstractController
        $commandeDetail = new CommandeDetail();
        $commande = new Commande();
        $plats = [];
+       $quantites = [];
        $totalCommande = 0;
 
        //recuperation l'entity user grace au systeme de login
@@ -198,57 +182,71 @@ class IndexController extends AbstractController
        $userEmail= $userSecu->getUsername();
        $user =  $ur->findOneByEmail($userEmail);
 
-
         //recuperation de la liste des id des plats commandés et validé
-       $listIdPlat  = $this->session->get("plats-".$user->getId());
+       $listIdPlatAsc = $this->session->get("plats-".$user->getId());
+        //transformation du tableau associatif en array simple
+       foreach ($listIdPlatAsc as $item){
+           $tempList[]=$item["id"];
+       }
+       //compte le nombre de meme plat.id ==> quatity, permet de gerer les quantité multiple de plats
+       $listIdPlat = array_count_values($tempList);
 
-       foreach ($listIdPlat as $id){
-            $plat = $pr->findOneBy($id);
+
+       foreach ($listIdPlat as $id => $quatity){
+
+           $quantite = new Quantite();
+           $plat = $pr->findOneBy(["id" => $id]);
+           $quantite->setPlat($plat);
+           $quantite->setNombre($quatity);
+           $quantite->setCommandeDetail($commandeDetail);
+
             $plats[] = $plat;
-            $commandeDetail->addPlat($plat);
-            $totalCommande += $plat->getPrix();
+            $quantites[] = $quantite;
+            $totalCommande += $plat->getPrix() * $quatity;
             $restaurant = $plat->getRestaurant();
             $commande->setRestaurant($restaurant);
+            $em->persist($quantite);
+
        }
+
+
 
         //creation en base des nouveau element relatif a la comande
        $status = $statusRepository->findOneByState("En attente");
        $commande->setStatus($status);
        $commande->setMembre($user);
-       $commande->setDetail($commandeDetail);
 
         $commande->setDate(new \DateTime());
         $commandeDetail->setCommande($commande);
         $commandeDetail->setPrix($totalCommande + getenv('DELIVERY_PRICE'));
-
+        //persit en base
         $em->persist($commandeDetail);
         $em->persist($commande);
         $em->flush();
+
+
         $idcommande = $commande->getId();
-//        return $this->render('debug.html.twig',['debug' => $idcommande]);
+
         $restaurateur = $restaurant->getRestaurateur();
        $restaurateurEmail =  $restaurateur->getEmail();
 
        $email = (new TemplatedEmail())
            ->from('delivroomvroom@gmail.com')
-           ->to($restaurateurEmail)
-           ->cc('guillaume.faugeron@ynov.com')
-           //->bcc('bcc@example.com')
-           //->replyTo('fabien@example.com')
+           ->to("guillaume.faugeron@ynov.com")
            ->priority(Email::PRIORITY_HIGH)
            ->subject('Votre restaurant'.$restaurant->getNom().'à recu une commande')
            ->htmlTemplate('email/restaurateur-email.html.twig')
            ->context([
                'commande' => $commande,
                'commandeDetail' => $commandeDetail,
-               'plats' => $plats,
+               'quantites' => $quantites,
                'membre' => $user,
                'heure_de_commande' => $commande->getDate()->format('H:i'),
                'heure_de_livraison_estimation' => $commande->getDate()->add(new DateInterval('PT1H'))->format('H:i'),
                'delivery_fee' => getenv('DELIVERY_PRICE'),
            ]);
        $mailer->send($email);
-
+       $this->session->clear();
 
 
         return $this->redirectToRoute('followOrder',["id" => $idcommande]);

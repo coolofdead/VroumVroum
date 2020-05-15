@@ -28,14 +28,16 @@
                     <tr>
                         <th scope="col">NOM</th>
                         <th scope="col">PRIX</th>
+                        <th scope="col">QUANTITE</th>
                     </tr>
                     </thead>
 
                     <tbody>
-                {% for plat in plats %}
+                {% for  quantite in quantites %}
                     <tr>
-                        <td scope="row" style="border-top: 0;">{{ plat.nom }}</td>
-                        <td style="border-top: 0;" class="text-right"> {{ plat.prix }}</td>
+                        <td scope="row" style="border-top: 0;">{{ quantite.plat.nom }}</td>
+                        <td style="border-top: 0;" class="text-right"> {{ quantite.plat.prix }}</td>
+                        <td style="border-top: 0;" class="text-right"> {{quantite.nombre }}</td>
                     </tr>
                 {% endfor %}
                     </tbody>
@@ -55,9 +57,9 @@
     <div class="card w-100 mb-4">
         <div class="card-body">
             <img width="50" height="50" class="mx-auto" src="https://s3.amazonaws.com/lyft.zimride.com/images/emails/enterprise/briefcase_dark_large.png">
-            <h4 class="text-center">VOS CLIENT ONT FAIM ?</h4>
+            <h4 class="text-center">VOS CLIENT ONT FAIM !!</h4>
             <p class="text-center">Valider la commande afin de les tenir informés</p>
-            <a class="btn btn-primary btn-lg mx-auto mt-2" href="https://lyft.com">Valider la commande !</a>
+            <a class="btn btn-primary btn-lg mx-auto mt-2" href="http://127.0.0.1:8000/followOrder/{{ commande.id }}">Valider la commande !</a>
         </div>
     </div>
 
