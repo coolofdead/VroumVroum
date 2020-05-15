@@ -21,9 +21,15 @@
 						<a class="nav-link active" href="{{path('addBalance')}}">💳 Ajouter du solde</a>
 					</li>
 
-					{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RESTAURATEUR') %}
+					{% if is_granted('ROLE_RESTAURATEUR') %}
 						<li class="nav-item">
 							<a class="nav-link active" href="{{path('restaurateur_restaurants')}}">🍴 Restaurants</a>
+						</li>
+					{% endif %}
+					
+					{% if is_granted('ROLE_ADMIN') %}
+						<li class="nav-item">
+							<a class="nav-link active" href="{{path('admin_index')}}">🕵🏻 Admin</a>
 						</li>
 					{% endif %}
 
