@@ -17,6 +17,7 @@ use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -228,7 +229,7 @@ class IndexController extends AbstractController
         $restaurateur = $restaurant->getRestaurateur();
        $restaurateurEmail =  $restaurateur->getEmail();
 
-       $email = (new Email())
+       $email = (new TemplatedEmail())
            ->from('delivroomvroom@gmail.com')
            ->to($restaurateurEmail)
            ->cc('guillaume.faugeron@ynov.com')
@@ -236,8 +237,16 @@ class IndexController extends AbstractController
            //->replyTo('fabien@example.com')
            ->priority(Email::PRIORITY_HIGH)
            ->subject('Votre restaurant'.$restaurant->getNom().'à recu une commande')
-           ->text('Les plats commande sont : \n Pour un montant total hors livraison de '.$commandeDetail->getPrix());
-//           ->html('<h1>coucou cest de lhtml mais je faut que je test</h1>');
+           ->htmlTemplate('email/restaurateur-email.html.twig')
+           ->context([
+               'commande' => $commande,
+               'commandeDetail' => $commandeDetail,
+               'plats' => $plats,
+               'membre' => $user,
+               'heure_de_commande' => $commande->getDate()->format('H:i'),
+               'heure_de_livraison_estimation' => $commande->getDate()->add(new DateInterval('PT1H'))->format('H:i'),
+               'delivery_fee' => getenv('DELIVERY_PRICE'),
+           ]);
        $mailer->send($email);
 
 
@@ -250,8 +259,6 @@ class IndexController extends AbstractController
     */
    public function followOrder(Commande $commande)
    {
-      // TODO : passer un id dans l'url pour voir la commande
-
       return $this->render('membre/command-tracker.html.twig', [
          'accueil' => 'IndexController',
          'commande_en_cours' => $commande,
