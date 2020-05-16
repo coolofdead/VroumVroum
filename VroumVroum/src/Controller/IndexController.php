@@ -9,6 +9,7 @@ use App\Entity\Quantite;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use App\Form\BalanceType;
+use App\Form\UpdateUserType;
 use App\Form\UserType;
 use App\Repository\PlatRepository;
 use App\Repository\CategorieRestaurantRepository;
@@ -98,12 +99,16 @@ class IndexController extends AbstractController
    }
 
    /**
-    * @Route("/compte", name="compte")
+    * @Route("/compte/{id}", name="compte")
     */
-   public function compte(Request $request)
+   public function compte(Request $request, User $user)
    {
-      return $this->render('membre/profil.html.twig', [
+
+       $form = $this->createForm(UpdateUserType::class, $user);
+
+       return $this->render('membre/profil.html.twig', [
          'accueil' => 'IndexController',
+           'form' => $form->createView()
       ]);
    }
 
@@ -132,6 +137,7 @@ class IndexController extends AbstractController
 
    /**
     * @Route("/updatePassword", name="updatePassword")
+    *
     */
    public function updatePassword(Request $request)
    {
@@ -144,14 +150,20 @@ class IndexController extends AbstractController
    }
 
    /**
-    * @Route("/updateUser", name="updateUser")
+    * @Route("compte/updateUser/{id}", name="updateUser", methods={"POST"})
     */
-   public function updateUser(Request $request)
+   public function updateUser(Request $request, User $user)
    {
-      // TODO Générer le formtype adéquat
+       $form = $this->createForm(UpdateUserType::class, $user);
+       $form->handleRequest($request);
 
-      return $this->render('membre/profil.html.twig', [
-         'accueil' => 'IndexController',
+       if ($form->isSubmitted() && $form->isValid()) {
+           $this->getDoctrine()->getManager()->flush();
+           return $this->redirectToRoute('compte', ['id' => $user->getId()]);
+       }
+
+      return $this->render('debug.html.twig', [
+         'debug' => $form,
       ]);
    }
 
@@ -238,11 +250,6 @@ class IndexController extends AbstractController
         $em->flush();
 
         $idcommande = $commande->getId();
-
-
-
-
-
 
 
        $email = (new TemplatedEmail())

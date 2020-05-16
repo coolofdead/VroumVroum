@@ -20,20 +20,22 @@
 						</div>
 					</div>
 					<div class="card-body">
-						<form role="form" action="updateUser" method="POST">
+						<form role="form" action="updateUser/{{ app.user.id }}" method="POST">
 							<h6 class="heading-small text-muted mb-4">Utilisateur</h6>
 							<div class="pl-lg-4">
 								<div class="row">
 									<div class="col-lg-6">
 										<div class="form-group focused">
 											<label class="form-control-label" for="input-first-name">Prénom</label>
-											<input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="Prénom" value="{{app.user.prenom}}">
+{#											<input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="Prénom" value="{{app.user.prenom}}">#}
+											{{ form_widget(form.prenom , {'data' : app.user.prenom} ) }}
 										</div>
 									</div>
 									<div class="col-lg-6">
 										<div class="form-group focused">
 											<label class="form-control-label" for="input-last-name">Nom</label>
-											<input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Nom" value="{{app.user.nom}}">
+{#											<input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Nom" value="{{app.user.nom}}">#}
+											{{ form_widget(form.nom , {'data' : app.user.nom} ) }}
 										</div>
 									</div>
 								</div>
@@ -43,7 +45,8 @@
 									<div class="col-lg-12">
 										<div class="form-group">
 											<label class="form-control-label" for="input-email">Mail</label>
-											<input type="email" id="input-email" class="form-control form-control-alternative" placeholder="yourmail@example.com" value="{{app.user.email}}">
+{#											<input type="email" id="input-email" class="form-control form-control-alternative" placeholder="yourmail@example.com" value="{{app.user.email}}">#}
+											{{ form_widget(form.email , {'data' : app.user.email} ) }}
 										</div>
 									</div>
 								</div>
@@ -53,7 +56,8 @@
 									<div class="col-md-12">
 										<div class="form-group focused">
 											<label class="form-control-label" for="input-address">Adresse</label>
-											<input id="input-address" class="form-control form-control-alternative" placeholder="Adresse" value="{{app.user.adresse}}" type="text">
+{#											<input id="input-address" class="form-control form-control-alternative" placeholder="Adresse" value="{{app.user.adresse}}" type="text">#}
+											{{ form_widget(form.adresse , {'data' : app.user.adresse} ) }}
 										</div>
 									</div>
 								</div>
@@ -61,7 +65,8 @@
 									<div class="col-lg-4">
 										<div class="form-group focused">
 											<label class="form-control-label" for="input-city">Ville</label>
-											<input type="text" id="input-city" class="form-control form-control-alternative" placeholder="Ville" value="{{app.user.ville}}">
+{#											<input type="text" id="input-city" class="form-control form-control-alternative" placeholder="Ville" value="{{app.user.ville}}">#}
+											{{ form_widget(form.ville , {'data' : app.user.ville} ) }}
 										</div>
 									</div>
 									<div class="col-lg-4">
@@ -73,7 +78,8 @@
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="form-control-label" for="input-country">Code postal</label>
-											<input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Code postal" value="{{app.user.codePostal}}">
+{#											<input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Code postal" value="{{app.user.codePostal}}">#}
+											{{ form_widget(form.codePostal , {'data' : app.user.codePostal} ) }}
 										</div>
 									</div>
 								</div>
