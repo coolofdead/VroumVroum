@@ -78,7 +78,6 @@ class IndexController extends AbstractController
       $data = json_decode($request->get("items"));
       $plats = [];
       $idPlatList = [];
-
       //boucle sur le json de session qui contient les plats
       foreach ($data->items as $item) {
            $plat = $pr->findOneBy(["id"=>$item->id_plat]);
