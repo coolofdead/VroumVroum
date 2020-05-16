@@ -1,0 +1,86 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <style></style>
+</head>
+
+<body class="bg-light">
+<preview>Commande en attente</preview>
+<div class="container">
+
+    <div class="card mb-4" style="border-top: 5px solid blue;">
+        <div class="card-body">
+            <h4 class="text-center">Un client viens de commander dans votre restaurant :</h4>
+            <h5 class="text-muted text-center">Heure de commande : {{ heure_de_commande}}</h5>
+            <h5 class="text-muted text-center">Heure de livraison : {{ heure_de_livraison_estimation }}</h5>
+            <h5 class="text-muted text-center">Lieu de livraison : {{ membre.adresse }}</h5>
+
+
+            <hr/>
+
+            <h5 class="text-center"><strong>Detail de la commande n° {{ commande.id }}</strong></h5>
+            <table class="table">
+                <tbody>
+                <table class="table table-bordered" >
+                    <thead>
+                    <tr>
+                        <th scope="col">NOM</th>
+                        <th scope="col">PRIX</th>
+                        <th scope="col">QUANTITE</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                {% for  quantite in quantites %}
+                    <tr>
+                        <td scope="row" style="border-top: 0;">{{ quantite.plat.nom }}</td>
+                        <td style="border-top: 0;" class="text-right"> {{ quantite.plat.prix }}</td>
+                        <td style="border-top: 0;" class="text-right"> {{quantite.nombre }}</td>
+                    </tr>
+                {% endfor %}
+                    </tbody>
+
+                </table>
+                <tr>
+                    <td>
+                        <h4 class="text-right"><strong>Prix de la commande (avec {{ delivery_fee }}€ de frais de port) : {{ commandeDetail.prix }}</strong></h4>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="card w-100 mb-4">
+        <div class="card-body">
+            <img width="50" height="50" class="mx-auto" src="https://s3.amazonaws.com/lyft.zimride.com/images/emails/enterprise/briefcase_dark_large.png">
+            <h4 class="text-center">VOS CLIENT ONT FAIM !!</h4>
+            <p class="text-center">Valider la commande afin de les tenir informés</p>
+            <a class="btn btn-primary btn-lg mx-auto mt-2" href="http://127.0.0.1:8000/followOrder/{{ commande.id }}">Valider la commande !</a>
+        </div>
+    </div>
+
+
+    <table class="table-unstyled text-muted mb-4">
+        <tbody>
+        <tr>
+            <td>© Delivroom 2020</td>
+
+        </tr>
+        <tr>
+            <td class="text-right">Travailler avec nous</td>
+        </tr>
+        <tr>
+            <td>Lyon, 69000</td>
+            <td class="text-right">Devenez un livreur</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
