@@ -30,6 +30,7 @@
 		<input name="nom" value="" hidden>
 		<input name="adresse" value="" hidden>
 		<input name="url" value="" hidden>
+		<input name="email" value="" hidden>
 		<input name="latitude" value="" hidden>
 		<input name="longitude" value="" hidden>
 		<input name="category" value="" hidden>
@@ -83,6 +84,7 @@
 					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
 						<td><input name="latitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.latitude}}" placeholder="Latitude" style="width:min-content;"></td>
 						<td><input name="longitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.longitude}}" placeholder="Longitude" style="width:min-content;"></td>
+						<td><input name="email" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="email" value="{{restaurant.email}}" placeholder="Email" style="width:min-content;"></td>
 					</tr>
 
 					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">

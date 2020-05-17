@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Restaurants
+{% endblock %}
+
+{% block content %}
+
+	{{parent()}}
+
+	<div class="container" style="margin-top:3vh;">
+		<h1>Restaurants (total)</h1>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Restaurateur</th>
+					<th>Restaurant</th>
+					<th>Total de commande</th>
+					<th>Note</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for restaurant in restaurants %}
+
+					{% set total = 0 %}
+					{% set nbNote = 0 %}
+
+					{% for note in notes %}
+						{% if note.restaurant == restaurant %}
+							{% set nbNote = nbNote + 1 %}
+							{% set total = total + note.note %}
+						{% endif %}
+					{% endfor %}
+
+					{% if nbNote != 0 %}
+						{% set note = (total / nbNote)|number_format(1) ~ "⭐" %}
+					{% else %}
+						{% set note = "" %}
+					{% endif %}
+
+					<tr>
+						<td>{{restaurant.restaurateur.nom}}
+							{{restaurant.restaurateur.prenom}}</td>
+						<td><a href="{{path('restaurant-detail', {'id':restaurant.id})}}">{{restaurant.nom}}</a></td>
+						<td><a href="{{path('admin_restaurant_commandes_delivering', {'id':restaurant.id})}}">{{restaurant.commandes|length}}</a></td>
+						<td data-toggle="modal" data-target="#modal-{{restaurant.id}}" type="button">{{note}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		{% for restaurant in restaurants %}
+			<div class="modal fade" id="modal-{{restaurant.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Liste des notes
+								<small>(total:10)</small>
+							</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="container">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Note</th>
+										<th>Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for note in notes %}
+										{% if note.restaurant == restaurant %}
+                                            <tr>
+                                                <td>{{note.note}}⭐</td>
+                                                <td>{{note.date|format_datetime(locale='fr')}}</td>
+                                            </tr>
+										{% endif %}
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-dismiss="modal">Quitter</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+
+	</div>
+{% endblock %}

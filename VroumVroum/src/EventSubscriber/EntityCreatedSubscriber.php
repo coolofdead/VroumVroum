@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Commande;
+use App\Entity\Note;
 use DateTime;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
@@ -21,7 +22,7 @@ class EntityCreatedSubscriber implements EventSubscriber
     {
         $object = $args->getObject();
 
-        if ($object instanceof Commande) {
+        if ($object instanceof Commande || $object instanceof Note) {
             $object->setDate(new DateTime());
         }
     }

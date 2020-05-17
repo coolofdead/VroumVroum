@@ -1,5 +1,194 @@
+{% extends 'base.html.twig' %}
+{% block title %}Admin
+{% endblock %}
+{% block stylesheets %}
+	{{parent()}}
+	<link href="{{asset('css/AdminIndex.css')}}" rel="stylesheet">
+{% endblock %}
+
+
 {% block content %}
-<div class="main-content">
-    <h1>Bienvenue sur la page d'admin!</h1>
-</div>
+
+	{{ parent() }}
+
+	<div class="container" style="margin-top: 5vh;">
+
+		<h1>
+			<strong>Tableau de bord</strong>
+		</h1>
+
+		<h2>Commerces</h2>
+		<div class="row">
+			<div class="col-lg-3">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-6">
+								<i class="fas fa-store fa-4x"></i>
+							</div>
+							<div class="col-xs-6 text-right">
+								<p class="announcement-heading">{{total_restaurant}}</p>
+								<p class="announcement-text text-break">Restaurants</p>
+							</div>
+						</div>
+					</div>
+					<a href="{{path('admin_restaurants')}}">
+						<div class="panel-footer announcement-bottom">
+							<div class="row">
+								<div class="col-xs-6">
+									Voir plus
+								</div>
+								<div class="col-xs-6 text-right">
+									<i class="fa fa-arrow-circle-right"></i>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-6">
+								<i class="fas fa-biking fa-4x"></i>
+							</div>
+							<div class="col-xs-6 text-right">
+								<p class="announcement-heading">{{total_commandes_delivering}}</p>
+								<p class="announcement-text text-break">Commandes en cours</p>
+							</div>
+						</div>
+					</div>
+					<a href="{{path('admin_commandes_delivering')}}">
+						<div class="panel-footer announcement-bottom">
+							<div class="row">
+								<div class="col-xs-6">
+									Voir plus
+								</div>
+								<div class="col-xs-6 text-right">
+									<i class="fa fa-arrow-circle-right"></i>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-6">
+								<i class="fas fa-receipt fa-4x"></i>
+							</div>
+							<div class="col-xs-6 text-right">
+								<p class="announcement-heading">{{total_commandes_delivered}}</p>
+								<p class="announcement-text text-break">Commandes reçues</p>
+							</div>
+						</div>
+					</div>
+					<a href="#">
+						<div class="panel-footer announcement-bottom">
+							<div class="row">
+								<div class="col-xs-6">
+									Voir plus
+								</div>
+								<div class="col-xs-6 text-right">
+									<i class="fa fa-arrow-circle-right"></i>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-6">
+								<i class="fas fa-cash-register fa-4x"></i>
+							</div>
+							<div class="col-xs-6 text-right">
+								<p class="announcement-heading">{{total_delivery_fee}}€</p>
+								<p class="announcement-text text-break">Total livraison ({{total_commande}})</p>
+							</div>
+						</div>
+					</div>
+					<a href="#">
+						<div class="panel-footer announcement-bottom">
+							<div class="row">
+								<div class="col-xs-6">
+									Voir plus
+								</div>
+								<div class="col-xs-6 text-right">
+									<i class="fa fa-arrow-circle-right"></i>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<h2>Clients</h2>
+		<div class="row users">
+			<div class="col-lg-3">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-6">
+								<i class="fas fa-utensils fa-4x"></i>
+							</div>
+							<div class="col-xs-6 text-right">
+								<p class="announcement-heading">{{total_restaurateur}}</p>
+								<p class="announcement-text text-break">Restaurateurs</p>
+							</div>
+						</div>
+					</div>
+					<a href="#">
+						<div class="panel-footer announcement-bottom">
+							<div class="row">
+								<div class="col-xs-6">
+									Voir plus
+								</div>
+								<div class="col-xs-6 text-right">
+									<i class="fa fa-arrow-circle-right"></i>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-6">
+								<i class="fas fa-user-friends fa-4x"></i>
+							</div>
+							<div class="col-xs-6 text-right">
+								<p class="announcement-heading">{{total_membre}}</p>
+								<p class="announcement-text text-break">Membres</p>
+							</div>
+						</div>
+					</div>
+					<a href="#">
+						<div class="panel-footer announcement-bottom">
+							<div class="row">
+								<div class="col-xs-6">
+									Voir plus
+								</div>
+								<div class="col-xs-6 text-right">
+									<i class="fa fa-arrow-circle-right"></i>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
 {% endblock %}

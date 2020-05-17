@@ -2,6 +2,14 @@ window.addEventListener("DOMContentLoaded", (e) => {
     var btns = document.querySelectorAll(".btn-update-restaurant");
     var form = document.querySelector("#update-restaurant");
 
+    var inputs = document.querySelectorAll(".form-control");
+
+    inputs.forEach((input)=>{
+        input.addEventListener("change", (e)=>{
+            e.target.attributes["value"].value = e.target.value;
+        });
+    });
+
     btns.forEach((btn)=> {
         btn.addEventListener('click', (e)=>{
             var formId = document.querySelector("#r-id");

@@ -44,7 +44,7 @@ class Commande
     private $restaurant;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Status")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Status")
      */
     private $status;
 

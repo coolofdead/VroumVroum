@@ -5,6 +5,7 @@ namespace App\Controller\Restaurateur;
 use App\Entity\Restaurant;
 use App\Entity\Commande;
 use App\Entity\Plat;
+use App\Entity\User;
 use App\Form\RestaurantType;
 use App\Repository\CategoriePlatRepository;
 use App\Repository\CategorieRestaurantRepository;
@@ -119,8 +120,12 @@ class RestaurantController extends AbstractController
     /**
      * @Route("/edit", name="restaurant_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request, UserRepository $ur): Response
     {
+        $userSecu = $this->getUser();
+        $userEmail= $userSecu->getUsername();
+        $user =  $ur->findOneByEmail($userEmail);
+
         $form = $this->createForm(RestaurantType::class, null);
         $form->handleRequest($request);
 
@@ -130,7 +135,12 @@ class RestaurantController extends AbstractController
             return $this->redirectToRoute('restaurateur_restaurant_index');
         }
 
-        return $this->redirectToRoute('restaurateur_restaurants');
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            return $this->redirectToRoute('admin_index');
+        }
+        else {
+            return $this->redirectToRoute('restaurateur_restaurants');
+        }
     }
 
     /**

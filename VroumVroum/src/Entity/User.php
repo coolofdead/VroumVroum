@@ -179,7 +179,7 @@ class User implements UserInterface
     /**
      * @return Collection|Restaurant[]
      */
-    public function getrestaurants(): Collection
+    public function getRestaurants(): Collection
     {
         return $this->restaurants;
     }

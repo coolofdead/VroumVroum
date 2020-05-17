@@ -70,6 +70,11 @@ class Restaurant
      */
     private $note;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $email;
+
     public function __construct()
     {
         $this->plats = new ArrayCollection();
@@ -255,6 +260,18 @@ class Restaurant
                 $note->setRestaurant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }

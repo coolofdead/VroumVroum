@@ -6,6 +6,7 @@ use App\Entity\CategoriePlat;
 use App\Entity\CategorieRestaurant;
 use App\Entity\Commande;
 use App\Entity\CommandeDetail;
+use App\Entity\Note;
 use App\Entity\Plat;
 use App\Entity\Restaurant;
 use App\Entity\Status;
@@ -52,6 +53,8 @@ class AppFixtures extends Fixture
     $restaurateur->setEmail('restaurateur@restaurateur.com')
       ->setRoles(['ROLE_RESTAURATEUR'])
       ->setSolde(0)
+      ->setPrenom($faker->firstName)
+      ->setNom($faker->lastName)
       ->setPassword($this->passwordEncoder->encodePassword(
         $restaurateur,
         'r'
@@ -87,7 +90,8 @@ class AppFixtures extends Fixture
         ->setRestaurateur($restaurateur)
         ->setNom($faker->realText(20, 1))
         ->setAdresse($faker->streetAddress)
-        ->setUrl($faker->imageUrl(640, 480));
+        ->setUrl($faker->imageUrl(640, 480))
+        ->setEmail($faker->email);
       $manager->persist($restaurant);
       $restaurants[] = $restaurant;
     }
@@ -188,6 +192,16 @@ class AppFixtures extends Fixture
       ->setCodePostal(69690)
       ->setVille("Ville-sur-villaine");
     $manager->persist($user);
+
+    for ($i = 1; $i <= 12; $i++) {
+      $note = new Note();
+      
+      $note->setNote(rand(0, 5))
+           ->setDate($faker->dateTime)
+           ->setRestaurant($restaurants[rand(0, count($restaurants)-1)]);
+
+      $manager->persist($note);
+    }
 
     $manager->flush();
   }

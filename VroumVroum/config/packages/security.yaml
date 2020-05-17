@@ -1,4 +1,6 @@
 security:
+    access_denied_url: /accueil
+
     encoders:
         App\Entity\User:
             algorithm: auto
@@ -14,7 +16,6 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
         
         main:
             anonymous: lazy
@@ -44,9 +45,9 @@ security:
         - { path: /login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: /register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: /restaurant-detail, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_MEMBRE }
+        - { path: ^/restaurateur, roles: ROLE_ADMIN }
         - { path: ^/restaurateur, roles: ROLE_RESTAURATEUR }
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
     role_hierarchy:
         ROLE_ADMIN:         [ROLE_ADMIN]

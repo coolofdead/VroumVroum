@@ -2,15 +2,21 @@
 {% block title %}
 	{{ restaurant.nom }}
 {% endblock %}
+{% block stylesheets %}
+	{{parent()}}
+	{% if is_granted('ROLE_ADMIN') %}
+		<link href="{{asset('css/switch.css')}}" rel="stylesheet">
+	{% endif %}
+{% endblock %}
 
 {% block content %}
 	<style>
 		* {
 			scroll-behavior: smooth;
 		}
-		
+
 		.item-card:hover {
-			cursor:pointer;
+			cursor: pointer;
 		}
 	</style>
 
@@ -29,17 +35,77 @@
                 '🧀','🍖','🍗','🥩','🥓','🍔','🍟','🍕','🌭','🥪','🌮','🌯','🥙','🧆','🍳','🥘','🍲','🥣','🥗','🍿','🧈','🧂','🥫','🍱','🍘','🍙','🍚','🍛','🍜','🍝','🍠','🍢','🍣','🍤','🍥','🥮','🍡','🥟','🥠','🥡','🦪','🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫','🍬','🍭','🍮','🍯','🍼','🥛','☕','🍵','🍶','🍾','🍷'
         ] %}
 
+	{% if is_granted('ROLE_ADMIN') %}
+		<div class="modal fade delete-restaurant-modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Vous êtes sur le point de supprimer un restaurant</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>Confirmez la suppression du restaurant <strong>{{restaurant.nom}}</strong></p>
+					</div>
+					<div class="modal-footer">
+							<form method="POST" action="{{path('restaurateur_restaurant_delete', {'id':restaurant.id})}}">
+								<input type="hidden" name="_method" value="DELETE">
+								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ restaurant.id) }}">
+								<button type="submit" class="btn btn-danger" href="">Valider</button>
+							</form>
+						<button class="btn btn-primary" data-dismiss="modal">Annuler</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="navbar navbar-expand-lg navbar-light bg-light" style="display: flex;justify-content: space-between; background-color: #6cc86c !important;">
+			<div class="control-group" style="display: flex;justify-content: space-between;align-items: center;width: 15%;">
+				<button type="submit" form="edit-restaurant" class="btn btn-light">Enregistrer ✔️</button>
+				<button type="submit" class="btn btn-light" data-toggle="modal" data-target=".delete-restaurant-modal">Supprimer 🗑</button>
+			</div>
+
+			<div class="restaurant-info w-25" style="display:flex;justify-content:space-between;">
+				<h3>
+					<a href="{{path('admin_restaurateur_detail', {'id':restaurant.restaurateur.id})}}" style="color: white;font-weight: bold;text-decoration: none;">{{restaurant.restaurateur.nom}}
+						{{restaurant.restaurateur.prenom}}</a>
+				</h3>
+				<form action="{{path('restaurateur_restaurant_edit')}}" method="POST" id="edit-restaurant">
+					<input name="id" value="{{restaurant.id}}" hidden>
+					<input type="email" value="{{restaurant.restaurateur.email}}" placeholder="toto@gmail.com" class="form-control w-100">
+			</div>
+		</div>
+	{% endif %}
+
 	<div class="navbar navbar-expand-lg navbar-light bg-light" style="display: flex;justify-content: space-between; background-color: #a7f2a7!important;">
 		<span>
-			<h1 style="font-weight: bold;">{{ restaurant.nom }}</h1>
-			<p style="font-size: 2em;">{{ restaurant.categorie.categorie }}
-				{{ random(iconsCategory) }}</p>
+			{% if is_granted('ROLE_ADMIN') %}
+				<label for="nom" style="font-size:2rem;">Nom du restaurant</label>
+				<input type="text" name="nom" value="{{restaurant.nom}}" placeholder="Nom du restaurant" class="form-control w-100">
+			{% else %}
+				<h1 style="font-weight: bold;">{{ restaurant.nom }}</h1>
+			{% endif %}
+
+			<p style="font-size: 2em;">{{ restaurant.categorie.categorie }}	{{ random(iconsCategory) }}</p>
+
 		</span>
 		<div>
 			<img src="{{ restaurant.url }}" class="card-img" alt="..." style="width: 200px;height: 200px;">
 
-			<p style="text-align: right;color: gray;font-size: 1.5em;">{{ restaurant.adresse }}</p>
+			{% if is_granted('ROLE_ADMIN') %}
+				<input type="text" name="url" value="{{restaurant.url}}" placeholder="http://.." class="form-control w-100">
+				<input type="text" name="adresse" value="{{restaurant.adresse}}" placeholder="123 rue poirie" class="form-control w-100">
+			{% else %}
+				<p style="text-align: right;color: gray;font-size: 1.5em;">{{ restaurant.adresse }}</p>
+			{% endif %}
+
 		</div>
+
+		{% if is_granted('ROLE_ADMIN') %}
+			</form>
+		{% endif %}
+
 	</div>
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">

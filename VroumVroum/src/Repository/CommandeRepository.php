@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Commande;
+use App\Entity\Restaurant;
+use App\Entity\Status;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
@@ -47,4 +50,26 @@ class CommandeRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findCommandesWithoutStatus(Status $status)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.status != :status')
+            ->setParameter('status', $status)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findCommandesWithoutStatusFromRestaurant(Status $status, Restaurant $restaurant)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.status != :status')
+            ->andWhere('c.restaurant = :restaurant')
+            ->setParameter('status', $status)
+            ->setParameter('restaurant', $restaurant)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
