@@ -38,10 +38,16 @@ class CommandeDetail
      */
     private $plats;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Quantite", mappedBy="commandeDetail")
+     */
+    private $quantites;
+
     public function __construct()
     {
         $this->menus = new ArrayCollection();
         $this->plats = new ArrayCollection();
+        $this->quantites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,6 +132,37 @@ class CommandeDetail
     {
         if ($this->plats->contains($plat)) {
             $this->plats->removeElement($plat);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Quantite[]
+     */
+    public function getQuantites(): Collection
+    {
+        return $this->quantites;
+    }
+
+    public function addQuantite(Quantite $quantite): self
+    {
+        if (!$this->quantites->contains($quantite)) {
+            $this->quantites[] = $quantite;
+            $quantite->setCommandeDetail($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuantite(Quantite $quantite): self
+    {
+        if ($this->quantites->contains($quantite)) {
+            $this->quantites->removeElement($quantite);
+            // set the owning side to null (unless already changed)
+            if ($quantite->getCommandeDetail() === $this) {
+                $quantite->setCommandeDetail(null);
+            }
         }
 
         return $this;
