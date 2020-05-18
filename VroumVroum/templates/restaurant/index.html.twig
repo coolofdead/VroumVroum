@@ -91,7 +91,7 @@
 						{% for category in categories %}
 							<td>
 								<div class="radio">
-									<input class="detail-{{restaurant.id}}" id="restaurant-{{restaurant.id}}-category-{{category.categorie}}" value="{{category.id}}" name="category-{{restaurant.id}}" type="radio">
+									<input class="detail-{{restaurant.id}}" id="restaurant-{{restaurant.id}}-category-{{category.categorie}}" value="{{category.id}}" name="category-{{restaurant.id}}" type="radio" {{ (restaurant.categorie.id == category.id) ? 'checked' : '' }}>
 									<label for="restaurant-{{restaurant.id}}-category-{{category.categorie}}" class="detail-{{restaurant.id}} radio-label">{{category.categorie}}</label>
 								</div>
 							</td>
