@@ -26,12 +26,25 @@
 	</script>
 
 	<form id="update-restaurant" action="{{path('restaurateur_restaurant_edit')}}" method="POST">
-		<input id="r-id" name="id" value="" hidden>
-		<input name="nom" value="" hidden>
-		<input name="adresse" value="" hidden>
-		<input name="url" value="" hidden>
-		<input name="latitude" value="" hidden>
-		<input name="longitude" value="" hidden>
+		{{ form_widget(formUpdate.id, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'id' ,'id' : 'r-id' })  }}
+{#		<input id="r-id" name="id" value="" hidden>#}
+
+		{{ form_widget(formUpdate.nom, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'nom' })  }}
+{#		<input name="nom" value="" hidden>#}
+
+		{{ form_widget(formUpdate.adresse, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'adresse' })  }}
+{#		<input name="adresse" value="" hidden>#}
+
+		{{ form_widget(formUpdate.url, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'url' })  }}
+{#		<input name="url" value="" hidden>#}
+
+		{{ form_widget(formUpdate.latitude, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'latitude' })  }}
+{#		<input name="latitude" value="" hidden>#}
+
+		{{ form_widget(formUpdate.longitude, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'longitude' })  }}
+{#		<input name="longitude" value="" hidden>#}
+
+{#		{{ form_widget(formUpdate.categorie, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'category' })  }}#}
 		<input name="category" value="" hidden>
 	</form>
 
@@ -40,63 +53,63 @@
 
 		<table class="table">
 			<thead>
-				<tr>
-					<th>Nom</th>
-					<th>Adresse</th>
-					<th>Commandes</th>
-					<th>Historique</th>
-					<th>Modifier</th>
-					<th></th>
-				</tr>
+			<tr>
+				<th>Nom</th>
+				<th>Adresse</th>
+				<th>Commandes</th>
+				<th>Historique</th>
+				<th>Modifier</th>
+				<th></th>
+			</tr>
 			</thead>
 			<tbody>
-				{% for restaurant in restaurants %}
-					<tr>
-						<td>{{ restaurant.nom }}</td>
-						<td>{{ restaurant.adresse }}</td>
-						<td>
-							<a href="{{path('restaurateur_commandes', {id:restaurant.id})}}">Vos commandes en cours 🕑</a>
-						</td>
-						<td>
-							<a href="{{path('restaurateur_historique', {id:restaurant.id})}}">Votre historique 📄</a>
-						</td>
-						<td>
-							<a id="dropdown-detail-{{restaurant.id}}" data-toggle="detail-{{restaurant.id}}" class="btn btn-outline-success toggle">✏️</a>
-						</td>
-						<td>
-							<form method="POST" action="{{ path('restaurateur_restaurant_delete', {'id': restaurant.id}) }}" onsubmit="return confirm('Voulez vous vraiment supprimer ce restaurant?');">
-								<input type="hidden" name="_method" value="DELETE">
-								<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ restaurant.id) }}">
-								<button class="btn btn-outline-danger">🗑️</button>
-							</form>
-						</td>
-					</tr>
+			{% for restaurant in restaurants %}
+				<tr>
+					<td>{{ restaurant.nom }}</td>
+					<td>{{ restaurant.adresse }}</td>
+					<td>
+						<a href="{{path('restaurateur_commandes', {id:restaurant.id})}}">Vos commandes en cours 🕑</a>
+					</td>
+					<td>
+						<a href="{{path('restaurateur_historique', {id:restaurant.id})}}">Votre historique 📄</a>
+					</td>
+					<td>
+						<a id="dropdown-detail-{{restaurant.id}}" data-toggle="detail-{{restaurant.id}}" class="btn btn-outline-success toggle">✏️</a>
+					</td>
+					<td>
+						<form method="POST" action="{{ path('restaurateur_restaurant_delete', {'id': restaurant.id}) }}" onsubmit="return confirm('Voulez vous vraiment supprimer ce restaurant?');">
+							<input type="hidden" name="_method" value="DELETE">
+							<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ restaurant.id) }}">
+							<button class="btn btn-outline-danger">🗑️</button>
+						</form>
+					</td>
+				</tr>
 
-					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
-						<td><input name="nom" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="text" value="{{restaurant.nom}}" placeholder="Nom" style="width:min-content;"></td>
-						<td><input name="adresse" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="text" value="{{restaurant.adresse}}" placeholder="Adresse" style="width:min-content;"></td>
-						<td><input name="url" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="text" value="{{restaurant.url}}" placeholder="Url logo" style="width:min-content;"></td>
-						<td><button class="detail-{{restaurant.id}} btn btn-success w-100 btn-update-restaurant" data-id="{{restaurant.id}}" type="submit" form="update-restaurant">Save</button></td>
-						<td><a class="detail-{{restaurant.id}} btn btn-outline-success" href="{{path('restaurateur_restaurant_plats', {'id':restaurant.id})}}">🥡</a></td>
-					</tr>
+				<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
+					<td><input name="nom" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="text" value="{{restaurant.nom}}" placeholder="Nom" style="width:min-content;"></td>
+					<td><input name="adresse" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="text" value="{{restaurant.adresse}}" placeholder="Adresse" style="width:min-content;"></td>
+					<td><input name="url" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="text" value="{{restaurant.url}}" placeholder="Url logo" style="width:min-content;"></td>
+					<td><button class="detail-{{restaurant.id}} btn btn-success w-100 btn-update-restaurant" data-id="{{restaurant.id}}" type="submit" form="update-restaurant">Save</button></td>
+					<td><a class="detail-{{restaurant.id}} btn btn-outline-success" href="{{path('restaurateur_restaurant_plats', {'id':restaurant.id})}}">🥡</a></td>
+				</tr>
 
-					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
-						<td><input name="latitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.latitude}}" placeholder="Latitude" style="width:min-content;"></td>
-						<td><input name="longitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.longitude}}" placeholder="Longitude" style="width:min-content;"></td>
-					</tr>
+				<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
+					<td><input name="latitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.latitude}}" placeholder="Latitude" style="width:min-content;"></td>
+					<td><input name="longitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.longitude}}" placeholder="Longitude" style="width:min-content;"></td>
+				</tr>
 
-					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
-						{% for category in categories %}
-							<td>
-								<div class="radio">
-									<input class="detail-{{restaurant.id}}" id="restaurant-{{restaurant.id}}-category-{{category.categorie}}" value="{{category.id}}" name="category-{{restaurant.id}}" type="radio">
-									<label for="restaurant-{{restaurant.id}}-category-{{category.categorie}}" class="detail-{{restaurant.id}} radio-label">{{category.categorie}}</label>
-								</div>
-							</td>
-						{% endfor %}
-					</tr>
+				<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
+					{% for category in categories %}
+						<td>
+							<div class="radio">
+								<input class="detail-{{restaurant.id}}" id="restaurant-{{restaurant.id}}-category-{{category.categorie}}" value="{{category.id}}" name="category-{{restaurant.id}}" type="radio">
+								<label for="restaurant-{{restaurant.id}}-category-{{category.categorie}}" class="detail-{{restaurant.id}} radio-label">{{category.categorie}}</label>
+							</div>
+						</td>
+					{% endfor %}
+				</tr>
 
-				{% endfor %}
+			{% endfor %}
 			</tbody>
 		</table>
 
@@ -104,21 +117,41 @@
 			<table class="table">
 				<tbody>
 					<tr class="form-group">
-						<td><input type="text" class="form-control" placeholder="Nom" required></td>
-						<td><input type="text" class="form-control" placeholder="Adresse" required></td>
-						<td><input type="text" class="form-control" placeholder="Url du logo" required></td>
-						<td><input type="text" class="form-control" placeholder="Longitude"></td>
-						<td><input type="text" class="form-control" placeholder="Latitude"></td>
+						<td>
+{#							<input type="text" class="form-control" placeholder="Nom" required>#}
+							{{ form_widget(form.nom, {'attr' :{'placeholder' : 'Nom'} }) }}
+
+						</td>
+						<td>
+{#							<input type="text" class="form-control" placeholder="Adresse" required>#}
+							{{ form_widget(form.adresse, {'attr' :{'placeholder' : 'Adresse'} }) }}
+						</td>
+						<td>
+{#							<input type="text" class="form-control" placeholder="Url du logo" required>#}
+							{{ form_widget(form.url ,{'attr' :{'placeholder' : 'Url du logo'} }) }}
+						</td>
+						<td>
+{#							<input type="text" class="form-control" placeholder="Longitude">#}
+							{{ form_widget(form.longitude ,{'attr' :{'placeholder' : 'Longitude'} }) }}
+						</td>
+						<td>
+{#							<input type="text" class="form-control" placeholder="Latitude">#}
+							{{ form_widget(form.latitude, {'attr' :{'placeholder' : 'Latitude'} }) }}
+						</td>
 					</tr>
 					<tr class="form-group">
-						{% for category in categories %}
+
+
+						{#						{% for category in categories %}#}
 							<td>
+								{{ form_row(form.categorie, {'attr' :{'class' : 'radio-label'} } ) }}
 								<div class="radio">
-									<input id="category-{{category.categorie}}" name="category" type="radio">
-									<label for="category-{{category.categorie}}" class="radio-label">{{category.categorie}}</label>
+									{#									{{ form_row(form.categorie ) }}#}
+{#									<input id="category-{{category.categorie}}" name="category" type="radio">#}
+{#									<label for="category-{{category.categorie}}" class="radio-label">{{category.categorie}}</label>#}
 								</div>
 							</td>
-						{% endfor %}
+{#						{% endfor %}#}
 					</tr>
 					<tr class="form-group">
 						<td>

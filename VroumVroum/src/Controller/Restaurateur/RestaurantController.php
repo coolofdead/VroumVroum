@@ -30,6 +30,8 @@ class RestaurantController extends AbstractController
      */
     public function index(RestaurantRepository $restaurantRepository, CategorieRestaurantRepository $cr, UserRepository $ur): Response
     {
+        $form = $this->createForm(RestaurantType::class);
+
         $userSecu = $this->getUser();
         $userEmail= $userSecu->getUsername();
         $user =  $ur->findOneByEmail($userEmail);
@@ -37,6 +39,8 @@ class RestaurantController extends AbstractController
         return $this->render('restaurant/index.html.twig', [
             'restaurants' => $restaurantRepository->findBy(['restaurateur'=>$user]),
             'categories' => $cr->findAll(),
+            'form' => $form->createView(),
+            'formUpdate' => $form->createView(),
         ]);
     }
 
@@ -83,7 +87,7 @@ class RestaurantController extends AbstractController
     /**
      * @Route("/new", name="create")
      */
-    public function new(Request $request):Response
+    public function new(Request $request, UserRepository $ur):Response
     {
         $restaurant = new Restaurant();
         $form = $this->createForm(RestaurantType::class, $restaurant);
@@ -91,8 +95,12 @@ class RestaurantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             //ajout le restaurateur connecté directement au restaurant ajouté
-//            $curentRestaurateur = $this->getUser();
-//            $restaurant->setRestaurateur($curentRestaurateur);
+            $userSecu = $this->getUser();
+            $userEmail= $userSecu->getUsername();
+            $user =  $ur->findOneByEmail($userEmail);
+
+
+            $restaurant->setRestaurateur($user);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($restaurant);
@@ -113,23 +121,46 @@ class RestaurantController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('restaurateur_restaurant_index');
+        return $this->redirectToRoute('restaurateur_restaurants');
     }
 
     /**
      * @Route("/edit", name="restaurant_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request, RestaurantRepository $rr, CategorieRestaurantRepository $crr, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(RestaurantType::class, null);
-        $form->handleRequest($request);
+        $categoryId = $request->request->get("category");
+        $restaurantId = $request->request->get("id");
+        $longitude = $request->request->get("longitude");
+        $latitude = $request->request->get("latitude");
+        $nom = $request->request->get("nom");
+        $adresse = $request->request->get("adresse");
+        $url = $request->request->get("url");
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        $category = $crr->findOneBy(['id' => $categoryId]);
+        $restaurant = $rr->findOneBy(['id' => $restaurantId]);
 
-            return $this->redirectToRoute('restaurateur_restaurant_index');
-        }
+        $restaurant->setNom($nom)
+            ->setAdresse($adresse)
+            ->setLatitude($latitude)
+            ->setLongitude($longitude)
+            ->setCategorie($category)
+            ->setUrl($url);
 
+        $entityManager->persist($restaurant);
+        $entityManager->flush();
+
+
+//        return $this->render('debug.html.twig', [
+//            'debug' => $request->request->get("category"),
+//        ]);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $this->getDoctrine()->getManager()->flush();
+//
+//            return $this->redirectToRoute('dghazhjgfahjkz');
+//        }
+//
         return $this->redirectToRoute('restaurateur_restaurants');
     }
 

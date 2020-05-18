@@ -219,24 +219,24 @@ class IndexController extends AbstractController
        foreach ($listIdPlatAsc as $item){
            $tempList[]=$item["id"];
        }
-       //compte le nombre de meme plat.id ==> quatity, permet de gerer les quantité multiple de plats
+       //compte le nombre de meme plat.id ==> quantity, permet de gerer les quantité multiple de plats
        $listIdPlat = array_count_values($tempList);
 
         //mapping des quantite sur les detail commande
-       foreach ($listIdPlat as $id => $quatity){
+       foreach ($listIdPlat as $id => $quantity){
 
             $quantite = new Quantite();
             $plat = $pr->findOneBy(["id" => $id]);
 
             $quantite->setPlat($plat);
-            $quantite->setNombre($quatity);
+            $quantite->setNombre($quantity);
             $quantite->setCommandeDetail($commandeDetail);
 
             $plats[] = $plat;
             $quantites[] = $quantite;
 
             //calcul du prix de la commande
-            $totalCommande += $plat->getPrix() * $quatity;
+            $totalCommande += $plat->getPrix() * $quantity;
             $restaurant = $plat->getRestaurant();
             $commande->setRestaurant($restaurant);
 
@@ -251,7 +251,7 @@ class IndexController extends AbstractController
         $commande->setStatus($status);
         $commande->setMembre($user);
 
-        $commande->setDate(new \DateTime());
+        $commande->setDate(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
         $commandeDetail->setCommande($commande);
         $commandeDetail->setPrix($totalCommande);
 
