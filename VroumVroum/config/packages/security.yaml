@@ -45,8 +45,7 @@ security:
         - { path: /login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: /register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: /restaurant-detail, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/restaurateur, roles: ROLE_ADMIN }
-        - { path: ^/restaurateur, roles: ROLE_RESTAURATEUR }
+        - { path: ^/restaurateur, roles: [ROLE_RESTAURATEUR,ROLE_ADMIN] }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
     role_hierarchy:
