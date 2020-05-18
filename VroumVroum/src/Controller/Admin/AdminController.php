@@ -61,17 +61,6 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/restaurateur-detail/{id}", name="restaurateur_detail")
-     */
-    public function restaurantsFromUser(User $user, CategorieRestaurantRepository $cr): Response
-    {
-        return $this->render('admin/restaurateur-detail.html.twig', [
-            'restaurants' => $user->getRestaurants(),
-            'categories' => $cr->findAll(),
-        ]);
-    }
-
-    /**
      * @Route("/commandes-delivering", name="commandes_delivering")
      */
     public function commandesEnCours(CommandeRepository $cr, StatusRepository $sr): Response
@@ -91,6 +80,8 @@ class AdminController extends AbstractController
         return $this->render('admin/commandes-delivering.html.twig', [
             's' => $statusDelivered,
             'commandes' => $commandes,
+            'title' => 'Commandes en cours',
+            'h2' => 'Suivie des commandes en cours',
         ]);
     }
 
@@ -105,6 +96,50 @@ class AdminController extends AbstractController
         return $this->render('admin/commandes-delivering.html.twig', [
             'restaurant' => $r,
             'commandes' => $commandes,
+            'title' => 'Commandes en cours',
+            'h2' => 'Suivie des commandes en cours',
         ]);
     }
+
+    /**
+     * @Route("/commandes-delivered", name="commandes_delivered")
+     */
+    public function commandesLivre(CommandeRepository $cr, StatusRepository $sr): Response
+    {
+        $statusDelivered = $sr->findOneBy(['state'=>'Livré']);
+
+        $commandes = $cr->findBy(['status'=>$statusDelivered]);
+        usort($commandes, 
+            function($c1, $c2) {
+                if ($c1->getDate() == $c2->getDate()) {
+                    return 0;
+                }
+                return ($c1->getDate() < $c2->getDate()) ? 1 : -1;
+            }
+        );
+
+        return $this->render('admin/commandes-delivering.html.twig', [
+            's' => $statusDelivered,
+            'commandes' => $commandes,
+            'title' => 'Commandes passé',
+            'h2' => 'Suivie des commandes livré',
+        ]);
+    }
+
+    /**
+     * @Route("/restaurant-commandes-delivered/{id}", name="restaurant_commandes_delivered")
+     */
+    public function restaurantCommandesLivre(Restaurant $r, CommandeRepository $cr, StatusRepository $sr): Response
+    {
+        $statusDelivered = $sr->findOneBy(['state'=>'Livré']);
+        $commandes = $cr->findCommandesWithoutStatusFromRestaurant($statusDelivered, $r);
+
+        return $this->render('admin/commandes-delivering.html.twig', [
+            'restaurant' => $r,
+            'commandes' => $commandes,
+            'title' => 'Commandes passé',
+            'h2' => 'Suivie des commandes livré',
+        ]);
+    }
+
 }
