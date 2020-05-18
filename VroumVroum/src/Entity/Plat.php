@@ -39,7 +39,7 @@ class Plat
     private $type;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Menu", mappedBy="Plats")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Menu", mappedBy="plats")
      */
     private $menus;
 
