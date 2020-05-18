@@ -46,27 +46,24 @@ class RestaurantController extends AbstractController
      */
     public function historique(Restaurant $r, CommandeRepository $cr, StatusRepository $sr): Response
     {
-        $status = $sr->findAll();
+        $status = $sr->findOneBy(['state'=>'Livré']);
 
         return $this->render('membre/historique-commandes.html.twig', [
-            'commandes' => $cr->findBy(['restaurant'=>$r, 'status'=>$status[count($status)-1]]),
+            'commandes' => $cr->findBy(['restaurant'=>$r, 'status'=>$status]),
         ]);
     }
 
     /**
      * @Route("/commandes/{id}", name="commandes")
      */
-    public function commandes(Restaurant $r, Request $request, CommandeRepository $cr, StatusRepository $sr): Response
+    public function commandes(Restaurant $r, CommandeRepository $cr, StatusRepository $sr): Response
     {
-        // TODO : 
-        // GET => afficher les commandes avec un status autre que livré
-        // charger les commandes pour le restaurant $r
-
         $status = $sr->findAll();
-        array_pop($status);
+        $statusDelivered = $status[count($status) - 1];
+        array_shift($status);
 
         return $this->render('restaurant/orders-tracker.html.twig', [
-            'commandes' => $cr->findAll(),
+            'commandes' => $cr->findCommandesWithoutStatusFromRestaurant($statusDelivered, $r),
             'restaurant' => $r,
             'status' => $status,
         ]);
@@ -75,8 +72,12 @@ class RestaurantController extends AbstractController
     /**
      * @Route("/commande_status/{id}", name="commandes_update_status")
      */
-    public function updateCommandeStatus(Commande $c, Request $r, EntityManagerInterface $em) {
-        // TODO modifie le status de la commande avec les données du POST
+    public function updateCommandeStatus(Commande $c, Request $r, EntityManagerInterface $em, StatusRepository $sr) {
+        $status = $sr->findOneBy(['id'=>$r->request->get('status')]);
+        $c->setStatus($status);
+
+        $em->persist($c);
+        $em->flush();
 
         return $this->redirectToRoute('restaurateur_commandes', ['id'=>$c->getRestaurant()->getId()]);
     }
