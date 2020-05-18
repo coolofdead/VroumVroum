@@ -194,94 +194,6 @@ class IndexController extends AbstractController
     */
    public function createOrder(EntityManagerInterface $em, UserRepository $ur, PlatRepository $pr, StatusRepository $statusRepository, MailerInterface $mailer)
    {
-<<<<<<< HEAD
-      $commandeDetail = new CommandeDetail();
-      $commande = new Commande();
-      $plats = [];
-      $quantites = [];
-      $totalCommande = 0;
-
-      //recuperation l'entity user grace au systeme de login
-      $userSecu = $this->getUser();
-      $userEmail = $userSecu->getUsername();
-      $user =  $ur->findOneByEmail($userEmail);
-
-      //recuperation de la liste des id des plats commandés et validé
-      $listIdPlatAsc = $this->session->get("plats-" . $user->getId());
-      //transformation du tableau associatif en array simple
-      foreach ($listIdPlatAsc as $item) {
-         $tempList[] = $item["id"];
-      }
-      //compte le nombre de meme plat.id ==> quatity, permet de gerer les quantité multiple de plats
-      $listIdPlat = array_count_values($tempList);
-
-      //mapping des quantite sur les detail commande
-      foreach ($listIdPlat as $id => $quatity) {
-
-         $quantite = new Quantite();
-         $plat = $pr->findOneBy(["id" => $id]);
-
-         $quantite->setPlat($plat);
-         $quantite->setNombre($quatity);
-         $quantite->setCommandeDetail($commandeDetail);
-
-         $plats[] = $plat;
-         $quantites[] = $quantite;
-
-         //calcul du prix de la commande
-         $totalCommande += $plat->getPrix() * $quatity;
-         $restaurant = $plat->getRestaurant();
-         $commande->setRestaurant($restaurant);
-
-         //persit en base chaque quantite
-         $em->persist($quantite);
-      }
-
-      $totalCommande = $totalCommande + getenv('DELIVERY_PRICE');
-      //creation en base des nouveaux element relatif a la comande
-      $status = $statusRepository->findOneByState("En attente");
-      $commande->setStatus($status);
-      $commande->setMembre($user);
-
-      $commande->setDate(new \DateTime());
-      $commandeDetail->setCommande($commande);
-      $commandeDetail->setPrix($totalCommande);
-
-      $restaurateur = $restaurant->getRestaurateur();
-      $restaurateurEmail =  $restaurateur->getEmail();
-
-      $soldeMembre = $user->getSolde();
-      $restaurateurSolde = $restaurateur->getSolde();
-      $user->setSolde($soldeMembre - $totalCommande);
-      $restaurateur->setSolde($restaurateurSolde + $totalCommande - getenv('DELIVERY_PRICE'));
-
-      //persit en base
-      $em->persist($commandeDetail);
-      $em->persist($commande);
-      $em->flush();
-
-      $idcommande = $commande->getId();
-
-      $email = (new TemplatedEmail())
-         ->from('delivroomvroom@gmail.com')
-         ->to($restaurateurEmail)
-         ->priority(Email::PRIORITY_HIGH)
-         ->subject('Votre restaurant' . $restaurant->getNom() . 'à recu une commande')
-         ->htmlTemplate('email/restaurateur-email.html.twig')
-         ->context([
-            'commande' => $commande,
-            'commandeDetail' => $commandeDetail,
-            'quantites' => $quantites,
-            'membre' => $user,
-            'heure_de_commande' => $commande->getDate()->format('H:i'),
-            'heure_de_livraison_estimation' => $commande->getDate()->add(new DateInterval('PT1H'))->format('H:i'),
-            'delivery_fee' => getenv('DELIVERY_PRICE'),
-         ]);
-      $mailer->send($email);
-      $this->session->clear();
-
-      return $this->redirectToRoute('followOrder', ["id" => $idcommande]);
-=======
        $commandeDetail = new CommandeDetail();
        $commande = new Commande();
        $plats = [];
@@ -371,7 +283,6 @@ class IndexController extends AbstractController
 
 
         return $this->redirectToRoute('followOrder',["id" => $idcommande]);
->>>>>>> dev
    }
 
    /**
