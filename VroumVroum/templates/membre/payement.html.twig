@@ -12,23 +12,22 @@
 	{{ parent() }}
 
 	{% set sub_total = 0 %}
-	{% set itemsByCat = {} %}
+	{% set itemsByCat = [] %}
 
 	{% for item in items %}
 		{% set sum = 0 %}
 
-		{% for itemCat in items %}
-			{% if item.id == itemCat.id %}
+		{% for i in items %}
+			{% if item.id == i.id %}
 				{% set sum = sum + 1 %}
 			{% endif %}
 		{% endfor %}
 
-		{% if item.id not in itemsByCat %}
-			{% set itemsByCat = itemsByCat|merge({(item.id) : [sum, sum * item.prix, item.nom]}) %}
+		{% if item.id not in itemsByCat|keys %}
+			{% set itemsByCat = itemsByCat|merge({ ('id-' ~ item.id) : {quantity: sum, total: sum * item.prix, nom: item.nom} }) %}
 			{% set sub_total = sub_total + item.prix %}
 		{% endif %}
 	{% endfor %}
-
 
 	<div
 		class="container list-group list-group-horizontal" style="display: flex;justify-content: center;max-width: 1200px;">
@@ -136,19 +135,19 @@
 								</td>
 								<td class="col-sm-1 col-md-1">
 									<div class="media-body">
-										<h4 class="media-heading">{{item[2]}}</h4>
+										<h4 class="media-heading">{{item.nom}}</h4>
 									</div>
 								</td>
 
 								<td class="col-sm-1 col-md-1" style="text-align: center">
-									<input type="email" class="form-control" id="exampleInputEmail1" value="{{item[0]}}" disabled>
+									<input type="email" class="form-control" id="exampleInputEmail1" value="{{item.quantity}}" disabled>
 								</td>
 
 								<td class="col-sm-1 col-md-1 text-center">
-									<strong>{{item[1] / item[0]}}€</strong>
+									<strong>{{item.total / item.quantity}}€</strong>
 								</td>
 								<td class="col-sm-1 col-md-1 text-center">
-									<strong>{{item[1]}}€</strong>
+									<strong>{{item.quantity}}€</strong>
 								</td>
 							</tr>
 						{% endfor %}
