@@ -68,8 +68,8 @@
 
 			<div class="restaurant-info w-25" style="display:flex;justify-content:space-between;">
 				<h3>
-					<a href="{{path('admin_restaurateur_detail', {'id':restaurant.restaurateur.id})}}" style="color: white;font-weight: bold;text-decoration: none;">{{restaurant.restaurateur.nom}}
-						{{restaurant.restaurateur.prenom}}</a>
+					<p style="color: white;font-weight: bold;text-decoration: none;">{{restaurant.restaurateur.nom}}
+						{{restaurant.restaurateur.prenom}}</p>
 				</h3>
 				<form action="{{path('restaurateur_restaurant_edit')}}" method="POST" id="edit-restaurant">
 					<input name="id" value="{{restaurant.id}}" hidden>
