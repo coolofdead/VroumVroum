@@ -31,7 +31,7 @@ class RestaurantType extends AbstractType
                 'choice_label' => 'Categorie',
                 // used to render a select box, check boxes or radios
                  'multiple' => false,
-                 'expanded' => true,
+//                 'expanded' => true,
                  'required' => true,
             ])
             ->add('id', NumberType::class, ['required'=>true])

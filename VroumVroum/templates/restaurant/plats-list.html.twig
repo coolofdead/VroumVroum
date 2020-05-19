@@ -31,17 +31,21 @@
 						<div class="modal-body">
                             <div class="form-row">
                                 <div class="form-group col-md-8">
-                                    <input type="text" class="form-control" name="nom" value="" placeholder="Nom" required>
-                                </div>
+									{{ form_widget(form.nom, {'attr': { 'value': '', 'class' : 'form-control'  },'full_name' : 'nom'})}}
+								</div>
                                 <div class="form-group col-md-4">
-                                    <input type="number" step="any" class="form-control" name="prix"  value="" placeholder="Prix" required>
-                                </div>
+									{{ form_widget(form.prix, {'attr': { 'value': '', 'class' : 'form-control' },'full_name' : 'prix'})}}
+
+								</div>
                                 <div class="form-group col-md-12">
-                                    <input type="text" class="form-control" name="urlImg"  value="" placeholder="Url du plat" required>
-                                </div>
+									{{ form_widget(form.urlImg, {'attr': { 'value': '', 'class' : 'form-control', 'label' : 'Url du plat' },'full_name' : 'urlImg'})}}
+
+								</div>
                                 <div class="form-group col-md-6">
                                     <label for="inputState">Catégorie</label>
-                                    <select id="inputState" class="form-control select-input" name="categorie" required>
+
+{#									{{ form_widget(form.categorie,{'choice_value' : categories} )}}#}
+									                                    <select id="inputState" class="form-control select-input" name="categorie" required>
                                         {% for category in categories %}
                                             <option value="{{category.categorie}}">{{category.categorie}}</option>
                                         {% endfor %}
@@ -105,31 +109,33 @@
 			<table class="table">
 				<tbody>
 					<tr class="form-group">
-						<td><input type="text" class="form-control" placeholder="Nom" required></td>
-						<td><input type="number" step="any" class="form-control" placeholder="Prix" required></td>
-						<td><input type="text" class="form-control" placeholder="Url du plat" required></td>
+						<td>
+{#							<input type="text" class="form-control" placeholder="Nom" required>#}
+							{{ form_widget(formNew.nom, {'attr': { 'placeholder': 'Nom', 'class' : 'form-control'}}) }}
+
+						</td>
+						<td>
+{#							<input type="number" step="any" class="form-control" placeholder="Prix" required>#}
+							{{ form_widget(formNew.prix, {'attr': { 'placeholder': 'Prix', 'class' : 'form-control'}}) }}
+
+						</td>
+						<td>
+{#							<input type="text" class="form-control" placeholder="Url du plat" required>#}
+							{{ form_widget(formNew.urlImg, {'attr': { 'placeholder': 'Url de l\'image du plat', 'class' : 'form-control'}}) }}
+
+						</td>
 					</tr>
 					<tr class="form-group">
 						<td>Catégorie</td>
-						{% for category in categories %}
-							<td>
-								<div class="radio">
-									<input id="category-{{category.categorie}}" value="{{category.categorie}}" name="category" type="radio" required>
-									<label for="category-{{category.categorie}}" class="radio-label">{{category.categorie}}</label>
-								</div>
-							</td>
-						{% endfor %}
+
+
+						<td>{{ form_widget(formNew.categorie ) }}</td>
+
 					</tr>
 					<tr class="form-group">
 						<td>Type</td>
-						{% for type in types %}
-							<td>
-								<div class="radio">
-									<input id="type-{{type.type}}" name="type" value="{{type.type}}" type="radio" required>
-									<label for="type-{{type.type}}" class="radio-label">{{type.type}}</label>
-								</div>
-							</td>
-						{% endfor %}
+						<td>{{ form_widget(formNew.type ) }}</td>
+
 					</tr>
 					<tr class="form-group">
 						<td>

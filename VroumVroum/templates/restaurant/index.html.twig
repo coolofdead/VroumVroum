@@ -131,14 +131,10 @@ $target.slideToggle();
 						</td>
 					</tr>
 					<tr class="form-group">
-						{% for category in categories %}
 							<td>
-								<div class="radio">
-									<input id="category-{{category.categorie}}" name="category" type="radio">
-									<label for="category-{{category.categorie}}" class="radio-label">{{category.categorie}}</label>
-								</div>
+{#								#TODO a rendre plus beau, perso j'ai rein trouvé dans la doc#}
+								{{ form_row(form.categorie, {'attr' :{'class' : 'radio-label'} } ) }}
 							</td>
-						{% endfor %}
 					</tr>
 					<tr class="form-group">
 						<td>

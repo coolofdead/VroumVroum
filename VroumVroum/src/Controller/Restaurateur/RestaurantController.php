@@ -6,6 +6,8 @@ use App\Entity\Restaurant;
 use App\Entity\Commande;
 use App\Entity\Plat;
 use App\Entity\User;
+use App\Form\PlatNewType;
+use App\Form\PlatType;
 use App\Form\RestaurantType;
 use App\Repository\CategoriePlatRepository;
 use App\Repository\CategorieRestaurantRepository;
@@ -16,10 +18,13 @@ use App\Repository\StatusRepository;
 use App\Repository\TypePlatRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 
 /**
  * @Route("/restaurant")
@@ -160,20 +165,42 @@ class RestaurantController extends AbstractController
      */
     public function restaurantPlats(Restaurant $restaurant, Request $request, PlatRepository $pr, CategoriePlatRepository $cpr, TypePlatRepository $tpr): Response
     {
+
+        $form = $this->createForm(PlatType::class);
+        $form->handleRequest($request);
+
+        $formNew = $this->createForm(PlatNewType::class);
+        $formNew->handleRequest($request);
+
         return $this->render('restaurant/plats-list.html.twig', [
             'plats' => $pr->findBy(['restaurant' => $restaurant]),
             'categories' => $cpr->findAll(),
             'types' => $tpr->findAll(),
             'restaurant' => $restaurant,
+            'form' => $form->createView(),
+            'formNew' => $formNew->createView()
         ]);
     }
 
     /**
      * @Route("/create_plat/{id}", name="create_plat", methods={"GET","POST"})
      */
+
     public function createPlat(Restaurant $restaurant, Request $request): Response
     {
-        // TODO : créer un nouveau plat
+        $plat = new Plat();
+        $form = $this->createForm(PlatNewType::class , $plat);
+        $form->handleRequest($request);
+
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plat->setRestaurant($restaurant);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($plat);
+            $entityManager->flush();
+        }
 
         return $this->redirectToRoute('restaurateur_restaurant_plats', ["id"=>$restaurant->getId()]);
     }
@@ -183,7 +210,7 @@ class RestaurantController extends AbstractController
      */
     public function deletePlat(Plat $plat, Request $request): Response
     {
-        // TODO : delete le plat
+        // TODO : ca marche deja tu m'as feinté
         $restaurantId = $plat->getRestaurant()->getId();
 
         if ($this->isCsrfTokenValid('delete'.$plat->getId(), $request->request->get('_token'))) {
@@ -198,10 +225,27 @@ class RestaurantController extends AbstractController
     /**
      * @Route("/update_plat/{id}", name="update_plat", methods={"POST"})
      */
-    public function updatePlat(Plat $plat, Request $request): Response
+    public function updatePlat(Plat $plat, Request $request, CategoriePlatRepository $cpr, TypePlatRepository $tpr, EntityManagerInterface $em): Response
     {
-        // TODO : update le plat
         $restaurantId = $plat->getRestaurant()->getId();
+
+        $categorieName = $request->request->get("categorie");
+        $typeName = $request->request->get("type");
+        $categorie = $cpr->findOneBy(['categorie' => $categorieName]);
+        $type = $tpr->findOneBy(['type' => $typeName]);
+
+        $nom = $request->request->get("nom");
+        $prix = $request->request->get("prix");
+        $url = $request->request->get("urlImg");
+
+        $plat->setCategorie($categorie)
+            ->setNom($nom)
+            ->setUrlImg($url)
+            ->setPrix($prix)
+            ->setType($type);
+
+        $em->persist($plat);
+        $em->flush();
 
         return $this->redirectToRoute('restaurateur_restaurant_plats', ["id"=>$restaurantId]);
     }
