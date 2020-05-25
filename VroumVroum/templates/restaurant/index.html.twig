@@ -43,6 +43,7 @@ $target.slideToggle();
 				<tr>
 					<th>Nom</th>
 					<th>Adresse</th>
+					<th>Email</th>
 					<th>Commandes</th>
 					<th>Historique</th>
 					<th>Modifier</th>
@@ -54,6 +55,7 @@ $target.slideToggle();
 					<tr>
 						<td>{{ restaurant.nom }}</td>
 						<td>{{ restaurant.adresse }}</td>
+						<td>{{ restaurant.email }}</td>
 						<td>
 							<a href="{{path('restaurateur_commandes', {id:restaurant.id})}}">Vos commandes en cours 🕑</a>
 						</td>
