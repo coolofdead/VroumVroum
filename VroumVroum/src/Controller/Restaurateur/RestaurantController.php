@@ -143,6 +143,7 @@ class RestaurantController extends AbstractController
         $nom = $request->request->get("nom");
         $adresse = $request->request->get("adresse");
         $url = $request->request->get("url");
+        $email = $request->request->get("email");
 
         $category = $crr->findOneBy(['id' => $categoryId]);
         $restaurant = $rr->findOneBy(['id' => $restaurantId]);
@@ -152,7 +153,8 @@ class RestaurantController extends AbstractController
             ->setLatitude($latitude)
             ->setLongitude($longitude)
             ->setCategorie($category)
-            ->setUrl($url);
+            ->setUrl($url)
+            ->setEmail($email);
 
         $entityManager->persist($restaurant);
         $entityManager->flush();
