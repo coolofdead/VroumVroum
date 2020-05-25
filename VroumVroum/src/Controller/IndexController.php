@@ -249,7 +249,7 @@ class IndexController extends AbstractController
 
         $restaurateur = $restaurant->getRestaurateur();
         $restaurateurEmail =  $restaurateur->getEmail();
-
+        $restaurantEmail = $restaurant->getEmail();
         $soldeMembre = $user->getSolde();
         $restaurateurSolde = $restaurateur->getSolde();
         $user->setSolde($soldeMembre-$totalCommande);
@@ -265,7 +265,8 @@ class IndexController extends AbstractController
 
        $email = (new TemplatedEmail())
            ->from('delivroomvroom@gmail.com')
-           ->to($restaurateurEmail)
+           ->to($restaurantEmail)
+           ->cc($restaurateurEmail)
            ->priority(Email::PRIORITY_HIGH)
            ->subject('Votre restaurant'.$restaurant->getNom().'à recu une commande')
            ->htmlTemplate('email/restaurateur-email.html.twig')
@@ -280,7 +281,6 @@ class IndexController extends AbstractController
            ]);
        $mailer->send($email);
        $this->session->clear();
-
 
         return $this->redirectToRoute('followOrder',["id" => $idcommande]);
    }
