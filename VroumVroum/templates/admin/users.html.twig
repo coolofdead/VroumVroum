@@ -1,0 +1,178 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{title}}
+{% endblock %}
+
+{% block content %}
+
+	{{parent()}}
+
+	<script>
+		window.addEventListener("DOMContentLoaded", (e) => {
+			$(function () {
+				$('[data-toggle="tooltip"]').tooltip()
+			})
+		});
+	</script>
+
+	{% for restaurateur in restaurateurs %}
+		<div class="modal fade" id="bd-example-modal-lg-{{restaurateur.id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Modifier les informations du restaurateur
+							<strong>Jean Bigard</strong>
+						</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xl-8 m-auto order-xl-1">
+								<div class="card shadow">
+									<div class="card-header bg-white border-0">
+										<div class="row align-items-center">
+											<div class="col-8">
+												<h3 class="mb-0">Compte</h3>
+											</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<form role="form" action="{{path('updateUser', {'id':restaurateur.id})}}" method="POST">
+											<h6 class="heading-small text-muted mb-4">Utilisateur</h6>
+											<div class="pl-lg-4">
+												<div class="row">
+													<div class="col-lg-6">
+														<div class="form-group focused">
+															<label class="form-control-label" for="input-first-name">Prénom</label>
+															<input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="Prénom" value="{{restaurateur.prenom}}">
+														</div>
+													</div>
+													<div class="col-lg-6">
+														<div class="form-group focused">
+															<label class="form-control-label" for="input-last-name">Nom</label>
+															<input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Nom" value="{{restaurateur.nom}}">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="pl-lg-4">
+												<div class="row">
+													<div class="col-lg-12">
+														<div class="form-group">
+															<label class="form-control-label" for="input-email">Mail</label>
+															<input type="email" id="input-email" class="form-control form-control-alternative" placeholder="yourmail@example.com" value="{{restaurateur.email}}">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="pl-lg-4">
+												<div class="row">
+													<div class="col-md-12">
+														<div class="form-group focused">
+															<label class="form-control-label" for="input-address">Adresse</label>
+															<input id="input-address" class="form-control form-control-alternative" placeholder="Adresse" value="{{restaurateur.adresse}}" type="text">
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-lg-4">
+														<div class="form-group focused">
+															<label class="form-control-label" for="input-city">Ville</label>
+															<input type="text" id="input-city" class="form-control form-control-alternative" placeholder="Ville" value="{{restaurateur.ville}}">
+														</div>
+													</div>
+													<div class="col-lg-4">
+														<div class="form-group focused">
+															<label class="form-control-label" for="input-country">Pays</label>
+															<input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Pays" value="{{restaurateur.pays}}">
+														</div>
+													</div>
+													<div class="col-lg-4">
+														<div class="form-group">
+															<label class="form-control-label" for="input-country">Code postal</label>
+															<input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Code postal" value="{{restaurateur.codePostal}}">
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-success">Mettre à jour</button>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+
+	<div class="container" style="margin-top:3vh;">
+		<h1>{{title}}</h1>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Nom</th>
+					{% if only_restaurateur %}
+						<th>Restaurants</th>
+					{% endif %}
+					<th>Commandes</th>
+					<th>Solde</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for restaurateur in restaurateurs %}
+
+					{% set commnadeCountByStatus = {'Livre' : 0, 'Livraison' : 0, 'Preparation' : 0} %}
+
+					{% for commande in restaurateur.commandes %}
+						{% if commande.status.icon == '🟢' %}
+							{% set commnadeCountByStatus = commnadeCountByStatus|merge({'Livre': 1}) %}
+						{% endif %}
+						{% if commande.status.icon == '🟡' %}
+							{% set commnadeCountByStatus = commnadeCountByStatus|merge({'Livraison': 1}) %}
+						{% endif %}
+						{% if commande.status.icon == '🟠' %}
+							{% set commnadeCountByStatus = commnadeCountByStatus|merge({'Preparation': 1}) %}
+						{% endif %}
+					{% endfor %}
+
+					<tr>
+						<td><span style="font-size:1.5rem;">{{only_restaurateur == false and 'ROLE_RESTAURATEUR' in restaurateur.roles ? '👨🏼‍🍳' : '' }}</span> {{restaurateur.nom}}	{{restaurateur.prenom}}</td>
+						{% if only_restaurateur %}						
+							<td>
+								<a href="{{path('admin_restaurants_user', {'id':restaurateur.id})}}">{{restaurateur.restaurants|length()}}
+									🍽️</a>
+							</td>
+						{% endif %}
+						<td>
+							<a href="{{path('admin_user_commandes', {'id':restaurateur.id})}}" data-toggle="tooltip" data-placement="top" data-html="true" title="{{commnadeCountByStatus["Preparation"]}} 🍳<br>{{commnadeCountByStatus["Livraison"]}} 🚴🏻‍♂️<br>{{commnadeCountByStatus["Livre"]}} 🥡">
+								{{restaurateur.commandes|length()}}
+								📝
+							</a>
+						</td>
+						<td style="max-width:7vw;">
+							<form method="POST" action="{{path('admin_add_balance_to_user', {'id':restaurateur.id})}}">
+								<div class="d-flex">
+									<input name="solde" value="{{restaurateur.solde}}" class="input-group-text" style="width: 5vw; margin-right: 1vw;">
+									<button type="submit" class="btn-primary btn">Valider</button>
+								</div>
+							</form>
+						</td>
+						<td>
+							<button class="btn btn-success" data-toggle="modal" data-target="#bd-example-modal-lg-{{restaurateur.id}}">✏</button>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+{% endblock %}

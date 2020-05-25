@@ -11,7 +11,9 @@ use App\Repository\NoteRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -37,7 +39,7 @@ class AdminController extends AbstractController
             'total_restaurant' => count($rr->findAll()),
             'total_commandes_delivering' => isset($commandes_sorted["En cours"]) ? $commandes_sorted["En cours"] : 0,
             'total_commandes_delivered' => isset($commandes_sorted["Livre"]) ? $commandes_sorted["Livre"] : 0,
-            'total_membre' => isset($users_sorted["Membre"]) ? $users_sorted["Membre"] : 0,
+            'total_membre' => isset($users_sorted["Membre"]) && isset($users_sorted["Restaurateur"]) ? $users_sorted["Membre"] + $users_sorted["Restaurateur"] : 0,
             'total_restaurateur' => isset($users_sorted["Restaurateur"]) ? $users_sorted["Restaurateur"] : 0,
         ]);
     }
@@ -56,6 +58,57 @@ class AdminController extends AbstractController
 
         return $this->render('admin/restaurants.html.twig', [
             'restaurants' => $restaurants,
+            'notes' => $nr->findAll(),
+        ]);
+    }
+
+    /**
+     * @Route("/restaurants/{id}", name="restaurants_user")
+     */
+    public function restaurantsUser(User $restaurateur, NoteRepository $nr): Response
+    {
+        return $this->render('admin/restaurants.html.twig', [
+            'restaurants' => $restaurateur->getRestaurants(),
+            'notes' => $nr->findAll(),
+        ]);
+    }
+
+    /**
+     * @Route("/restaurateurs", name="restaurateurs")
+     */
+    public function restaurateurs(UserRepository $ur, NoteRepository $nr): Response
+    {
+        $restaurateurs = $ur->findByRole('ROLE_RESTAURATEUR');
+        usort($restaurateurs, 
+            function($r1, $r2) {
+                return strcmp($r1->getNom() . $r1->getPrenom(), $r2->getNom() . $r2->getPrenom());
+            }
+        );
+
+        return $this->render('admin/users.html.twig', [
+            'title' => 'Restaurateurs',
+            'only_restaurateur' => true,
+            'restaurateurs' => $restaurateurs,
+            'notes' => $nr->findAll(),
+        ]);
+    }
+
+    /**
+     * @Route("/membres", name="membres")
+     */
+    public function membres(UserRepository $ur, NoteRepository $nr): Response
+    {
+        $membres = $ur->findAll();
+        usort($membres, 
+            function($r1, $r2) {
+                return strcmp($r1->getNom() . $r1->getPrenom(), $r2->getNom() . $r2->getPrenom());
+            }
+        );
+
+        return $this->render('admin/users.html.twig', [
+            'title' => 'Membres',
+            'only_restaurateur' => false,
+            'restaurateurs' => $membres,
             'notes' => $nr->findAll(),
         ]);
     }
@@ -142,4 +195,31 @@ class AdminController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/user-commandes/{id}", name="user_commandes")
+     */
+    public function userCommandes(User $u): Response
+    {
+        $commandes = $u->getCommandes();
+
+        return $this->render('admin/commandes-delivering.html.twig', [
+            'commandes' => $commandes,
+            'title' => 'Commandes passé',
+            'h2' => 'Suivie des commandes pour l\'utilisateur ' . $u->getNom() . ' ' . $u->getPrenom(),
+        ]);
+    }
+
+    /**
+    * @Route("/addBalance/{id}", name="add_balance_to_user", methods={"POST"})
+    */
+    public function addBalanceToUser(User $user, Request $request, EntityManagerInterface $em):Response
+    {
+        if (is_numeric($request->get('solde')) && $request->get('solde') > 0) {
+            $user->setSolde($request->get('solde'));
+            $em->persist($user);
+            $em->flush();
+        }
+
+        return $this->redirect($request->headers->get('referer'));
+    }
 }

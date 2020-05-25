@@ -98,9 +98,8 @@ class IndexController extends AbstractController
    /**
     * @Route("/compte/{id}", name="compte")
     */
-   public function compte(Request $request, User $user)
+   public function compte(User $user)
    {
-
       $form = $this->createForm(UpdateUserType::class, $user);
 
       return $this->render('membre/profil.html.twig', [
@@ -152,7 +151,7 @@ class IndexController extends AbstractController
    /**
     * @Route("compte/updateUser/{id}", name="updateUser", methods={"POST"})
     */
-   public function updateUser(Request $request, User $user)
+   public function updateUser(Request $request, User $user, UserRepository $ur)
    {
       $form = $this->createForm(UpdateUserType::class, $user);
       $form->handleRequest($request);
@@ -162,9 +161,18 @@ class IndexController extends AbstractController
          return $this->redirectToRoute('compte', ['id' => $user->getId()]);
       }
 
-      return $this->render('debug.html.twig', [
-         'debug' => $form,
-      ]);
+      $userSecu = $this->getUser();
+      $userEmail = $userSecu->getUsername();
+      $user =  $ur->findOneByEmail($userEmail);
+
+      if (in_array('ROLE_ADMIN', $user->getRoles())) {
+         $route = in_array('ROLE_RESTAURATEUR', $user->getRoles()) ? 'admin_restaurateurs' : 'admin_membres';
+
+         return $this->redirectToRoute($route);
+      }
+      else {
+         return $this->redirectToRoute('compte', ['id'=>$user->getId()]);
+      }
    }
 
    /**
