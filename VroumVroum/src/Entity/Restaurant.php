@@ -36,7 +36,8 @@ class Restaurant
     private $categorie;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Plat", mappedBy="restaurant")
+     * @ORM\OneToMany(targetEntity="App\Entity\Plat", mappedBy="restaurant", cascade={"remove"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $plats;
 
@@ -61,12 +62,14 @@ class Restaurant
     private $url;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Commande", mappedBy="restaurant")
+     * @ORM\OneToMany(targetEntity="App\Entity\Commande", mappedBy="restaurant", cascade={"remove"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $commandes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Note", mappedBy="restaurant")
+     * @ORM\OneToMany(targetEntity="App\Entity\Note", mappedBy="restaurant", cascade={"remove"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $note;
 

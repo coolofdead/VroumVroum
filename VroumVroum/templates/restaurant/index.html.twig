@@ -32,7 +32,8 @@ $target.slideToggle();
 		{{ form_widget(formUpdate.url, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'url' })  }}
 		{{ form_widget(formUpdate.latitude, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'latitude' })  }}
 		{{ form_widget(formUpdate.longitude, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'longitude' })  }}
-	<input name="category" value="" hidden> </form>
+		<input name="category" value="" hidden>
+	</form>
 
 	<div class="container" style="margin-top: 3vh;">
 		<h1>Vos restaurants</h1>
@@ -84,9 +85,9 @@ $target.slideToggle();
 					</tr>
 
 					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
+						<td><input name="email" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="email" value="{{restaurant.email}}" placeholder="Email" style="width:min-content;"></td>
 						<td><input name="latitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.latitude}}" placeholder="Latitude" style="width:min-content;"></td>
 						<td><input name="longitude" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" step="any" type="number" value="{{restaurant.longitude}}" placeholder="Longitude" style="width:min-content;"></td>
-						<td><input name="email" class="detail-{{restaurant.id}} form-control r-{{restaurant.id}}" type="email" value="{{restaurant.email}}" placeholder="Email" style="width:min-content;"></td>
 					</tr>
 
 					<tr class="detail-{{restaurant.id}} form-group" style="display:none;">
@@ -110,7 +111,6 @@ $target.slideToggle();
 					<tr class="form-group">
 						<td>
 							{{ form_widget(form.nom, {'attr' :{'placeholder' : 'Nom'} }) }}
-
 						</td>
 						<td>
 							{{ form_widget(form.adresse, {'attr' :{'placeholder' : 'Adresse'} }) }}
@@ -123,6 +123,11 @@ $target.slideToggle();
 						</td>
 						<td>
 							{{ form_widget(form.latitude, {'attr' :{'placeholder' : 'Latitude'} }) }}
+						</td>
+					</tr>
+					<tr class="form-group">
+						<td>
+							{{ form_widget(form.email, {'attr' :{'placeholder' : 'Email'} }) }}
 						</td>
 					</tr>
 					<tr class="form-group">

@@ -7,6 +7,7 @@ use App\Entity\CategorieRestaurant;
 use App\Entity\Restaurant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
@@ -22,6 +23,7 @@ class RestaurantType extends AbstractType
             ->add('latitude',NumberType::class, ['attr' => ['class' => 'form-control form-control-alternative ']])
             ->add('nom',TextType::class, ['attr' => ['class' => 'form-control']])
             ->add('adresse',TextType::class ,['attr' => ['class' => 'form-control form-control-alternative ']])
+            ->add('email',EmailType::class ,['attr' => ['class' => 'form-control form-control-alternative ']])
             ->add('url',UrlType::class, ['attr' => ['class' => 'form-control form-control-alternative ']])
             ->add('categorie', EntityType::class,[
 //                'attr' => ['class' => 'form-check-input'],
