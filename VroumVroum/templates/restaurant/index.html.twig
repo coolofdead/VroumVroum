@@ -32,6 +32,7 @@ $target.slideToggle();
 		{{ form_widget(formUpdate.url, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'url' })  }}
 		{{ form_widget(formUpdate.latitude, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'latitude' })  }}
 		{{ form_widget(formUpdate.longitude, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'longitude' })  }}
+		{{ form_widget(formUpdate.email, {'attr': { 'value': '', 'hidden' : 'hidden', 'class' : ''  },'full_name' : 'email' })  }}
 		<input name="category" value="" hidden>
 	</form>
 
@@ -43,6 +44,7 @@ $target.slideToggle();
 				<tr>
 					<th>Nom</th>
 					<th>Adresse</th>
+					<th>Email</th>
 					<th>Commandes</th>
 					<th>Historique</th>
 					<th>Modifier</th>
@@ -54,6 +56,7 @@ $target.slideToggle();
 					<tr>
 						<td>{{ restaurant.nom }}</td>
 						<td>{{ restaurant.adresse }}</td>
+						<td>{{ restaurant.email }}</td>
 						<td>
 							<a href="{{path('restaurateur_commandes', {id:restaurant.id})}}">Vos commandes en cours 🕑</a>
 						</td>
@@ -131,14 +134,10 @@ $target.slideToggle();
 						</td>
 					</tr>
 					<tr class="form-group">
-						{% for category in categories %}
 							<td>
-								<div class="radio">
-									<input id="category-{{category.categorie}}" name="category" type="radio">
-									<label for="category-{{category.categorie}}" class="radio-label">{{category.categorie}}</label>
-								</div>
+{#								#TODO a rendre plus beau, perso j'ai rein trouvé dans la doc#}
+								{{ form_row(form.categorie, {'attr' :{'class' : 'radio-label'} } ) }}
 							</td>
-						{% endfor %}
 					</tr>
 					<tr class="form-group">
 						<td>
