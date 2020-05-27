@@ -27,6 +27,7 @@
 							<th>Restaurant</th>
 							<th>Prix</th>
 							<th>Date</th>
+							<th></th>
 						</thead>
 
 						<tbody>
@@ -38,6 +39,11 @@
 									<td>{{command.restaurant.nom}}</td>
 									<td>{{command.detail.prix}}€</td>
 									<td>{{command.date|format_datetime('short', 'none', locale='fr')}}</td>
+									<td>
+										{% if command.status.icon != '🟢' %}
+											<a href="{{path('followOrder', {'id':command.id})}}">suivre votre commande</a>
+										{% endif %}
+									</td>
 								</tr>
 
 							{% endfor %}
