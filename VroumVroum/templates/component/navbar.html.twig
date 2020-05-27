@@ -12,7 +12,7 @@
 			<ul class="navbar-nav mr-auto">
 				{% if app.user != null %}
 					<li class="nav-item">
-						<a class="nav-link active" href="{{path('compte', { 'id': app.user.id })}}">🧙🏼‍♂️ Compte</a>
+						<a class="nav-link active" href="{{path('compte', { 'id': app.user.id })}}">🧙🏼‍♂️ Compte ({{app.user.prenom}})</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link active" href="{{path('historique')}}">🧾 Historique des commandes</a>
@@ -46,7 +46,10 @@
 			{% block basket %}
 				<div
 					class="nav-item my-2">
-					{# <span class="badge badge-secondary">Solde: {{solde}}€ 💼</span> #}
+					{% if app.user is not null %}
+						<span class="badge badge-secondary">Solde: {{app.user.solde}}€ 💼</span>
+					{% endif %}
+
 					{% include "component/basket.html.twig" %}
 				</div>
 			{% endblock %}
