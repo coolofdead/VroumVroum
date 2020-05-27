@@ -12,7 +12,3 @@ window.addEventListener("DOMContentLoaded", (e)=>{
 function reloadPage() {
     location.reload(true);
 }
-
-function redirectToReview() {
-
-}
