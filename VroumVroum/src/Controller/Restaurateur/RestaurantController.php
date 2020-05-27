@@ -136,6 +136,7 @@ class RestaurantController extends AbstractController
      */
     public function edit(Request $request, RestaurantRepository $rr, CategorieRestaurantRepository $crr, EntityManagerInterface $entityManager): Response
     {
+
         $categoryId = $request->request->get("category");
         $restaurantId = $request->request->get("id");
         $longitude = $request->request->get("longitude");
@@ -144,18 +145,31 @@ class RestaurantController extends AbstractController
         $adresse = $request->request->get("adresse");
         $url = $request->request->get("url");
         $email = $request->request->get("email");
-
         $category = $crr->findOneBy(['id' => $categoryId]);
         $restaurant = $rr->findOneBy(['id' => $restaurantId]);
 
-        $restaurant->setNom($nom)
-            ->setAdresse($adresse)
-            ->setLatitude($latitude)
-            ->setLongitude($longitude)
-            ->setCategorie($category)
-            ->setUrl($url)
-            ->setEmail($email);
+        if(is_string($nom)){
+            $restaurant->setNom($nom);
+        }
+        if(is_string($adresse)){
+            $restaurant->setAdresse($adresse);
+        }
+        if(is_string($email)){
+            $restaurant->setEmail($email);
+        }
+        if(is_string($url)){
+            $restaurant->setUrl($url);
+        }
 
+
+        if(is_float($latitude)){
+            $restaurant->setLatitude($latitude);
+        }
+        if(is_float($longitude)){
+            $restaurant->setLongitude($longitude);
+        }
+
+        $restaurant->setCategorie($category);
         $entityManager->persist($restaurant);
         $entityManager->flush();
 
@@ -240,11 +254,19 @@ class RestaurantController extends AbstractController
         $prix = $request->request->get("prix");
         $url = $request->request->get("urlImg");
 
-        $plat->setCategorie($categorie)
-            ->setNom($nom)
-            ->setUrlImg($url)
-            ->setPrix($prix)
-            ->setType($type);
+        if(is_float($prix)){
+            $plat->setPrix($prix);
+        }
+        if(is_string($nom)){
+            $plat->setNom($nom);
+        }
+        if(is_string($url)){
+            $plat->setUrlImg($url);
+        }
+
+
+        $plat->setCategorie($categorie);
+        $plat->setType($type);
 
         $em->persist($plat);
         $em->flush();
