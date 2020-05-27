@@ -2,10 +2,8 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Commande;
 use App\Entity\Restaurant;
 use App\Entity\User;
-use App\Repository\CategorieRestaurantRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\NoteRepository;
 use App\Repository\RestaurantRepository;

@@ -5,7 +5,6 @@ namespace App\Controller\Restaurateur;
 use App\Entity\Restaurant;
 use App\Entity\Commande;
 use App\Entity\Plat;
-use App\Entity\User;
 use App\Form\PlatNewType;
 use App\Form\PlatType;
 use App\Form\RestaurantType;
@@ -18,13 +17,10 @@ use App\Repository\StatusRepository;
 use App\Repository\TypePlatRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 
 /**
  * @Route("/restaurant")
@@ -136,7 +132,6 @@ class RestaurantController extends AbstractController
      */
     public function edit(Request $request, RestaurantRepository $rr, CategorieRestaurantRepository $crr, EntityManagerInterface $entityManager): Response
     {
-
         $categoryId = $request->request->get("category");
         $restaurantId = $request->request->get("id");
         $longitude = $request->request->get("longitude");
@@ -181,7 +176,6 @@ class RestaurantController extends AbstractController
      */
     public function restaurantPlats(Restaurant $restaurant, Request $request, PlatRepository $pr, CategoriePlatRepository $cpr, TypePlatRepository $tpr): Response
     {
-
         $form = $this->createForm(PlatType::class);
         $form->handleRequest($request);
 
@@ -201,14 +195,11 @@ class RestaurantController extends AbstractController
     /**
      * @Route("/create_plat/{id}", name="create_plat", methods={"GET","POST"})
      */
-
     public function createPlat(Restaurant $restaurant, Request $request): Response
     {
         $plat = new Plat();
         $form = $this->createForm(PlatNewType::class , $plat);
         $form->handleRequest($request);
-
-
 
         if ($form->isSubmitted() && $form->isValid()) {
             $plat->setRestaurant($restaurant);

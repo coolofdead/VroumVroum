@@ -113,6 +113,15 @@ $target.slideToggle();
 				<tbody>
 					<tr class="form-group">
 						<td>
+							<span style="font-size: 1.25rem;">Créer un restaurant</span>
+						</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr class="form-group">
+						<td>
 							{{ form_widget(form.nom, {'attr' :{'placeholder' : 'Nom'} }) }}
 						</td>
 						<td>
@@ -134,10 +143,9 @@ $target.slideToggle();
 						</td>
 					</tr>
 					<tr class="form-group">
-							<td>
-{#								#TODO a rendre plus beau, perso j'ai rein trouvé dans la doc#}
-								{{ form_row(form.categorie, {'attr' :{'class' : 'radio-label'} } ) }}
-							</td>
+						<td>
+							{{ form_row(form.categorie, {'attr' :{'class' : 'radio-label'} } ) }}
+						</td>
 					</tr>
 					<tr class="form-group">
 						<td>

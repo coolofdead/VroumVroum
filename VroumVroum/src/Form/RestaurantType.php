@@ -19,19 +19,17 @@ class RestaurantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('longitude', NumberType::class, ['attr' => ['class' => 'form-control form-control-alternative ']])
-            ->add('latitude',NumberType::class, ['attr' => ['class' => 'form-control form-control-alternative ']])
+            ->add('longitude', NumberType::class, ['required' => false, 'attr' => ['class' => 'form-control form-control-alternative ']])
+            ->add('latitude',NumberType::class, ['required' => false, 'attr' => ['class' => 'form-control form-control-alternative ']])
             ->add('nom',TextType::class, ['attr' => ['class' => 'form-control']])
-            ->add('adresse',TextType::class ,['attr' => ['class' => 'form-control form-control-alternative ']])
-            ->add('email',EmailType::class ,['attr' => ['class' => 'form-control form-control-alternative ']])
+            ->add('adresse',TextType::class, ['attr' => ['class' => 'form-control form-control-alternative ']])
+            ->add('email',EmailType::class, ['attr' => ['class' => 'form-control form-control-alternative']])
             ->add('url',UrlType::class, ['attr' => ['class' => 'form-control form-control-alternative ']])
-            ->add('categorie', EntityType::class,[
-//                'attr' => ['class' => 'form-check-input'],
+            ->add('categorie', EntityType::class, [
                 'class' => CategorieRestaurant::class,
                 'choice_label' => 'Categorie',
                 // used to render a select box, check boxes or radios
                  'multiple' => false,
-//                 'expanded' => true,
                  'required' => true,
             ])
             ->add('id', NumberType::class, ['required'=>true])

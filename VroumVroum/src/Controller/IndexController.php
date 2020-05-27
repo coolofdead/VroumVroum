@@ -5,13 +5,11 @@ namespace App\Controller;
 use App\Entity\Commande;
 use App\Entity\Note;
 use App\Entity\CommandeDetail;
-use App\Entity\Plat;
 use App\Entity\Quantite;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use App\Form\BalanceType;
 use App\Form\UpdateUserType;
-use App\Form\UserType;
 use App\Repository\PlatRepository;
 use App\Repository\CategorieRestaurantRepository;
 use App\Repository\CommandeRepository;
@@ -94,7 +92,7 @@ class IndexController extends AbstractController
          'hasMoney' => [], // TODO : à intégrer sur la page payement en facultatif
       ]);
    }
-
+   
    /**
     * @Route("/compte/{id}", name="compte")
     */
