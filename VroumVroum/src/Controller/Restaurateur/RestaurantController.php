@@ -11,6 +11,7 @@ use App\Form\RestaurantType;
 use App\Repository\CategoriePlatRepository;
 use App\Repository\CategorieRestaurantRepository;
 use App\Repository\CommandeRepository;
+use App\Repository\NoteRepository;
 use App\Repository\PlatRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\StatusRepository;
@@ -30,7 +31,7 @@ class RestaurantController extends AbstractController
     /**
      * @Route("/all", name="restaurants")
      */
-    public function index(RestaurantRepository $restaurantRepository, CategorieRestaurantRepository $cr, UserRepository $ur): Response
+    public function index(RestaurantRepository $restaurantRepository, CategorieRestaurantRepository $cr, UserRepository $ur, NoteRepository $nr): Response
     {
         $form = $this->createForm(RestaurantType::class);
 
@@ -43,6 +44,7 @@ class RestaurantController extends AbstractController
             'categories' => $cr->findAll(),
             'form' => $form->createView(),
             'formUpdate' => $form->createView(),
+            'notes' => $nr->findAll(),
         ]);
     }
 
