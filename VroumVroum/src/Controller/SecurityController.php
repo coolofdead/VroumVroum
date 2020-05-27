@@ -45,8 +45,6 @@ class SecurityController extends AbstractController
         ]);
     }
 
-
-
     /**
      * Redirige le user en fonction de son role
      * @Route("/login_redirect", name="_login_redirect")

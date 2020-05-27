@@ -18,6 +18,7 @@ use App\Repository\RestaurantRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use DateInterval;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -92,7 +93,7 @@ class IndexController extends AbstractController
          'hasMoney' => [], // TODO : à intégrer sur la page payement en facultatif
       ]);
    }
-   
+
    /**
     * @Route("/compte/{id}", name="compte")
     */
@@ -151,8 +152,6 @@ class IndexController extends AbstractController
     */
    public function updateUser(Request $request, User $user, UserRepository $ur, EntityManagerInterface $em)
    {
-
-
       $userSecu = $this->getUser();
       $userEmail = $userSecu->getUsername();
       $userCurrent =  $ur->findOneByEmail($userEmail);
@@ -160,64 +159,53 @@ class IndexController extends AbstractController
       if (in_array('ROLE_ADMIN', $userCurrent->getRoles())) {
          $route = in_array('ROLE_RESTAURATEUR', $userCurrent->getRoles()) ? 'admin_restaurateurs' : 'admin_membres';
 
+         $prenom = $request->request->get("prenom");
+         $nom = $request->request->get("nom");
+         $adresse = $request->request->get("adresse");
+         $ville = $request->request->get("ville");
+         $pays = $request->request->get("pays");
+         $cp = $request->request->get("cp");
+         $email = $request->request->get("email");
 
+         if (is_string($prenom)) {
+            $user->setPrenom($prenom);
+         }
+         if (is_string($nom)) {
+            $user->setNom($nom);
+         }
+         if (is_string($email)) {
+            $user->setEmail($email);
+         }
+         if (is_string($adresse)) {
+            $user->setAdresse($adresse);
+         }
+         if (is_integer($cp)) {
+            $user->setCodePostal($cp);
+         }
+         if (is_string($ville)) {
+            $user->setVille($ville);
+         }
+         if (is_string($pays)) {
+            $user->setPays($pays);
+         }
 
-          $prenom = $request->request->get("prenom");
-          $nom = $request->request->get("nom");
-          $adresse = $request->request->get("adresse");
-          $ville = $request->request->get("ville");
-          $pays = $request->request->get("pays");
-          $cp = $request->request->get("cp");
-          $email = $request->request->get("email");
+         $em->persist($user);
+         $em->flush();
 
-          if(is_string($prenom)){
-              $user->setPrenom($prenom);
-          }
-          if(is_string($nom)){
-              $user->setNom($nom);
-          }
-          if(is_string($email)){
-              $user->setEmail($email);
-          }
-          if(is_string($adresse)){
-              $user->setAdresse($adresse);
-          }
-          if(is_integer($cp)){
-              $user->setCodePostal($cp);
-          }
-          if(is_string($ville)){
-              $user->setVille($ville);
-          }
-          if(is_string($pays)){
-              $user->setPays($pays);
-          }
+         return $this->redirectToRoute($route);
+      } else {
+         $form = $this->createForm(UpdateUserType::class, $user);
+         $form->handleRequest($request);
 
-          $em->persist($user);
-          $em->flush();
-
-          return $this->redirectToRoute($route);
-//          return $this->render('debug.html.twig', [
-//              'debug' => $user->getId(),
-//          ]);
-      }
-      else {
-          $form = $this->createForm(UpdateUserType::class, $user);
-          $form->handleRequest($request);
-
-          if ($form->isSubmitted() && $form->isValid()) {
-              $this->getDoctrine()->getManager()->flush();
-              return $this->redirectToRoute('compte', ['id' => $userCurrent->getId()]);
-          }
-         return $this->redirectToRoute('compte', ['id'=>$userCurrent->getId()]);
+         if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('compte', ['id' => $userCurrent->getId()]);
+         }
+         return $this->redirectToRoute('compte', ['id' => $userCurrent->getId()]);
       }
    }
 
-
-
-
-
-
-    /**
+   /**
     * @Route("/leaveReview/{id}", name="leaveReview")
     */
    public function leaveReview(Commande $commande, Request $request, EntityManagerInterface $em)
@@ -225,7 +213,9 @@ class IndexController extends AbstractController
       if ($request->request->get('stars')) {
          $note = new Note();
          $note->setRestaurant($commande->getRestaurant())
-            ->setNote($request->request->get('stars'));
+         ->setNote($request->request->get('stars'))
+         ->setDate(new DateTime())
+         ;
 
          $em->persist($note);
          $em->flush();
@@ -244,95 +234,95 @@ class IndexController extends AbstractController
     */
    public function createOrder(EntityManagerInterface $em, UserRepository $ur, PlatRepository $pr, StatusRepository $statusRepository, MailerInterface $mailer)
    {
-       $commandeDetail = new CommandeDetail();
-       $commande = new Commande();
-       $plats = [];
-       $quantites = [];
-       $totalCommande = 0;
+      $commandeDetail = new CommandeDetail();
+      $commande = new Commande();
+      $plats = [];
+      $quantites = [];
+      $totalCommande = 0;
 
-       //recuperation l'entity user grace au systeme de login
-       $userSecu = $this->getUser();
-       $userEmail= $userSecu->getUsername();
-       $user =  $ur->findOneByEmail($userEmail);
+      //recuperation l'entity user grace au systeme de login
+      $userSecu = $this->getUser();
+      $userEmail = $userSecu->getUsername();
+      $user =  $ur->findOneByEmail($userEmail);
 
-        //recuperation de la liste des id des plats commandés et validé
-       $listIdPlatAsc = $this->session->get("plats-".$user->getId());
-        //transformation du tableau associatif en array simple
-       foreach ($listIdPlatAsc as $item){
-           $tempList[]=$item["id"];
-       }
-       //compte le nombre de meme plat.id ==> quantity, permet de gerer les quantité multiple de plats
-       $listIdPlat = array_count_values($tempList);
+      //recuperation de la liste des id des plats commandés et validé
+      $listIdPlatAsc = $this->session->get("plats-" . $user->getId());
 
-        //mapping des quantite sur les detail commande
-       foreach ($listIdPlat as $id => $quantity){
+      //transformation du tableau associatif en array simple
+      foreach ($listIdPlatAsc as $item) {
+         $tempList[] = $item["id"];
+      }
+      //compte le nombre de meme plat.id ==> quantity, permet de gerer les quantité multiple de plats
+      $listIdPlat = array_count_values($tempList);
 
-            $quantite = new Quantite();
-            $plat = $pr->findOneBy(["id" => $id]);
+      //mapping des quantite sur les detail commande
+      foreach ($listIdPlat as $id => $quantity) {
 
-            $quantite->setPlat($plat);
-            $quantite->setNombre($quantity);
-            $quantite->setCommandeDetail($commandeDetail);
+         $quantite = new Quantite();
+         $plat = $pr->findOneBy(["id" => $id]);
 
-            $plats[] = $plat;
-            $quantites[] = $quantite;
+         $quantite->setPlat($plat);
+         $quantite->setNombre($quantity);
+         $quantite->setCommandeDetail($commandeDetail);
 
-            //calcul du prix de la commande
-            $totalCommande += $plat->getPrix() * $quantity;
-            $restaurant = $plat->getRestaurant();
-            $commande->setRestaurant($restaurant);
+         $plats[] = $plat;
+         $quantites[] = $quantite;
 
-            //persit en base chaque quantite
-            $em->persist($quantite);
+         //calcul du prix de la commande
+         $totalCommande += $plat->getPrix() * $quantity;
+         $restaurant = $plat->getRestaurant();
+         $commande->setRestaurant($restaurant);
 
-       }
+         //persit en base chaque quantite
+         $em->persist($quantite);
+      }
 
-        $totalCommande= $totalCommande + getenv('DELIVERY_PRICE');
-        //creation en base des nouveaux element relatif a la comande
-        $status = $statusRepository->findOneByState("En attente");
-        $commande->setStatus($status);
-        $commande->setMembre($user);
+      $totalCommande = $totalCommande + getenv('DELIVERY_PRICE');
+      //creation en base des nouveaux element relatif a la comande
+      $status = $statusRepository->findOneByState("En attente");
+      $commande->setStatus($status);
+      $commande->setMembre($user);
 
-        $commande->setDate(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
-        $commandeDetail->setCommande($commande);
-        $commandeDetail->setPrix($totalCommande);
+      $commande->setDate(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+      $commandeDetail->setCommande($commande);
+      $commandeDetail->setPrix($totalCommande);
 
-        $restaurateur = $restaurant->getRestaurateur();
-        $restaurateurEmail =  $restaurateur->getEmail();
-        $restaurantEmail = $restaurant->getEmail();
-        $soldeMembre = $user->getSolde();
-        $restaurateurSolde = $restaurateur->getSolde();
-        $user->setSolde($soldeMembre-$totalCommande);
-        $restaurateur->setSolde($restaurateurSolde+$totalCommande - getenv('DELIVERY_PRICE'));
+      $restaurateur = $restaurant->getRestaurateur();
+      $restaurateurEmail =  $restaurateur->getEmail();
+      $restaurantEmail = $restaurant->getEmail();
+      $soldeMembre = $user->getSolde();
+      $restaurateurSolde = $restaurateur->getSolde();
+      $user->setSolde($soldeMembre - $totalCommande);
+      $restaurateur->setSolde($restaurateurSolde + $totalCommande - getenv('DELIVERY_PRICE'));
 
-        //persit en base
-        $em->persist($commandeDetail);
-        $em->persist($commande);
-        $em->flush();
+      //persit en base
+      $em->persist($commandeDetail);
+      $em->persist($commande);
+      $em->flush();
 
-        $idcommande = $commande->getId();
+      $idcommande = $commande->getId();
 
 
-       $email = (new TemplatedEmail())
-           ->from('delivroomvroom@gmail.com')
-           ->to($restaurantEmail)
-           ->cc($restaurateurEmail)
-           ->priority(Email::PRIORITY_HIGH)
-           ->subject('Votre restaurant'.$restaurant->getNom().'à recu une commande')
-           ->htmlTemplate('email/restaurateur-email.html.twig')
-           ->context([
-               'commande' => $commande,
-               'commandeDetail' => $commandeDetail,
-               'quantites' => $quantites,
-               'membre' => $user,
-               'heure_de_commande' => $commande->getDate()->format('H:i'),
-               'heure_de_livraison_estimation' => $commande->getDate()->add(new DateInterval('PT1H'))->format('H:i'),
-               'delivery_fee' => getenv('DELIVERY_PRICE'),
-           ]);
-       $mailer->send($email);
-       $this->session->clear();
+      $email = (new TemplatedEmail())
+         ->from('delivroomvroom@gmail.com')
+         ->to($restaurantEmail)
+         ->cc($restaurateurEmail)
+         ->priority(Email::PRIORITY_HIGH)
+         ->subject('Votre restaurant' . $restaurant->getNom() . 'à recu une commande')
+         ->htmlTemplate('email/restaurateur-email.html.twig')
+         ->context([
+            'commande' => $commande,
+            'commandeDetail' => $commandeDetail,
+            'quantites' => $quantites,
+            'membre' => $user,
+            'heure_de_commande' => $commande->getDate()->format('H:i'),
+            'heure_de_livraison_estimation' => $commande->getDate()->add(new DateInterval('PT1H'))->format('H:i'),
+            'delivery_fee' => getenv('DELIVERY_PRICE'),
+         ]);
+      $mailer->send($email);
+      $this->session->clear();
 
-        return $this->redirectToRoute('followOrder',["id" => $idcommande]);
+      return $this->redirectToRoute('followOrder', ["id" => $idcommande]);
    }
 
    /**
