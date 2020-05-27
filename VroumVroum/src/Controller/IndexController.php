@@ -151,31 +151,75 @@ class IndexController extends AbstractController
    /**
     * @Route("compte/updateUser/{id}", name="updateUser", methods={"POST"})
     */
-   public function updateUser(Request $request, User $user, UserRepository $ur)
+   public function updateUser(Request $request, User $user, UserRepository $ur, EntityManagerInterface $em)
    {
-      $form = $this->createForm(UpdateUserType::class, $user);
-      $form->handleRequest($request);
 
-      if ($form->isSubmitted() && $form->isValid()) {
-         $this->getDoctrine()->getManager()->flush();
-         return $this->redirectToRoute('compte', ['id' => $user->getId()]);
-      }
 
       $userSecu = $this->getUser();
       $userEmail = $userSecu->getUsername();
-      $user =  $ur->findOneByEmail($userEmail);
+      $userCurrent =  $ur->findOneByEmail($userEmail);
 
-      if (in_array('ROLE_ADMIN', $user->getRoles())) {
-         $route = in_array('ROLE_RESTAURATEUR', $user->getRoles()) ? 'admin_restaurateurs' : 'admin_membres';
+      if (in_array('ROLE_ADMIN', $userCurrent->getRoles())) {
+         $route = in_array('ROLE_RESTAURATEUR', $userCurrent->getRoles()) ? 'admin_restaurateurs' : 'admin_membres';
 
-         return $this->redirectToRoute($route);
+
+
+          $prenom = $request->request->get("prenom");
+          $nom = $request->request->get("nom");
+          $adresse = $request->request->get("adresse");
+          $ville = $request->request->get("ville");
+          $pays = $request->request->get("pays");
+          $cp = $request->request->get("cp");
+          $email = $request->request->get("email");
+
+          if(is_string($prenom)){
+              $user->setPrenom($prenom);
+          }
+          if(is_string($nom)){
+              $user->setNom($nom);
+          }
+          if(is_string($email)){
+              $user->setEmail($email);
+          }
+          if(is_string($adresse)){
+              $user->setAdresse($adresse);
+          }
+          if(is_integer($cp)){
+              $user->setCodePostal($cp);
+          }
+          if(is_string($ville)){
+              $user->setVille($ville);
+          }
+          if(is_string($pays)){
+              $user->setPays($pays);
+          }
+
+          $em->persist($user);
+          $em->flush();
+
+          return $this->redirectToRoute($route);
+//          return $this->render('debug.html.twig', [
+//              'debug' => $user->getId(),
+//          ]);
       }
       else {
-         return $this->redirectToRoute('compte', ['id'=>$user->getId()]);
+          $form = $this->createForm(UpdateUserType::class, $user);
+          $form->handleRequest($request);
+
+          if ($form->isSubmitted() && $form->isValid()) {
+              $this->getDoctrine()->getManager()->flush();
+              return $this->redirectToRoute('compte', ['id' => $userCurrent->getId()]);
+          }
+         return $this->redirectToRoute('compte', ['id'=>$userCurrent->getId()]);
       }
    }
 
-   /**
+
+
+
+
+
+    /**
     * @Route("/leaveReview/{id}", name="leaveReview")
     */
    public function leaveReview(Commande $commande, Request $request, EntityManagerInterface $em)
