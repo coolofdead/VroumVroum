@@ -162,10 +162,10 @@ class RestaurantController extends AbstractController
         }
 
 
-        if(is_float($latitude)){
+        if(is_numeric($latitude)){
             $restaurant->setLatitude($latitude);
         }
-        if(is_float($longitude)){
+        if(is_numeric($longitude)){
             $restaurant->setLongitude($longitude);
         }
 
