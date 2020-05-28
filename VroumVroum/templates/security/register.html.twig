@@ -23,7 +23,7 @@
 
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4 col-md-offset-4">
+				<div class="col-md-4 col-md-offset-4" style="margin-top: 15%">
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">Compte        
@@ -38,30 +38,47 @@
 									<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 								{% endif %}
 								<div class="form-group">
-									<input value="" name="name" class="form-control" placeholder="Joseph" type="text" required>
+									{{ form_widget(form.nom, {'attr': { 'placeholder': 'Nom'}})  }}
 								</div>
 								<div class="form-group">
-									<input value="" name="email" class="form-control" placeholder="yourmail@example.com" type="email" required>
+									{{ form_widget(form.prenom, {'attr': { 'placeholder': 'Prenom'}})  }}
 								</div>
 								<div class="form-group">
-									<input name="password" class="form-control" placeholder="Mot de passe" type="password" value="" minlength="4" required>
+									{% if emailError == true %}
+										<div class="alert alert-danger" role="alert">
+											Email déja utilisé
+										</div>
+									{% endif %}
+									{{ form_widget(form.email, {'attr': { 'placeholder': 'Email'}})  }}
 								</div>
 								<div class="form-group">
-									<input name="password-repeat" class="form-control" placeholder="Mot de passe" type="password" value="" minlength="4" required>
+									{{ form_widget(form.adresse, {'attr': { 'placeholder': 'Adresse'}})  }}
+								</div>
+								<div class="form-group">
+									{{ form_widget(form.codePostal, {'attr': { 'placeholder': 'codePostal'}})  }}
+								</div>
+								<div class="form-group">
+									{{ form_widget(form.ville, {'attr': { 'placeholder': 'Ville'}})  }}
+								</div>
+								<div class="form-group">
+									{{ form_widget(form.pays, {'attr': { 'placeholder': 'Pays'}})  }}
+								</div>
+								<div class="form-group">
+									{{ form_row(form.roles,{'attr' :{'class' : 'radio-label'} })  }}
 								</div>
 
-								<div class="button dropdown" style="margin-bottom: 2vh;">
-									<select id="colorselector">
-										{% for role in roles %}
-											<option value="{{role}}">{{role}}</option>
-										{% endfor %}
-									</select>
+								<div class="form-group">
+									<p>{{ form_row(form.password.first) }}</p>
+									<p>	{{ form_row(form.password.second) }}</p>
+
 								</div>
 
 								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-								<button class="btn btn-lg btn-success btn-block" type="submit">Inscription</button>
+								{{ form_widget(form.Inscription)  }}
+
+							</fieldset>
 							</div>
-						</fieldset>
+
 					</div>
 				</div>
 			</div>
