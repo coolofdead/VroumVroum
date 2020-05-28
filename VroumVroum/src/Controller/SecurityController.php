@@ -54,15 +54,13 @@ class SecurityController extends AbstractController
         $form = $this->createForm(UserResgisterType::class, $user);
         $form->handleRequest($request);
 
-
-
         if ($form->isSubmitted()) {
-
             $email = $form->get('email')->getViewData();
 
             if(count($ur->findBy(['email' => $email])) === 0){
                 $entityManager = $this->getDoctrine()->getManager();
                 $user->setPassword($this->passwordEncoder->encodePassword($user,$user->getPassword()));
+                $user->setSolde(0);
                 $entityManager->persist($user);
                 $entityManager->flush();
                 return $this->redirectToRoute('app_login');
@@ -73,11 +71,7 @@ class SecurityController extends AbstractController
                     'form' => $form->createView(),
                     'emailError' => false
                 ]);
-
             }
-
-
-
         }
 
              return $this->render('security/register.html.twig', [
