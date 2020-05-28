@@ -97,14 +97,23 @@ class IndexController extends AbstractController
    /**
     * @Route("/compte/{id}", name="compte")
     */
-   public function compte(User $user)
+   public function compte(User $user, UserRepository $ur)
    {
       $form = $this->createForm(UpdateUserType::class, $user);
 
-      return $this->render('membre/profil.html.twig', [
-         'accueil' => 'IndexController',
-         'form' => $form->createView()
-      ]);
+       $userSecu = $this->getUser();
+       $userEmail = $userSecu->getUsername();
+       $userCurrent =  $ur->findOneByEmail($userEmail);
+       if ($userCurrent->getId() === $user->getId()){
+           return $this->render('membre/profil.html.twig', [
+               'accueil' => 'IndexController',
+               'form' => $form->createView()
+           ]);
+       }else{
+           return $this->redirectToRoute("accueil");
+       }
+
+
    }
 
    /**
@@ -194,14 +203,20 @@ class IndexController extends AbstractController
 
          return $this->redirectToRoute($route);
       } else {
-         $form = $this->createForm(UpdateUserType::class, $user);
-         $form->handleRequest($request);
+          if($user->getId() === $userCurrent->getId()){
+              $form = $this->createForm(UpdateUserType::class, $user);
+              $form->handleRequest($request);
 
-         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute('compte', ['id' => $userCurrent->getId()]);
-         }
-         return $this->redirectToRoute('compte', ['id' => $userCurrent->getId()]);
+              if ($form->isSubmitted() && $form->isValid()) {
+                  $this->getDoctrine()->getManager()->flush();
+                  return $this->redirectToRoute('compte', ['id' => $userCurrent->getId()]);
+              }
+              return $this->redirectToRoute('compte', ['id' => $userCurrent->getId()]);
+          }else{
+              $this->redirectToRoute("accueil");
+          }
+
+
       }
    }
 
@@ -328,14 +343,23 @@ class IndexController extends AbstractController
    /**
     * @Route("/followOrder/{id}", name="followOrder")
     */
-   public function followOrder(Commande $commande)
+   public function followOrder(Commande $commande, UserRepository $ur)
    {
-      return $this->render('membre/command-tracker.html.twig', [
-         'accueil' => 'IndexController',
-         'commande_en_cours' => $commande,
-         'heure_de_commande' => $commande->getDate()->format('H:i'), // si tu peux m'envoyer une heure sous le format heure:minute
-         'heure_de_livraison_estimation' => $commande->getDate()->add(new DateInterval('PT1H'))->format('H:i'), // ajouter 1 heure à l'heure de la commande
-      ]);
+       $userSecu = $this->getUser();
+       $userEmail = $userSecu->getUsername();
+       $user =  $ur->findOneByEmail($userEmail);
+
+       if($user->getId() === $commande->getMembre()->getId()){
+           return $this->render('membre/command-tracker.html.twig', [
+               'accueil' => 'IndexController',
+               'commande_en_cours' => $commande,
+               'heure_de_commande' => $commande->getDate()->format('H:i'), // si tu peux m'envoyer une heure sous le format heure:minute
+               'heure_de_livraison_estimation' => $commande->getDate()->add(new DateInterval('PT1H'))->format('H:i'), // ajouter 1 heure à l'heure de la commande
+           ]);
+       }else{
+           $this->redirectToRoute("accueil");
+       }
+
    }
 
    /**
