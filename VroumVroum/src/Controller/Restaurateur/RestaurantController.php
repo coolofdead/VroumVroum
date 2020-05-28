@@ -189,8 +189,7 @@ class RestaurantController extends AbstractController
         $userEmail = $userSecu->getUsername();
         $userCurrent =  $ur->findOneByEmail($userEmail);
 
-
-        if($restaurant->getRestaurateur()->getId() === $userCurrent->getId() and $userCurrent->getRoles() === ["ROLE_RESTAURATEUR"]){
+        if($restaurant->getRestaurateur()->getId() == $userCurrent->getId()){
             return $this->render('restaurant/plats-list.html.twig', [
                 'plats' => $pr->findBy(['restaurant' => $restaurant]),
                 'categories' => $cpr->findAll(),
@@ -258,6 +257,7 @@ class RestaurantController extends AbstractController
         $nom = $request->request->get("nom");
         $prix = $request->request->get("prix");
         $url = $request->request->get("urlImg");
+        $description = $request->request->get("description");
 
         if(is_float($prix)){
             $plat->setPrix($prix);
@@ -267,6 +267,9 @@ class RestaurantController extends AbstractController
         }
         if(is_string($url)){
             $plat->setUrlImg($url);
+        }
+        if(is_string($description)){
+            $plat->setDescription($description);
         }
 
 
