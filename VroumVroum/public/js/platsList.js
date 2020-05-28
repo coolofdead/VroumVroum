@@ -17,6 +17,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
                     if (form[i].attributes["name"] != undefined && form[i].attributes["value"] != undefined) {
                         if (form[i].attributes["name"].value == input.attributes["name"].value) {
                             form[i].attributes["value"].value = input.textContent;
+                            form[i].value  = input.textContent;
                         }
                     }
                 });

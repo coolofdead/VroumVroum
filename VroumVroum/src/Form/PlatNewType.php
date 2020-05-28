@@ -8,6 +8,7 @@ use App\Entity\TypePlat;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,6 +22,7 @@ class PlatNewType extends AbstractType
             ->add('prix')
             ->add('nom')
             ->add('urlImg',UrlType::class)
+            ->add('description', TextareaType::class)
             ->add('categorie', EntityType::class,[
                 'class' => CategoriePlat::class,
                 'choice_label' => 'categorie',

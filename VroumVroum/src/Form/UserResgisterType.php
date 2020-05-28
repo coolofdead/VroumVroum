@@ -22,10 +22,6 @@ class UserResgisterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-
-
-
         $builder
             ->add('email',EmailType::class)
             ->add('roles',ChoiceType::class, [
@@ -38,28 +34,18 @@ class UserResgisterType extends AbstractType
                 'label' => 'Rôles'
             ])
 
-
-
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'required' => true,
                 'options' => ['attr' => ['class' => 'password-field']],
-                'first_options'  => ['label' => 'Password'],
-                'second_options' => ['label' => 'Repeat Password'],
-
-
+                'first_options'  => ['label' => 'Mot de passe'],
+                'second_options' => ['label' => false],
             ])
             ->add('nom', TextType::class)
             ->add('prenom', TextType::class)
-            ->add('adresse', TextType::class)
-            ->add('ville', TextType::class)
-            ->add('pays', TextType::class)
-            ->add('codePostal', NumberType::class,['attr' => array('min' => 0)])
             ->add('Inscription', SubmitType::class, ['attr' => ['class' => 'subscribe btn btn-success btn-lg btn-block ']])
         ;
-
-
 
         $builder->get('roles')
             ->addModelTransformer(new CallbackTransformer(
@@ -73,9 +59,6 @@ class UserResgisterType extends AbstractType
                 }
             ))
         ;
-
-
-
     }
 
     public function configureOptions(OptionsResolver $resolver)

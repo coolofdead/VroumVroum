@@ -35,17 +35,13 @@
 								</div>
                                 <div class="form-group col-md-4">
 									{{ form_widget(form.prix, {'attr': { 'value': '', 'class' : 'form-control' },'full_name' : 'prix'})}}
-
 								</div>
                                 <div class="form-group col-md-12">
 									{{ form_widget(form.urlImg, {'attr': { 'value': '', 'class' : 'form-control', 'label' : 'Url du plat' },'full_name' : 'urlImg'})}}
-
 								</div>
                                 <div class="form-group col-md-6">
                                     <label for="inputState">Catégorie</label>
-
-{#									{{ form_widget(form.categorie,{'choice_value' : categories} )}}#}
-									                                    <select id="inputState" class="form-control select-input" name="categorie" required>
+									<select id="inputState" class="form-control select-input" name="categorie" required>
                                         {% for category in categories %}
                                             <option value="{{category.categorie}}">{{category.categorie}}</option>
                                         {% endfor %}
@@ -58,6 +54,10 @@
                                             <option value="{{type.type}}">{{type.type}}</option>
                                         {% endfor %}
                                     </select>
+                                </div>
+                                <div class="form-group col-md-12">
+								    <label for="plat_description">Description de votre produit</label>
+									{{ form_widget(form.description, {'attr': { 'value': '', 'class' : 'form-control'},'full_name' : 'description'})}}
                                 </div>
                             </div>
 						</div>
@@ -84,9 +84,10 @@
 			<tbody>
 				{% for plat in plats %}
 					<tr>
-						<td name="nom" class="data-{{plat.id}}">{{plat.nom}}</td>
+						<td name="nom" class="data-{{plat.id}}" style="max-width:5vw;">{{plat.nom}}</td>
 						<td name="prix" class="data-{{plat.id}}">{{plat.prix}}</td>
-						<td name="urlImg" class="data-{{plat.id}}">{{plat.urlImg}}</td>
+						<td name="urlImg" class="data-{{plat.id}}" style="max-width:10vw;overflow:hidden;">{{plat.urlImg}}</td>
+						<td name="description" class="data-{{plat.id}}" hidden>{{plat.description}}</td>
 						<td name="categorie" class="data-{{plat.id}}">{{plat.categorie.categorie}}</td>
 						<td name="type" class="data-{{plat.id}}">{{plat.type.type}}</td>
 						<td>
@@ -110,32 +111,27 @@
 				<tbody>
 					<tr class="form-group">
 						<td>
-{#							<input type="text" class="form-control" placeholder="Nom" required>#}
 							{{ form_widget(formNew.nom, {'attr': { 'placeholder': 'Nom', 'class' : 'form-control'}}) }}
-
 						</td>
 						<td>
-{#							<input type="number" step="any" class="form-control" placeholder="Prix" required>#}
 							{{ form_widget(formNew.prix, {'attr': { 'placeholder': 'Prix', 'class' : 'form-control'}}) }}
-
 						</td>
 						<td>
-{#							<input type="text" class="form-control" placeholder="Url du plat" required>#}
 							{{ form_widget(formNew.urlImg, {'attr': { 'placeholder': 'Url de l\'image du plat', 'class' : 'form-control'}}) }}
-
+						</td>
+					</tr>
+					<tr class="form-group">
+						<td>
+							{{ form_widget(formNew.description, {'attr': { 'placeholder': 'Description de votre produit', 'class' : 'form-control'}}) }}
 						</td>
 					</tr>
 					<tr class="form-group">
 						<td>Catégorie</td>
-
-
 						<td>{{ form_widget(formNew.categorie ) }}</td>
-
 					</tr>
 					<tr class="form-group">
 						<td>Type</td>
 						<td>{{ form_widget(formNew.type ) }}</td>
-
 					</tr>
 					<tr class="form-group">
 						<td>
