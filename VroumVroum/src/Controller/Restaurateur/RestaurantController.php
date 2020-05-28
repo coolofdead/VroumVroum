@@ -231,7 +231,7 @@ class RestaurantController extends AbstractController
      */
     public function deletePlat(Plat $plat, Request $request): Response
     {
-        // TODO : ca marche deja tu m'as feinté
+        // TODO : ça marche deja tu m'as feinté
         $restaurantId = $plat->getRestaurant()->getId();
 
         if ($this->isCsrfTokenValid('delete'.$plat->getId(), $request->request->get('_token'))) {
