@@ -28,7 +28,7 @@ class AdminController extends AbstractController
         $users = $ur->findAll();
 
         $commandes_sorted = array_count_values(array_map(function($c){return $c->getStatus()->getIcon() == self::COMMANDE_STATE_DELIVERED ? "Livre" : "En cours";}, $commandes));
-        $users_sorted = array_count_values(array_map(function($u){return in_array('ROLE_RESTAURATEUR', $u->getRoles()) ? "Membre" : "Restaurateur";}, $users));
+        $users_sorted = array_count_values(array_map(function($u){return in_array('ROLE_RESTAURATEUR', $u->getRoles()) ? "Restaurateur" : "Membre";}, $users));
 
         return $this->render('admin/index.html.twig', [
             'admin' => 'AdminController',

@@ -136,13 +136,13 @@
 
 					{% for commande in restaurateur.commandes %}
 						{% if commande.status.icon == '🟢' %}
-							{% set commnadeCountByStatus = commnadeCountByStatus|merge({'Livre': 1}) %}
+							{% set commnadeCountByStatus = commnadeCountByStatus|merge({'Livre': 1 +  commnadeCountByStatus["Livre"]}) %}
 						{% endif %}
 						{% if commande.status.icon == '🟡' %}
-							{% set commnadeCountByStatus = commnadeCountByStatus|merge({'Livraison': 1}) %}
+							{% set commnadeCountByStatus = commnadeCountByStatus|merge({'Livraison': 1 +  commnadeCountByStatus["Livraison"]}) %}
 						{% endif %}
 						{% if commande.status.icon == '🟠' %}
-							{% set commnadeCountByStatus = commnadeCountByStatus|merge({'Preparation': 1}) %}
+							{% set commnadeCountByStatus = commnadeCountByStatus|merge({'Preparation': 1 +  commnadeCountByStatus["Preparation"]}) %}
 						{% endif %}
 					{% endfor %}
 
