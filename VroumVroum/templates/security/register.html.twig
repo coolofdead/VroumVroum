@@ -51,26 +51,14 @@
 									{% endif %}
 									{{ form_widget(form.email, {'attr': { 'placeholder': 'Email'}})  }}
 								</div>
-								<div class="form-group">
-									{{ form_widget(form.adresse, {'attr': { 'placeholder': 'Adresse'}})  }}
-								</div>
-								<div class="form-group">
-									{{ form_widget(form.codePostal, {'attr': { 'placeholder': 'codePostal'}})  }}
-								</div>
-								<div class="form-group">
-									{{ form_widget(form.ville, {'attr': { 'placeholder': 'Ville'}})  }}
-								</div>
-								<div class="form-group">
-									{{ form_widget(form.pays, {'attr': { 'placeholder': 'Pays'}})  }}
-								</div>
+
 								<div class="form-group">
 									{{ form_row(form.roles,{'attr' :{'class' : 'radio-label'} })  }}
 								</div>
 
 								<div class="form-group">
-									<p>{{ form_row(form.password.first) }}</p>
-									<p>	{{ form_row(form.password.second) }}</p>
-
+									<p>{{ form_row(form.password.first,  {'attr': { 'placeholder': 'Mot de passe'}}) }}</p>
+									<p>	{{ form_row(form.password.second,  {'attr': { 'placeholder': 'Répéter le mot de passe'}}) }}</p>
 								</div>
 
 								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
