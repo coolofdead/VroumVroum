@@ -31,6 +31,9 @@
 
 	{% endfor %}
 
+	{% set categories = categories|reverse %}
+
+
 	{% set iconsCategory = [
                 '🧀','🍖','🍗','🥩','🥓','🍔','🍟','🍕','🌭','🥪','🌮','🌯','🥙','🧆','🍳','🥘','🍲','🥣','🥗','🍿','🧈','🧂','🥫','🍱','🍘','🍙','🍚','🍛','🍜','🍝','🍠','🍢','🍣','🍤','🍥','🥮','🍡','🥟','🥠','🥡','🦪','🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫','🍬','🍭','🍮','🍯','🍼','🥛','☕','🍵','🍶','🍾','🍷'
         ] %}
@@ -118,7 +121,7 @@
 	</div>
 </nav>
 
-<div class="container">
+<div class="container" style="margin-bottom:10vh;">
 
 	<div class="alert alert-warning" id="alert-add-basket" role="alert" style="margin-top: 2em;" hidden>
 		Vous ne pouvez pas ajouter de plat depuis un autre restaurant
@@ -135,12 +138,12 @@
 						<div class="card mb-3" style="max-width: 540px;">
 							<div class="row no-gutters item-card">
 								<div class="col-md-4">
-									<img src="https://i.picsum.photos/id/645/200/200.jpg" class="card-img" alt="...">
+									<img src="{{plat.urlImg}}" class="card-img" alt="..." style="height: 100%; object-fit: cover;">
 								</div>
 								<div class="col-md-8">
 									<div class="card-body">
 										<h4 class="card-title">{{ plat.nom }}</h4>
-										<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional.</p>
+										<p class="card-text">{{plat.description}}</p>
 										<p class="card-text" style="color: grey;">{{ plat.prix }}€</p>
 									</div>
 								</div>
