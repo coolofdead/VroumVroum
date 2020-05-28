@@ -176,7 +176,7 @@ class RestaurantController extends AbstractController
     /**
      * @Route("/plats/{id}", name="restaurant_plats", methods={"GET","POST"})
      */
-    public function restaurantPlats(Restaurant $restaurant, Request $request, PlatRepository $pr, CategoriePlatRepository $cpr, TypePlatRepository $tpr): Response
+    public function restaurantPlats(Restaurant $restaurant, Request $request, PlatRepository $pr, CategoriePlatRepository $cpr, TypePlatRepository $tpr, UserRepository $ur): Response
     {
         $form = $this->createForm(PlatType::class);
         $form->handleRequest($request);
@@ -184,14 +184,26 @@ class RestaurantController extends AbstractController
         $formNew = $this->createForm(PlatNewType::class);
         $formNew->handleRequest($request);
 
-        return $this->render('restaurant/plats-list.html.twig', [
-            'plats' => $pr->findBy(['restaurant' => $restaurant]),
-            'categories' => $cpr->findAll(),
-            'types' => $tpr->findAll(),
-            'restaurant' => $restaurant,
-            'form' => $form->createView(),
-            'formNew' => $formNew->createView()
-        ]);
+
+        $userSecu = $this->getUser();
+        $userEmail = $userSecu->getUsername();
+        $userCurrent =  $ur->findOneByEmail($userEmail);
+
+
+        if($restaurant->getRestaurateur()->getId() === $userCurrent->getId() and $userCurrent->getRoles() === ["ROLE_RESTAURATEUR"]){
+            return $this->render('restaurant/plats-list.html.twig', [
+                'plats' => $pr->findBy(['restaurant' => $restaurant]),
+                'categories' => $cpr->findAll(),
+                'types' => $tpr->findAll(),
+                'restaurant' => $restaurant,
+                'form' => $form->createView(),
+                'formNew' => $formNew->createView()
+            ]);
+        }
+        else{
+            return $this->redirectToRoute("accueil");
+        }
+
     }
 
     /**
