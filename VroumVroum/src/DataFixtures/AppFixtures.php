@@ -125,6 +125,7 @@ class AppFixtures extends Fixture
         ->setRestaurant($restaurants[$faker->numberBetween(0, count($restaurants) - 1)])
         ->setType($typesPlat[$faker->numberBetween(0, count($typesPlat) - 1)])
         ->setUrlImg("https://picsum.photos/200");
+        $plats->setDescription("je suis la description");
       $manager->persist($plats);
       $platList[] = $plats;
     }
@@ -138,6 +139,7 @@ class AppFixtures extends Fixture
         ->setRestaurant($restaurants[$faker->numberBetween(0, count($restaurants) - 1)])
         ->setType($typesPlat[$faker->numberBetween(0, count($typesPlat) - 1)])
         ->setUrlImg("https://picsum.photos/200");
+        $plats->setDescription("je suis la description");
       $manager->persist($plats);
     }
 
