@@ -132,7 +132,7 @@ class RestaurantController extends AbstractController
     /**
      * @Route("/edit", name="restaurant_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, RestaurantRepository $rr, CategorieRestaurantRepository $crr, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, RestaurantRepository $rr, CategorieRestaurantRepository $crr, EntityManagerInterface $entityManager, UserRepository $ur): Response
     {
         $categoryId = $request->request->get("category");
         $restaurantId = $request->request->get("id");
@@ -159,7 +159,6 @@ class RestaurantController extends AbstractController
             $restaurant->setUrl($url);
         }
 
-
         if(is_numeric($latitude)){
             $restaurant->setLatitude($latitude);
         }
@@ -173,7 +172,17 @@ class RestaurantController extends AbstractController
 
         $entityManager->persist($restaurant);
         $entityManager->flush();
-        return $this->redirectToRoute('restaurateur_restaurants');
+
+        $userSecu = $this->getUser();
+        $userEmail = $userSecu->getUsername();
+        $userCurrent =  $ur->findOneByEmail($userEmail);
+
+        if (in_array('ROLE_ADMIN', $userCurrent->getRoles())) {
+            return $this->redirectToRoute('accueil');
+        }
+        else {
+            return $this->redirectToRoute('restaurateur_restaurants');
+        }
     }
 
     /**
