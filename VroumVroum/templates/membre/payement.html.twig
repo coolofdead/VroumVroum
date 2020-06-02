@@ -170,11 +170,11 @@
 							<td></td>
 							<td></td>
 							<td>
-								<h5>Sous total</h5>
+								<h5>Nouveau solde</h5>
 							</td>
 							<td class="text-right">
 								<h5>
-									<strong id="total-without-shipping">{{ sub_total }}€</strong>
+									<strong id="total-without-shipping">{{app.user.solde - (sub_total + delivery_fee )}}€</strong>
 								</h5>
 							</td>
 						</tr>
@@ -200,7 +200,7 @@
 							</td>
 							<td class="text-right">
 								<h3>
-									<strong id="total">{{app.user.solde - (sub_total + delivery_fee )}}€</strong>
+									<strong id="total">{{ sub_total }}€</strong>
 								</h3>
 							</td>
 						</tr>
