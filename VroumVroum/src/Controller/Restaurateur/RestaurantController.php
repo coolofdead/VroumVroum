@@ -55,8 +55,12 @@ class RestaurantController extends AbstractController
     {
         $status = $sr->findOneBy(['state'=>'Livré']);
 
+        $commandes = $cr->findBy(['restaurant'=>$r, 'status'=>$status]);
+
+        $commandes = array_reverse($commandes);
+
         return $this->render('membre/historique-commandes.html.twig', [
-            'commandes' => $cr->findBy(['restaurant'=>$r, 'status'=>$status]),
+            'commandes' => $commandes,
         ]);
     }
 
@@ -69,8 +73,11 @@ class RestaurantController extends AbstractController
         $statusDelivered = $status[count($status) - 1];
         array_shift($status);
 
+        $commandes = $cr->findCommandesWithoutStatusFromRestaurant($statusDelivered, $r);
+        $commandes = array_reverse($commandes);
+
         return $this->render('restaurant/orders-tracker.html.twig', [
-            'commandes' => $cr->findCommandesWithoutStatusFromRestaurant($statusDelivered, $r),
+            'commandes' => $commandes,
             'restaurant' => $r,
             'status' => $status,
         ]);
@@ -271,7 +278,7 @@ class RestaurantController extends AbstractController
         $url = $request->request->get("urlImg");
         $description = $request->request->get("description");
 
-        if(is_float($prix)){
+        if(is_numeric($prix)){
             $plat->setPrix($prix);
         }
         if(is_string($nom)){
