@@ -323,7 +323,7 @@ class IndexController extends AbstractController
          ->to($restaurantEmail)
          ->cc($restaurateurEmail)
          ->priority(Email::PRIORITY_HIGH)
-         ->subject('Votre restaurant' . $restaurant->getNom() . 'à recu une commande')
+         ->subject('Votre restaurant ' . $restaurant->getNom() . ' à recu une commande')
          ->htmlTemplate('email/restaurateur-email.html.twig')
          ->context([
             'commande' => $commande,
